@@ -1392,6 +1392,9 @@
       <!-- Categories Column -->
       <div class="column" id="categories-column">
         <div class="column-header">Categories</div>
+        <div class="search-box">
+          <input type="text" id="category-search" placeholder="Search categories..." aria-label="Search categories">
+        </div>
         <div class="column-content" id="categories-list"></div>
       </div>
 
@@ -2097,9 +2100,30 @@
 
     function renderCategories() {
       const list = document.getElementById('categories-list');
+      const searchInput = document.getElementById('category-search');
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
       list.innerHTML = '';
 
-      for (const cat of appData.categories) {
+      let categories = appData.categories;
+      if (searchTerm) {
+        categories = categories.filter(c =>
+          c.name.toLowerCase().includes(searchTerm) ||
+          c.tables.some(t => t.name.toLowerCase().includes(searchTerm))
+        );
+      }
+
+      if (categories.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <div>${searchTerm ? 'No categories found' : 'No categories'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      for (const cat of categories) {
         const item = document.createElement('div');
         item.className = 'list-item' + (cat.id === selectedCategoryId ? ' selected' : '');
         item.innerHTML = `
@@ -3604,6 +3628,9 @@
     function initEventListeners() {
       // Header
       document.getElementById('btn-settings').addEventListener('click', openSettings);
+
+      // Category search
+      document.getElementById('category-search').addEventListener('input', renderCategories);
 
       // Table search
       document.getElementById('table-search').addEventListener('input', renderTables);
