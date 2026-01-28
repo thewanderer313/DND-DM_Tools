@@ -1,0 +1,3792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oakhart Roll Tables</title>
+  <style>
+    :root {
+      --bg-primary: #0d1210;
+      --bg-secondary: #151d19;
+      --bg-tertiary: #1a2621;
+      --bg-card: #1e2b25;
+      --border-color: #2d3f36;
+      --border-light: #3d5246;
+      --text-primary: #e8efe8;
+      --text-secondary: #a8b8a8;
+      --text-muted: #6a7a6a;
+      --accent: #4a7c59;
+      --accent-hover: #5a9469;
+      --accent-glow: rgba(74, 124, 89, 0.3);
+      --danger: #8b3a3a;
+      --danger-hover: #a04545;
+      --warning: #8b7355;
+      --success: #4a7c59;
+      --shadow: rgba(0, 0, 0, 0.4);
+      --overlay: rgba(13, 18, 16, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    #app-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+    }
+
+    #app-background::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--overlay);
+      z-index: -1;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Header */
+    .app-header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .app-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .app-title svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Buttons */
+    button {
+      font-family: inherit;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--bg-card);
+      border-color: var(--border-light);
+    }
+
+    button:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    button.primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    button.danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: white;
+    }
+
+    button.danger:hover {
+      background: var(--danger-hover);
+      border-color: var(--danger-hover);
+    }
+
+    button.small {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Main Layout */
+    .main-content {
+      display: grid;
+      grid-template-columns: 200px 280px 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .column:last-child {
+      border-right: none;
+    }
+
+    .column-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .column-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    /* Lists */
+    .list-item {
+      padding: 0.625rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+    }
+
+    .list-item:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .list-item.selected {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .list-item-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .list-item-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Search Box */
+    .search-box {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Tables Column */
+    .table-info {
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .table-info-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .table-info-dice {
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .roll-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .roll-controls button.roll-btn {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .manual-roll {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .manual-roll input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .manual-roll input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Results Panel */
+    .results-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .current-result {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .result-card.has-image {
+      cursor: pointer;
+    }
+
+    .result-card.has-image:hover {
+      border-color: var(--accent);
+    }
+
+    .result-roll-number {
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: var(--accent);
+      color: white;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .result-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-body {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .result-effects {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.875rem;
+      color: var(--warning);
+      font-style: italic;
+    }
+
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 0.75rem;
+    }
+
+    .tag {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .result-image-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    .click-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* Follow-up Suggestions */
+    .follow-up-tables {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .follow-up-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.375rem;
+    }
+
+    .follow-up-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .follow-up-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--accent);
+      padding: 0.25rem 0.625rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .follow-up-chip:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* History */
+    .history-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .history-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .history-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    .history-item {
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 0.375rem;
+      font-size: 0.8125rem;
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .history-item-table {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .history-item-time {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+    }
+
+    .history-item-result {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Dice Roller Widget */
+    .dice-roller {
+      padding: 0.75rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .dice-roller-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dice-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .dice-btn {
+      padding: 0.375rem 0.625rem;
+      font-size: 0.75rem;
+      min-width: 40px;
+    }
+
+    .dice-result {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.875rem;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Table Editor Slide Panel */
+    .table-editor-panel {
+      position: fixed;
+      top: 0;
+      right: -500px;
+      width: 480px;
+      max-width: 100%;
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-color);
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s ease;
+      box-shadow: -4px 0 20px var(--shadow);
+    }
+
+    .table-editor-panel.active {
+      right: 0;
+    }
+
+    .table-editor-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-tertiary);
+    }
+
+    .table-editor-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-editor-title .entry-count-badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .table-editor-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .table-editor-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Quick Entry List */
+    .quick-entry-list {
+      margin-bottom: 1rem;
+    }
+
+    .quick-entry-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-bottom: 0.375rem;
+      transition: all 0.15s ease;
+    }
+
+    .quick-entry-item:hover {
+      border-color: var(--border-light);
+    }
+
+    .quick-entry-item.editing {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .quick-entry-number {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .quick-entry-type {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.125rem 0.375rem;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .quick-entry-type.text {
+      background: var(--bg-card);
+      color: var(--text-muted);
+    }
+
+    .quick-entry-type.card {
+      background: var(--accent);
+      color: white;
+    }
+
+    .quick-entry-preview {
+      flex: 1;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    .quick-entry-preview:hover {
+      color: var(--text-primary);
+    }
+
+    .quick-entry-image-indicator {
+      color: var(--accent);
+      font-size: 0.75rem;
+    }
+
+    .quick-entry-actions {
+      display: flex;
+      gap: 0.25rem;
+      opacity: 0.6;
+      transition: opacity 0.15s ease;
+    }
+
+    .quick-entry-item:hover .quick-entry-actions {
+      opacity: 1;
+    }
+
+    .quick-entry-actions button {
+      padding: 0.25rem;
+      min-width: 28px;
+      font-size: 0.75rem;
+    }
+
+    /* Inline Entry Editor */
+    .inline-entry-editor {
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .inline-editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .inline-editor-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .inline-editor-tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .inline-editor-tab {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.8125rem;
+    }
+
+    .inline-editor-tab:first-child {
+      border-radius: 6px 0 0 6px;
+    }
+
+    .inline-editor-tab:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+
+    .inline-editor-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .inline-editor-tab:hover:not(.active) {
+      background: var(--bg-card);
+    }
+
+    .inline-editor-fields {
+      display: none;
+    }
+
+    .inline-editor-fields.active {
+      display: block;
+    }
+
+    .inline-form-group {
+      margin-bottom: 0.875rem;
+    }
+
+    .inline-form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.375rem;
+    }
+
+    .inline-form-input,
+    .inline-form-textarea,
+    .inline-form-select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+
+    .inline-form-input:focus,
+    .inline-form-textarea:focus,
+    .inline-form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .inline-form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .inline-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .inline-image-upload {
+      border: 2px dashed var(--border-color);
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inline-image-upload:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .inline-image-upload.has-image {
+      padding: 0.5rem;
+    }
+
+    .inline-image-upload img {
+      max-width: 100%;
+      max-height: 120px;
+      border-radius: 4px;
+    }
+
+    .inline-image-upload-text {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+    }
+
+    .inline-editor-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .edit-table-btn {
+      margin-top: 0.5rem;
+    }
+
+    /* Add entry button */
+    .add-entry-section {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .add-entry-section button {
+      flex: 1;
+    }
+
+    /* Panel backdrop */
+    .panel-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 850;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .panel-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px var(--shadow);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 1rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    /* Card Modal */
+    .card-modal {
+      width: 500px;
+    }
+
+    .card-preview {
+      background: var(--bg-card);
+      border: 2px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card-image-area {
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 150px;
+    }
+
+    .card-image-area img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+    }
+
+    .card-image-placeholder {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .card-content-area {
+      padding: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .card-body {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-effects {
+      font-style: italic;
+      color: var(--warning);
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 0.75rem;
+    }
+
+    /* Settings Modal */
+    .settings-modal {
+      width: 800px;
+      max-width: 95vw;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0 1rem;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-tab {
+      padding: 0.75rem 1rem;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s ease;
+    }
+
+    .settings-tab:hover {
+      color: var(--text-secondary);
+    }
+
+    .settings-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .settings-panel {
+      display: none;
+      padding: 1rem;
+    }
+
+    .settings-panel.active {
+      display: block;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      color: var(--text-secondary);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Editor Lists */
+    .editor-list {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .editor-list-header {
+      background: var(--bg-tertiary);
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .editor-list-title {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .editor-list-items {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .editor-list-item {
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s ease;
+    }
+
+    .editor-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .editor-list-item:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .editor-list-item.selected {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent);
+    }
+
+    .editor-list-item-name {
+      flex: 1;
+      cursor: pointer;
+      padding: 0.25rem 0;
+    }
+
+    .editor-list-item-actions {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .editor-empty {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Entry Editor */
+    .entry-type-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .entry-type-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .entry-type-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .card-fields {
+      display: none;
+    }
+
+    .card-fields.active {
+      display: block;
+    }
+
+    .text-fields {
+      display: none;
+    }
+
+    .text-fields.active {
+      display: block;
+    }
+
+    /* Image Upload */
+    .image-upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-bottom: 0.5rem;
+    }
+
+    .image-upload-area:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .image-upload-area.has-image {
+      padding: 0.5rem;
+    }
+
+    .image-upload-area img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 6px;
+    }
+
+    .image-upload-text {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Background Settings */
+    .bg-preview {
+      width: 100%;
+      height: 150px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .bg-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bg-preview-placeholder {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--shadow);
+      animation: toastIn 0.3s ease;
+      max-width: 300px;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Confirm Dialog */
+    .confirm-modal {
+      width: 400px;
+    }
+
+    .confirm-message {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Empty States */
+    .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.5;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-light);
+    }
+
+    /* Utility */
+    .hidden {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-background"></div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <h1 class="app-title">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        Oakhart Roll Tables
+      </h1>
+      <div class="header-actions">
+        <button id="btn-settings" aria-label="Open Settings">Settings</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Categories Column -->
+      <div class="column" id="categories-column">
+        <div class="column-header">Categories</div>
+        <div class="column-content" id="categories-list"></div>
+      </div>
+
+      <!-- Tables Column -->
+      <div class="column" id="tables-column">
+        <div class="column-header">Tables</div>
+        <div class="search-box">
+          <input type="text" id="table-search" placeholder="Search tables..." aria-label="Search tables">
+        </div>
+        <div class="column-content" id="tables-content">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div>Select a category</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Column -->
+      <div class="column results-column" id="results-column">
+        <div class="column-header">Results</div>
+        <div class="current-result" id="current-result">
+          <div class="empty-state">
+            <div class="empty-state-icon">🎲</div>
+            <div>Select a table and roll</div>
+          </div>
+        </div>
+        <div class="history-header">
+          <span class="history-title">History</span>
+          <button class="small" id="btn-clear-history">Clear</button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+        <div class="dice-roller">
+          <div class="dice-roller-title">Quick Dice</div>
+          <div class="dice-buttons" id="dice-buttons"></div>
+          <div class="dice-result" id="dice-result">-</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Card Modal -->
+  <div class="modal-overlay" id="card-modal" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+    <div class="modal card-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="card-modal-title">Card View</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="card-preview" id="card-preview">
+          <div class="card-image-area" id="card-image-area">
+            <span class="card-image-placeholder">No image</span>
+          </div>
+          <div class="card-content-area">
+            <div class="card-title" id="card-title"></div>
+            <div class="card-body" id="card-body"></div>
+            <div class="card-effects" id="card-effects"></div>
+            <div class="card-tags" id="card-tags"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-copy-text">Copy Text</button>
+        <button id="btn-copy-image">Copy Image</button>
+        <button id="btn-download-card">Download PNG</button>
+        <button class="primary" id="btn-close-card">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal settings-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="settings-modal-title">Settings</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="categories">Categories</button>
+        <button class="settings-tab" data-tab="tables">Tables</button>
+        <button class="settings-tab" data-tab="entries">Entries</button>
+        <button class="settings-tab" data-tab="appearance">Appearance</button>
+        <button class="settings-tab" data-tab="data">Data</button>
+      </div>
+      <div class="modal-body" style="padding: 0; max-height: 60vh;">
+        <!-- Categories Panel -->
+        <div class="settings-panel active" id="panel-categories">
+          <div class="editor-list">
+            <div class="editor-list-header">
+              <span class="editor-list-title">Categories</span>
+              <button class="small primary" id="btn-add-category">+ Add</button>
+            </div>
+            <div class="editor-list-items" id="settings-categories-list"></div>
+          </div>
+          <div id="category-editor" class="hidden">
+            <h3 style="margin-bottom: 1rem;">Edit Category</h3>
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-input" id="category-name-input" maxlength="50">
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="primary" id="btn-save-category">Save</button>
+              <button id="btn-cancel-category">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tables Panel -->
+        <div class="settings-panel" id="panel-tables">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="settings-category-select"></select>
+          </div>
+          <div class="editor-list">
+            <div class="editor-list-header">
+              <span class="editor-list-title">Tables</span>
+              <button class="small primary" id="btn-add-table">+ Add</button>
+            </div>
+            <div class="editor-list-items" id="settings-tables-list"></div>
+          </div>
+          <div id="table-editor" class="hidden">
+            <h3 style="margin-bottom: 1rem;">Edit Table</h3>
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-input" id="table-name-input" maxlength="100">
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="primary" id="btn-save-table">Save</button>
+              <button id="btn-cancel-table">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entries Panel -->
+        <div class="settings-panel" id="panel-entries">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-select" id="entries-category-select"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Table</label>
+              <select class="form-select" id="entries-table-select"></select>
+            </div>
+          </div>
+          <div class="editor-list">
+            <div class="editor-list-header">
+              <span class="editor-list-title">Entries <span id="entry-count">(0/100)</span></span>
+              <button class="small primary" id="btn-add-entry">+ Add</button>
+            </div>
+            <div class="editor-list-items" id="settings-entries-list"></div>
+          </div>
+          <div id="entry-editor" class="hidden">
+            <h3 style="margin-bottom: 1rem;">Edit Entry</h3>
+            <div class="entry-type-toggle">
+              <button class="entry-type-btn active" data-type="text">Text Entry</button>
+              <button class="entry-type-btn" data-type="card">Card Entry</button>
+            </div>
+            <div class="text-fields active" id="text-fields">
+              <div class="form-group">
+                <label class="form-label">Text Content</label>
+                <textarea class="form-textarea" id="entry-text-input" placeholder="Enter the result text..."></textarea>
+              </div>
+            </div>
+            <div class="card-fields" id="card-fields">
+              <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-input" id="entry-title-input" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Image</label>
+                <div class="image-upload-area" id="entry-image-upload">
+                  <span class="image-upload-text">Click or drag to upload image</span>
+                </div>
+                <input type="file" id="entry-image-file" accept="image/*" class="hidden">
+                <button class="small" id="btn-clear-entry-image">Clear Image</button>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Body</label>
+                <textarea class="form-textarea" id="entry-body-input" placeholder="Enter the card body text..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Effects</label>
+                <input type="text" class="form-input" id="entry-effects-input" placeholder="Optional mechanical effects...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tags (comma-separated)</label>
+                <input type="text" class="form-input" id="entry-tags-input" placeholder="tag1, tag2, tag3">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Follow-up Tables</label>
+                <select class="form-select" id="entry-followup-select" multiple style="height: 100px;"></select>
+                <div class="form-hint">Hold Ctrl/Cmd to select multiple</div>
+              </div>
+              <button class="small" id="btn-preview-card" style="margin-bottom: 1rem;">Preview Card</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="primary" id="btn-save-entry">Save</button>
+              <button id="btn-cancel-entry">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance Panel -->
+        <div class="settings-panel" id="panel-appearance">
+          <h3 style="margin-bottom: 1rem;">Background Image</h3>
+          <div class="bg-preview" id="bg-preview">
+            <span class="bg-preview-placeholder">No background image set</span>
+          </div>
+          <div class="image-upload-area" id="bg-image-upload">
+            <span class="image-upload-text">Click or drag to upload background image</span>
+          </div>
+          <input type="file" id="bg-image-file" accept="image/*" class="hidden">
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+            <button class="primary" id="btn-save-background">Save Background</button>
+            <button id="btn-clear-background">Clear Background</button>
+          </div>
+        </div>
+
+        <!-- Data Panel -->
+        <div class="settings-panel" id="panel-data">
+          <h3 style="margin-bottom: 1rem;">Import / Export</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+            Export your tables to share with other campaigns, or import table packs.
+          </p>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
+            <button class="primary" id="btn-export-json">Export JSON</button>
+            <button id="btn-import-json">Import JSON</button>
+            <input type="file" id="import-file" accept=".json" class="hidden">
+          </div>
+          <h3 style="margin-bottom: 1rem;">Reset Data</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+            Reset all tables to the default content. This cannot be undone.
+          </p>
+          <button class="danger" id="btn-reset-defaults">Reset to Defaults</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="primary" id="btn-close-settings">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal" role="dialog" aria-modal="true">
+    <div class="modal confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirm-title">Confirm</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-message" id="confirm-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-confirm-cancel">Cancel</button>
+        <button class="danger" id="btn-confirm-ok">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Panel Backdrop -->
+  <div class="panel-backdrop" id="panel-backdrop"></div>
+
+  <!-- Table Editor Slide Panel -->
+  <div class="table-editor-panel" id="table-editor-panel">
+    <div class="table-editor-header">
+      <div class="table-editor-title">
+        <span id="editor-panel-title">Edit Table</span>
+        <span class="entry-count-badge" id="editor-entry-count">0/100</span>
+      </div>
+      <button class="small" id="btn-close-editor-panel">✕ Close</button>
+    </div>
+    <div class="table-editor-body">
+      <!-- Add Entry Section -->
+      <div class="add-entry-section">
+        <button class="primary" id="btn-quick-add-text">+ Text Entry</button>
+        <button id="btn-quick-add-card">+ Card Entry</button>
+      </div>
+
+      <!-- Inline Entry Editor (shown when editing/adding) -->
+      <div class="inline-entry-editor hidden" id="inline-entry-editor">
+        <div class="inline-editor-header">
+          <span class="inline-editor-title" id="inline-editor-title">New Entry</span>
+          <button class="small" id="btn-cancel-inline-edit">Cancel</button>
+        </div>
+
+        <div class="inline-editor-tabs">
+          <button class="inline-editor-tab active" data-type="text" id="inline-tab-text">Text</button>
+          <button class="inline-editor-tab" data-type="card" id="inline-tab-card">Card</button>
+        </div>
+
+        <!-- Text Entry Fields -->
+        <div class="inline-editor-fields active" id="inline-text-fields">
+          <div class="inline-form-group">
+            <label class="inline-form-label">Content</label>
+            <textarea class="inline-form-textarea" id="inline-text-content" placeholder="Enter the result text..." rows="4"></textarea>
+          </div>
+        </div>
+
+        <!-- Card Entry Fields -->
+        <div class="inline-editor-fields" id="inline-card-fields">
+          <div class="inline-form-group">
+            <label class="inline-form-label">Title *</label>
+            <input type="text" class="inline-form-input" id="inline-card-title" placeholder="Card title...">
+          </div>
+
+          <div class="inline-form-group">
+            <label class="inline-form-label">Image</label>
+            <div class="inline-image-upload" id="inline-image-upload">
+              <span class="inline-image-upload-text">Click to upload image</span>
+            </div>
+            <input type="file" id="inline-image-file" accept="image/*" class="hidden">
+            <button class="small" id="btn-inline-clear-image" style="margin-top: 0.5rem;">Clear Image</button>
+          </div>
+
+          <div class="inline-form-group">
+            <label class="inline-form-label">Description</label>
+            <textarea class="inline-form-textarea" id="inline-card-body" placeholder="Card description/body text..." rows="3"></textarea>
+          </div>
+
+          <div class="inline-form-row">
+            <div class="inline-form-group">
+              <label class="inline-form-label">Effects</label>
+              <input type="text" class="inline-form-input" id="inline-card-effects" placeholder="Mechanical effects...">
+            </div>
+            <div class="inline-form-group">
+              <label class="inline-form-label">Tags</label>
+              <input type="text" class="inline-form-input" id="inline-card-tags" placeholder="tag1, tag2...">
+            </div>
+          </div>
+
+          <div class="inline-form-group">
+            <label class="inline-form-label">Follow-up Tables</label>
+            <select class="inline-form-select" id="inline-card-followup" multiple style="height: 70px;"></select>
+          </div>
+
+          <button class="small" id="btn-inline-preview-card">Preview Card</button>
+        </div>
+
+        <div class="inline-editor-actions">
+          <button class="primary" id="btn-save-inline-entry" style="flex: 1;">Save Entry</button>
+          <button class="danger" id="btn-delete-inline-entry">Delete</button>
+        </div>
+      </div>
+
+      <!-- Entry List -->
+      <div class="quick-entry-list" id="quick-entry-list"></div>
+    </div>
+    <div class="table-editor-footer">
+      <button class="primary" id="btn-done-editing" style="flex: 1;">Done Editing</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // DATA MODEL & STORAGE
+    // ============================================
+    const STORAGE_KEY = 'oakhartRollTables.v1';
+    const DATA_VERSION = 1;
+
+    const defaultData = {
+      version: DATA_VERSION,
+      backgroundImage: null,
+      categories: [
+        {
+          id: 'loot',
+          name: 'Loot',
+          tables: [
+            {
+              id: 'loot-pockets',
+              name: 'Pockets of the Dead',
+              entries: [
+                { type: 'text', text: 'A handful of corroded copper pennies, dated before the war.' },
+                { type: 'text', text: 'A crumpled letter, ink long faded, smelling of lavender and rot.' },
+                { type: 'text', text: 'Three teeth tied together with black thread.' },
+                { type: 'text', text: 'A tarnished locket containing a lock of gray hair.' },
+                { type: 'text', text: 'A carved bone whistle that makes no sound when blown.' },
+                { type: 'text', text: 'A small jar of honey, still perfectly preserved.' },
+                { type: 'text', text: 'A rabbit\'s foot, far too large to be from any ordinary rabbit.' },
+                { type: 'text', text: 'A hand-drawn map to a place that doesn\'t exist anymore.' },
+                { type: 'text', text: 'Seven iron nails wrapped in oilcloth.' },
+                { type: 'text', text: 'A pocket watch stopped at 3:33.' }
+              ]
+            },
+            {
+              id: 'loot-abandoned',
+              name: 'Abandoned Homestead Finds',
+              entries: [
+                { type: 'text', text: 'A quilt sewn with patterns that hurt to look at too long.' },
+                { type: 'text', text: 'Mason jars filled with murky preserves—something moves inside one.' },
+                { type: 'text', text: 'A family Bible with entire generations crossed out in red ink.' },
+                { type: 'text', text: 'A rocking chair that creaks even when empty.' },
+                { type: 'text', text: 'Bundles of dried herbs hanging from the rafters, some unidentifiable.' },
+                { type: 'text', text: 'A shotgun with one shell remaining, rusted shut.' },
+                { type: 'text', text: 'A child\'s doll made of corn husks, dressed in mourning clothes.' },
+                { type: 'text', text: 'An iron cookstove still warm to the touch.' },
+                { type: 'text', text: 'A stack of yellowed newspapers reporting events yet to happen.' },
+                { type: 'text', text: 'A moonshine still, operational, tended by no one.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'npc',
+          name: 'NPC',
+          tables: [
+            {
+              id: 'npc-strangers',
+              name: 'Strangers on the Road',
+              entries: [
+                { type: 'text', text: 'A traveling preacher whose shadow moves independently of his body.' },
+                { type: 'text', text: 'An old woman selling apples from a cart that leaves no wheel tracks.' },
+                { type: 'text', text: 'A census taker asking questions about people who died decades ago.' },
+                { type: 'text', text: 'A child walking alone, humming a tune no one taught them.' },
+                { type: 'text', text: 'A mail carrier delivering letters to abandoned houses.' },
+                { type: 'text', text: 'Twin sisters who finish each other\'s sentences before they\'re spoken.' },
+                { type: 'text', text: 'A fiddler whose music makes the trees lean closer.' },
+                { type: 'text', text: 'A mute beggar whose eyes reflect places you\'ve never been.' },
+                { type: 'text', text: 'A tax collector for a county that no longer exists.' },
+                { type: 'text', text: 'A woman in a wedding dress, walking toward something only she can see.' }
+              ]
+            },
+            {
+              id: 'npc-townsfolk',
+              name: 'Hollow Ridge Townsfolk',
+              entries: [
+                { type: 'text', text: 'The shopkeeper who weighs everything twice and trusts nothing.' },
+                { type: 'text', text: 'The blacksmith whose forge burns cold and blue at midnight.' },
+                { type: 'text', text: 'The schoolmarm teaching lessons from books written in no known language.' },
+                { type: 'text', text: 'The barber who knows everyone\'s secrets and pretends otherwise.' },
+                { type: 'text', text: 'The undertaker who measures the living with a knowing eye.' },
+                { type: 'text', text: 'The midwife who has never lost a mother, though some wish she had.' },
+                { type: 'text', text: 'The drunk who speaks prophecy between blackouts.' },
+                { type: 'text', text: 'The church organist who only plays songs for the dead.' },
+                { type: 'text', text: 'The general store clerk who remembers purchases you haven\'t made yet.' },
+                { type: 'text', text: 'The mayor, elected unanimously, though no one recalls the vote.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'encounter',
+          name: 'Encounter',
+          tables: [
+            {
+              id: 'encounter-woods',
+              name: 'Deep Woods Encounters',
+              entries: [
+                { type: 'text', text: 'A clearing where all the trees have grown facing away from the center.' },
+                { type: 'text', text: 'The sound of chopping, but no woodsman to be found.' },
+                { type: 'text', text: 'A perfectly stacked cairn of stones that wasn\'t there a moment ago.' },
+                { type: 'text', text: 'Animal bones arranged in geometric patterns along the trail.' },
+                { type: 'text', text: 'A spring whose water tastes of copper and regret.' },
+                { type: 'text', text: 'Bootprints in the mud that end abruptly mid-stride.' },
+                { type: 'text', text: 'A hunting blind built high in the trees, watching the trail below.' },
+                { type: 'text', text: 'The smell of woodsmoke but no fire visible for miles.' },
+                { type: 'text', text: 'A tree scarred with claw marks far too high for any bear.' },
+                { type: 'text', text: 'A child\'s laughter echoing from all directions at once.' }
+              ]
+            },
+            {
+              id: 'encounter-night',
+              name: 'Things After Dark',
+              entries: [
+                { type: 'text', text: 'Lights bobbing through the hollow that aren\'t lanterns or fireflies.' },
+                { type: 'text', text: 'The sensation of being watched from just beyond the firelight.' },
+                { type: 'text', text: 'A knock at the door, though you\'re miles from any dwelling.' },
+                { type: 'text', text: 'Your campfire dims as something large passes overhead.' },
+                { type: 'text', text: 'Whispers in a language you almost understand.' },
+                { type: 'text', text: 'The sound of a congregation singing hymns from an empty church.' },
+                { type: 'text', text: 'A figure at the crossroads, standing perfectly still.' },
+                { type: 'text', text: 'Your reflection in the water doesn\'t match your movements.' },
+                { type: 'text', text: 'The moon seems wrong tonight—too large, too close, too hungry.' },
+                { type: 'text', text: 'Hoofbeats approaching, but the road remains empty.' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'complication',
+          name: 'Complication',
+          tables: [
+            {
+              id: 'complication-social',
+              name: 'Social Complications',
+              entries: [
+                { type: 'text', text: 'Someone recognizes you from a place you\'ve never been.' },
+                { type: 'text', text: 'An old debt comes due—one you don\'t remember incurring.' },
+                { type: 'text', text: 'The locals go silent the moment they see your face.' },
+                { type: 'text', text: 'A child delivers a message meant for someone else, but it\'s in your handwriting.' },
+                { type: 'text', text: 'You\'ve been expected. A room was already prepared.' },
+                { type: 'text', text: 'Someone you trust has been spreading lies about your intentions.' },
+                { type: 'text', text: 'The town holds a grudge against your family going back generations.' },
+                { type: 'text', text: 'A rival arrives, claiming you\'ve stolen something precious.' },
+                { type: 'text', text: 'You\'re offered hospitality that feels more like imprisonment.' },
+                { type: 'text', text: 'The person you came to meet died last night—but sent a letter this morning.' }
+              ]
+            },
+            {
+              id: 'complication-environment',
+              name: 'Environmental Complications',
+              entries: [
+                { type: 'text', text: 'The bridge you crossed yesterday is gone, as if it never existed.' },
+                { type: 'text', text: 'A fog rolls in that your compass cannot navigate.' },
+                { type: 'text', text: 'The road loops back on itself no matter which direction you travel.' },
+                { type: 'text', text: 'A sudden storm forces shelter in a place best avoided.' },
+                { type: 'text', text: 'The local well has gone dry—or worse, changed color.' },
+                { type: 'text', text: 'Landslide blocks the only pass; the long way adds three days.' },
+                { type: 'text', text: 'Something has spooked all the animals for miles around.' },
+                { type: 'text', text: 'The temperature drops unnaturally as you approach your destination.' },
+                { type: 'text', text: 'Your supplies have spoiled overnight, though they were fresh at dusk.' },
+                { type: 'text', text: 'The map shows a town here. There is only a foundation and graves.' }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // State
+    let appData = null;
+    let selectedCategoryId = null;
+    let selectedTableId = null;
+    let rollHistory = [];
+    let currentCardData = null;
+
+    // Editor state
+    let editingCategoryId = null;
+    let editingTableId = null;
+    let editingEntryIndex = null;
+    let entryImageData = null;
+    let pendingBackgroundImage = null;
+
+    // Inline editor state
+    let inlineEditorCategoryId = null;
+    let inlineEditorTableId = null;
+    let inlineEditingIndex = null;
+    let inlineImageData = null;
+
+    // Confirm callback
+    let confirmCallback = null;
+
+    // ============================================
+    // STORAGE FUNCTIONS
+    // ============================================
+    function loadData() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.version === DATA_VERSION) {
+            appData = parsed;
+          } else {
+            // Migration stub for future versions
+            appData = migrateData(parsed);
+          }
+        } else {
+          appData = JSON.parse(JSON.stringify(defaultData));
+        }
+      } catch (e) {
+        console.error('Failed to load data:', e);
+        appData = JSON.parse(JSON.stringify(defaultData));
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.error('Failed to save data:', e);
+        showToast('Failed to save data', 'error');
+      }
+    }
+
+    function migrateData(oldData) {
+      // Future migration logic here
+      return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function resetToDefaults() {
+      appData = JSON.parse(JSON.stringify(defaultData));
+      saveData();
+      selectedCategoryId = null;
+      selectedTableId = null;
+      renderAll();
+      showToast('Data reset to defaults', 'success');
+    }
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    function generateId() {
+      return 'id-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function rollDice(sides) {
+      return Math.floor(Math.random() * sides) + 1;
+    }
+
+    function getDiceNotation(count) {
+      if (count === 100) return 'd100';
+      if (count === 20) return 'd20';
+      if (count === 12) return 'd12';
+      if (count === 10) return 'd10';
+      if (count === 8) return 'd8';
+      if (count === 6) return 'd6';
+      if (count === 4) return 'd4';
+      return 'd' + count;
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function showConfirm(title, message, callback) {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      confirmCallback = callback;
+      document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirm-modal').classList.remove('active');
+      confirmCallback = null;
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ============================================
+    // DATA HELPERS
+    // ============================================
+    function getCategory(id) {
+      return appData.categories.find(c => c.id === id);
+    }
+
+    function getTable(categoryId, tableId) {
+      const cat = getCategory(categoryId);
+      return cat ? cat.tables.find(t => t.id === tableId) : null;
+    }
+
+    function findTableById(tableId) {
+      for (const cat of appData.categories) {
+        const table = cat.tables.find(t => t.id === tableId);
+        if (table) return { category: cat, table };
+      }
+      return null;
+    }
+
+    function getAllTables() {
+      const tables = [];
+      for (const cat of appData.categories) {
+        for (const table of cat.tables) {
+          tables.push({ categoryId: cat.id, categoryName: cat.name, ...table });
+        }
+      }
+      return tables;
+    }
+
+    // ============================================
+    // RENDER FUNCTIONS
+    // ============================================
+    function renderAll() {
+      renderBackground();
+      renderCategories();
+      renderTables();
+      renderCurrentResult();
+      renderHistory();
+      renderDiceButtons();
+    }
+
+    function renderBackground() {
+      const bg = document.getElementById('app-background');
+      if (appData.backgroundImage) {
+        bg.style.backgroundImage = `url(${appData.backgroundImage})`;
+      } else {
+        bg.style.backgroundImage = 'none';
+      }
+    }
+
+    function renderCategories() {
+      const list = document.getElementById('categories-list');
+      list.innerHTML = '';
+
+      for (const cat of appData.categories) {
+        const item = document.createElement('div');
+        item.className = 'list-item' + (cat.id === selectedCategoryId ? ' selected' : '');
+        item.innerHTML = `
+          <div class="list-item-title">${escapeHtml(cat.name)}</div>
+          <div class="list-item-meta">${cat.tables.length} table${cat.tables.length !== 1 ? 's' : ''}</div>
+        `;
+        item.addEventListener('click', () => selectCategory(cat.id));
+        list.appendChild(item);
+      }
+    }
+
+    function renderTables() {
+      const content = document.getElementById('tables-content');
+      const searchInput = document.getElementById('table-search');
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
+      if (!selectedCategoryId) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div>Select a category</div>
+          </div>
+        `;
+        return;
+      }
+
+      const category = getCategory(selectedCategoryId);
+      if (!category) return;
+
+      let tables = category.tables;
+      if (searchTerm) {
+        tables = tables.filter(t => t.name.toLowerCase().includes(searchTerm));
+      }
+
+      if (tables.length === 0) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <div>${searchTerm ? 'No tables found' : 'No tables in this category'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = '';
+
+      // Selected table info and controls
+      if (selectedTableId) {
+        const table = tables.find(t => t.id === selectedTableId);
+        if (table) {
+          const tableInfo = document.createElement('div');
+          tableInfo.innerHTML = `
+            <div class="table-info">
+              <div class="table-info-name">${escapeHtml(table.name)}</div>
+              <div class="table-info-dice">${table.entries.length} entries • ${getDiceNotation(table.entries.length)}</div>
+            </div>
+            <div class="roll-controls">
+              <button class="roll-btn primary" id="btn-roll">Roll ${getDiceNotation(table.entries.length)}</button>
+            </div>
+            <div class="manual-roll">
+              <input type="number" id="manual-roll-input" min="1" max="${table.entries.length}" placeholder="1-${table.entries.length}">
+              <button id="btn-use-roll">Use</button>
+            </div>
+            <button class="edit-table-btn" id="btn-edit-table" style="width: 100%;">✏️ Edit Table Entries</button>
+          `;
+          content.appendChild(tableInfo);
+
+          document.getElementById('btn-roll').addEventListener('click', () => rollOnTable());
+          document.getElementById('btn-use-roll').addEventListener('click', () => useManualRoll());
+          document.getElementById('manual-roll-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') useManualRoll();
+          });
+          document.getElementById('btn-edit-table').addEventListener('click', () => openTableEditorPanel());
+        }
+      }
+
+      // Table list
+      for (const table of tables) {
+        const item = document.createElement('div');
+        item.className = 'list-item' + (table.id === selectedTableId ? ' selected' : '');
+        item.innerHTML = `
+          <div class="list-item-title">${escapeHtml(table.name)}</div>
+          <div class="list-item-meta">${table.entries.length} entries • ${getDiceNotation(table.entries.length)}</div>
+        `;
+        item.addEventListener('click', () => selectTable(table.id));
+        content.appendChild(item);
+      }
+    }
+
+    function renderCurrentResult() {
+      const container = document.getElementById('current-result');
+
+      if (rollHistory.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎲</div>
+            <div>Select a table and roll</div>
+          </div>
+        `;
+        return;
+      }
+
+      const latest = rollHistory[0];
+      const entry = latest.entry;
+      const isCard = entry.type === 'card';
+      const hasImage = isCard && entry.image;
+
+      let html = `<div class="result-card${hasImage ? ' has-image' : ''}" ${hasImage ? 'id="result-card-clickable"' : ''}>`;
+      html += `<span class="result-roll-number">#${latest.rollNumber}</span>`;
+
+      if (hasImage) {
+        html += `<img src="${entry.image}" class="result-image-preview" alt="">`;
+      }
+
+      if (isCard) {
+        html += `<div class="result-title">${escapeHtml(entry.title || 'Untitled')}</div>`;
+        html += `<div class="result-body">${escapeHtml(entry.body || '')}</div>`;
+        if (entry.effects) {
+          html += `<div class="result-effects">Effects: ${escapeHtml(entry.effects)}</div>`;
+        }
+        if (entry.tags && entry.tags.length > 0) {
+          html += `<div class="result-tags">${entry.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`;
+        }
+      } else {
+        html += `<div class="result-body">${escapeHtml(entry.text || '')}</div>`;
+      }
+
+      // Follow-up tables
+      if (isCard && entry.followUpTables && entry.followUpTables.length > 0) {
+        html += `<div class="follow-up-tables">`;
+        html += `<div class="follow-up-label">Suggested follow-ups:</div>`;
+        html += `<div class="follow-up-chips">`;
+        for (const tableId of entry.followUpTables) {
+          const found = findTableById(tableId);
+          if (found) {
+            html += `<span class="follow-up-chip" data-table-id="${tableId}" data-category-id="${found.category.id}">${escapeHtml(found.table.name)}</span>`;
+          }
+        }
+        html += `</div></div>`;
+      }
+
+      if (hasImage) {
+        html += `<div class="click-hint">Click to view card</div>`;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      // Event listeners
+      if (hasImage) {
+        document.getElementById('result-card-clickable').addEventListener('click', () => {
+          openCardModal(entry);
+        });
+      }
+
+      container.querySelectorAll('.follow-up-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const tableId = chip.dataset.tableId;
+          const categoryId = chip.dataset.categoryId;
+          selectCategory(categoryId);
+          selectTable(tableId);
+        });
+      });
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+
+      if (rollHistory.length === 0) {
+        list.innerHTML = '<div class="editor-empty">No rolls yet</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      for (const item of rollHistory) {
+        const entry = item.entry;
+        const displayText = entry.type === 'card' ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 50);
+
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+          <div class="history-item-header">
+            <span class="history-item-table">${escapeHtml(item.tableName)} #${item.rollNumber}</span>
+            <span class="history-item-time">${formatTime(item.timestamp)}</span>
+          </div>
+          <div class="history-item-result">${escapeHtml(displayText)}</div>
+        `;
+        list.appendChild(div);
+      }
+    }
+
+    function renderDiceButtons() {
+      const container = document.getElementById('dice-buttons');
+      const dice = [4, 6, 8, 10, 12, 20, 100];
+      container.innerHTML = dice.map(d => `<button class="dice-btn" data-dice="${d}">d${d}</button>`).join('');
+
+      container.querySelectorAll('.dice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sides = parseInt(btn.dataset.dice);
+          const result = rollDice(sides);
+          document.getElementById('dice-result').textContent = `d${sides}: ${result}`;
+        });
+      });
+    }
+
+    // ============================================
+    // SELECTION & ROLLING
+    // ============================================
+    function selectCategory(id) {
+      selectedCategoryId = id;
+      selectedTableId = null;
+      renderCategories();
+      renderTables();
+    }
+
+    function selectTable(id) {
+      selectedTableId = id;
+      renderTables();
+    }
+
+    function rollOnTable() {
+      if (!selectedCategoryId || !selectedTableId) return;
+
+      const table = getTable(selectedCategoryId, selectedTableId);
+      if (!table || table.entries.length === 0) {
+        showToast('Table has no entries', 'error');
+        return;
+      }
+
+      const rollNumber = rollDice(table.entries.length);
+      applyRoll(table, rollNumber);
+    }
+
+    function useManualRoll() {
+      if (!selectedCategoryId || !selectedTableId) return;
+
+      const table = getTable(selectedCategoryId, selectedTableId);
+      if (!table || table.entries.length === 0) {
+        showToast('Table has no entries', 'error');
+        return;
+      }
+
+      const input = document.getElementById('manual-roll-input');
+      const value = parseInt(input.value);
+
+      if (isNaN(value) || value < 1 || value > table.entries.length) {
+        showToast(`Enter a number between 1 and ${table.entries.length}`, 'error');
+        return;
+      }
+
+      applyRoll(table, value);
+      input.value = '';
+    }
+
+    function applyRoll(table, rollNumber) {
+      const entry = table.entries[rollNumber - 1];
+      rollHistory.unshift({
+        tableName: table.name,
+        rollNumber: rollNumber,
+        entry: entry,
+        timestamp: new Date()
+      });
+
+      // Keep history reasonable
+      if (rollHistory.length > 50) {
+        rollHistory = rollHistory.slice(0, 50);
+      }
+
+      renderCurrentResult();
+      renderHistory();
+    }
+
+    // ============================================
+    // CARD MODAL
+    // ============================================
+    function openCardModal(entry) {
+      currentCardData = entry;
+      const modal = document.getElementById('card-modal');
+      const imageArea = document.getElementById('card-image-area');
+      const titleEl = document.getElementById('card-title');
+      const bodyEl = document.getElementById('card-body');
+      const effectsEl = document.getElementById('card-effects');
+      const tagsEl = document.getElementById('card-tags');
+
+      if (entry.image) {
+        imageArea.innerHTML = `<img src="${entry.image}" alt="">`;
+      } else {
+        imageArea.innerHTML = `<span class="card-image-placeholder">No image</span>`;
+      }
+
+      titleEl.textContent = entry.title || 'Untitled';
+      bodyEl.textContent = entry.body || '';
+      effectsEl.textContent = entry.effects ? `Effects: ${entry.effects}` : '';
+      effectsEl.style.display = entry.effects ? 'block' : 'none';
+
+      if (entry.tags && entry.tags.length > 0) {
+        tagsEl.innerHTML = entry.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+        tagsEl.style.display = 'flex';
+      } else {
+        tagsEl.style.display = 'none';
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeCardModal() {
+      document.getElementById('card-modal').classList.remove('active');
+      currentCardData = null;
+    }
+
+    function copyCardText() {
+      if (!currentCardData) return;
+
+      let text = `**${currentCardData.title || 'Untitled'}**\n`;
+      if (currentCardData.body) text += `${currentCardData.body}\n`;
+      if (currentCardData.effects) text += `*Effects:* ${currentCardData.effects}`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Text copied to clipboard', 'success');
+      }).catch(() => {
+        showToast('Failed to copy text', 'error');
+      });
+    }
+
+    async function copyCardImage() {
+      if (!currentCardData || !currentCardData.image) {
+        showToast('No image to copy', 'error');
+        return;
+      }
+
+      try {
+        const canvas = await renderCardToCanvas();
+        canvas.toBlob(async (blob) => {
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob })
+            ]);
+            showToast('Image copied to clipboard', 'success');
+          } catch (e) {
+            showToast('Clipboard image not supported. Use Download PNG instead.', 'error');
+          }
+        });
+      } catch (e) {
+        showToast('Failed to render card image', 'error');
+      }
+    }
+
+    async function downloadCardPng() {
+      if (!currentCardData) return;
+
+      try {
+        const canvas = await renderCardToCanvas();
+        const link = document.createElement('a');
+        link.download = `${(currentCardData.title || 'card').replace(/[^a-z0-9]/gi, '_')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('Card downloaded', 'success');
+      } catch (e) {
+        showToast('Failed to download card', 'error');
+      }
+    }
+
+    function renderCardToCanvas() {
+      return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const width = 600;
+        const padding = 24;
+        const textWidth = width - (padding * 2);
+
+        // Calculate heights
+        ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
+        const titleLines = wrapText(ctx, currentCardData.title || 'Untitled', textWidth);
+        const titleHeight = titleLines.length * 34;
+
+        ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
+        const bodyLines = wrapText(ctx, currentCardData.body || '', textWidth);
+        const bodyHeight = bodyLines.length * 26;
+
+        ctx.font = 'italic 16px -apple-system, BlinkMacSystemFont, sans-serif';
+        const effectsLines = currentCardData.effects ? wrapText(ctx, 'Effects: ' + currentCardData.effects, textWidth) : [];
+        const effectsHeight = effectsLines.length * 22;
+
+        const textSectionHeight = padding + titleHeight + 16 + bodyHeight + (effectsLines.length ? 20 + effectsHeight : 0) + padding;
+
+        // Load image if exists
+        if (currentCardData.image) {
+          const img = new Image();
+          img.onload = () => {
+            // Calculate image area height based on aspect ratio
+            const imgAspect = img.width / img.height;
+            const imgDisplayWidth = width;
+            const imgDisplayHeight = Math.min(imgDisplayWidth / imgAspect, 400);
+
+            const height = imgDisplayHeight + textSectionHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            // Background
+            ctx.fillStyle = '#1e2b25';
+            ctx.fillRect(0, 0, width, height);
+
+            // Image
+            ctx.drawImage(img, 0, 0, width, imgDisplayHeight);
+
+            // Text area background
+            ctx.fillStyle = '#1a2621';
+            ctx.fillRect(0, imgDisplayHeight, width, textSectionHeight);
+
+            // Draw text
+            let y = imgDisplayHeight + padding;
+            ctx.fillStyle = '#e8efe8';
+            ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            for (const line of titleLines) {
+              ctx.fillText(line, padding, y + 24);
+              y += 34;
+            }
+
+            y += 8;
+            ctx.fillStyle = '#a8b8a8';
+            ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
+            for (const line of bodyLines) {
+              ctx.fillText(line, padding, y + 16);
+              y += 26;
+            }
+
+            if (effectsLines.length) {
+              y += 12;
+              ctx.fillStyle = '#8b7355';
+              ctx.font = 'italic 16px -apple-system, BlinkMacSystemFont, sans-serif';
+              for (const line of effectsLines) {
+                ctx.fillText(line, padding, y + 14);
+                y += 22;
+              }
+            }
+
+            // Border
+            ctx.strokeStyle = '#3d5246';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(2, 2, width - 4, height - 4);
+
+            resolve(canvas);
+          };
+          img.onerror = reject;
+          img.src = currentCardData.image;
+        } else {
+          const height = textSectionHeight + 100;
+          canvas.width = width;
+          canvas.height = height;
+
+          // Background
+          ctx.fillStyle = '#1e2b25';
+          ctx.fillRect(0, 0, width, height);
+
+          // Placeholder area
+          ctx.fillStyle = '#151d19';
+          ctx.fillRect(0, 0, width, 100);
+          ctx.fillStyle = '#6a7a6a';
+          ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('No Image', width / 2, 55);
+          ctx.textAlign = 'left';
+
+          // Draw text
+          let y = 100 + padding;
+          ctx.fillStyle = '#e8efe8';
+          ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
+          for (const line of titleLines) {
+            ctx.fillText(line, padding, y + 24);
+            y += 34;
+          }
+
+          y += 8;
+          ctx.fillStyle = '#a8b8a8';
+          ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
+          for (const line of bodyLines) {
+            ctx.fillText(line, padding, y + 16);
+            y += 26;
+          }
+
+          if (effectsLines.length) {
+            y += 12;
+            ctx.fillStyle = '#8b7355';
+            ctx.font = 'italic 16px -apple-system, BlinkMacSystemFont, sans-serif';
+            for (const line of effectsLines) {
+              ctx.fillText(line, padding, y + 14);
+              y += 22;
+            }
+          }
+
+          // Border
+          ctx.strokeStyle = '#3d5246';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(2, 2, width - 4, height - 4);
+
+          resolve(canvas);
+        }
+      });
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      for (const word of words) {
+        const testLine = currentLine ? currentLine + ' ' + word : word;
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      return lines;
+    }
+
+    // ============================================
+    // TABLE EDITOR PANEL
+    // ============================================
+    function openTableEditorPanel() {
+      if (!selectedCategoryId || !selectedTableId) return;
+
+      inlineEditorCategoryId = selectedCategoryId;
+      inlineEditorTableId = selectedTableId;
+      inlineEditingIndex = null;
+      inlineImageData = null;
+
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table) return;
+
+      document.getElementById('editor-panel-title').textContent = table.name;
+      updateEditorEntryCount();
+      renderQuickEntryList();
+      hideInlineEditor();
+      populateInlineFollowupSelect();
+
+      document.getElementById('table-editor-panel').classList.add('active');
+      document.getElementById('panel-backdrop').classList.add('active');
+    }
+
+    function closeTableEditorPanel() {
+      document.getElementById('table-editor-panel').classList.remove('active');
+      document.getElementById('panel-backdrop').classList.remove('active');
+      hideInlineEditor();
+      inlineEditorCategoryId = null;
+      inlineEditorTableId = null;
+      renderTables(); // Refresh main view
+    }
+
+    function updateEditorEntryCount() {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (table) {
+        const count = table.entries.length;
+        const diceStr = count > 0 ? ` • ${getDiceNotation(count)}` : '';
+        document.getElementById('editor-entry-count').textContent = `${count}/100${diceStr}`;
+      }
+    }
+
+    function renderQuickEntryList() {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      const list = document.getElementById('quick-entry-list');
+
+      if (!table || table.entries.length === 0) {
+        list.innerHTML = '<div class="editor-empty">No entries yet. Add your first entry above!</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      table.entries.forEach((entry, index) => {
+        const isCard = entry.type === 'card';
+        const preview = isCard ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 50);
+        const hasImage = isCard && entry.image;
+        const isEditing = index === inlineEditingIndex;
+
+        const item = document.createElement('div');
+        item.className = 'quick-entry-item' + (isEditing ? ' editing' : '');
+        item.innerHTML = `
+          <span class="quick-entry-number">${index + 1}</span>
+          <span class="quick-entry-type ${isCard ? 'card' : 'text'}">${isCard ? 'Card' : 'Text'}</span>
+          <span class="quick-entry-preview" data-index="${index}">${escapeHtml(preview)}</span>
+          ${hasImage ? '<span class="quick-entry-image-indicator">🖼️</span>' : ''}
+          <div class="quick-entry-actions">
+            <button data-action="up" data-index="${index}" ${index === 0 ? 'disabled' : ''} title="Move up">↑</button>
+            <button data-action="down" data-index="${index}" ${index === table.entries.length - 1 ? 'disabled' : ''} title="Move down">↓</button>
+            <button data-action="edit" data-index="${index}" title="Edit">✏️</button>
+            <button data-action="duplicate" data-index="${index}" title="Duplicate">📋</button>
+            <button data-action="delete" data-index="${index}" class="danger" title="Delete">🗑️</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      // Event delegation for entry list
+      list.querySelectorAll('.quick-entry-preview').forEach(el => {
+        el.addEventListener('click', () => editQuickEntry(parseInt(el.dataset.index)));
+      });
+
+      list.querySelectorAll('button[data-action]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const action = btn.dataset.action;
+          const index = parseInt(btn.dataset.index);
+
+          switch (action) {
+            case 'up': moveEntry(index, -1); break;
+            case 'down': moveEntry(index, 1); break;
+            case 'edit': editQuickEntry(index); break;
+            case 'duplicate': duplicateEntry(index); break;
+            case 'delete': deleteQuickEntry(index); break;
+          }
+        });
+      });
+    }
+
+    function populateInlineFollowupSelect() {
+      const select = document.getElementById('inline-card-followup');
+      const allTables = getAllTables();
+      select.innerHTML = allTables.map(t =>
+        `<option value="${t.id}">${escapeHtml(t.categoryName)}: ${escapeHtml(t.name)}</option>`
+      ).join('');
+    }
+
+    function showInlineEditor(type, index = null) {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table) return;
+
+      // Check limit for new entries
+      if (index === null && table.entries.length >= 100) {
+        showToast('Maximum 100 entries per table', 'error');
+        return;
+      }
+
+      inlineEditingIndex = index;
+      inlineImageData = null;
+
+      const editor = document.getElementById('inline-entry-editor');
+      const titleEl = document.getElementById('inline-editor-title');
+      const deleteBtn = document.getElementById('btn-delete-inline-entry');
+
+      if (index !== null) {
+        titleEl.textContent = `Edit Entry #${index + 1}`;
+        deleteBtn.classList.remove('hidden');
+        const entry = table.entries[index];
+        populateInlineEditor(entry);
+      } else {
+        titleEl.textContent = 'New Entry';
+        deleteBtn.classList.add('hidden');
+        clearInlineEditor();
+        switchInlineEditorType(type);
+      }
+
+      editor.classList.remove('hidden');
+      renderQuickEntryList();
+
+      // Scroll to editor
+      editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function hideInlineEditor() {
+      document.getElementById('inline-entry-editor').classList.add('hidden');
+      inlineEditingIndex = null;
+      inlineImageData = null;
+      renderQuickEntryList();
+    }
+
+    function clearInlineEditor() {
+      document.getElementById('inline-text-content').value = '';
+      document.getElementById('inline-card-title').value = '';
+      document.getElementById('inline-card-body').value = '';
+      document.getElementById('inline-card-effects').value = '';
+      document.getElementById('inline-card-tags').value = '';
+      inlineImageData = null;
+
+      const imageUpload = document.getElementById('inline-image-upload');
+      imageUpload.innerHTML = '<span class="inline-image-upload-text">Click to upload image</span>';
+      imageUpload.classList.remove('has-image');
+
+      const followupSelect = document.getElementById('inline-card-followup');
+      Array.from(followupSelect.options).forEach(opt => opt.selected = false);
+    }
+
+    function populateInlineEditor(entry) {
+      const isCard = entry.type === 'card';
+      switchInlineEditorType(isCard ? 'card' : 'text');
+
+      if (isCard) {
+        document.getElementById('inline-card-title').value = entry.title || '';
+        document.getElementById('inline-card-body').value = entry.body || '';
+        document.getElementById('inline-card-effects').value = entry.effects || '';
+        document.getElementById('inline-card-tags').value = (entry.tags || []).join(', ');
+        inlineImageData = entry.image || null;
+
+        const imageUpload = document.getElementById('inline-image-upload');
+        if (entry.image) {
+          imageUpload.innerHTML = `<img src="${entry.image}" alt="">`;
+          imageUpload.classList.add('has-image');
+        } else {
+          imageUpload.innerHTML = '<span class="inline-image-upload-text">Click to upload image</span>';
+          imageUpload.classList.remove('has-image');
+        }
+
+        const followupSelect = document.getElementById('inline-card-followup');
+        Array.from(followupSelect.options).forEach(opt => {
+          opt.selected = (entry.followUpTables || []).includes(opt.value);
+        });
+      } else {
+        document.getElementById('inline-text-content').value = entry.text || '';
+      }
+    }
+
+    function switchInlineEditorType(type) {
+      document.getElementById('inline-tab-text').classList.toggle('active', type === 'text');
+      document.getElementById('inline-tab-card').classList.toggle('active', type === 'card');
+      document.getElementById('inline-text-fields').classList.toggle('active', type === 'text');
+      document.getElementById('inline-card-fields').classList.toggle('active', type === 'card');
+    }
+
+    function saveInlineEntry() {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table) return;
+
+      const isCard = document.getElementById('inline-tab-card').classList.contains('active');
+      let entry;
+
+      if (isCard) {
+        const title = document.getElementById('inline-card-title').value.trim();
+        if (!title) {
+          showToast('Title is required for cards', 'error');
+          return;
+        }
+
+        const tagsStr = document.getElementById('inline-card-tags').value;
+        const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+        const followupSelect = document.getElementById('inline-card-followup');
+        const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
+
+        entry = {
+          type: 'card',
+          title: title,
+          body: document.getElementById('inline-card-body').value.trim(),
+          effects: document.getElementById('inline-card-effects').value.trim(),
+          tags: tags,
+          followUpTables: followUpTables,
+          image: inlineImageData
+        };
+      } else {
+        const text = document.getElementById('inline-text-content').value.trim();
+        if (!text) {
+          showToast('Text content is required', 'error');
+          return;
+        }
+        entry = { type: 'text', text: text };
+      }
+
+      if (inlineEditingIndex !== null) {
+        table.entries[inlineEditingIndex] = entry;
+        showToast('Entry updated', 'success');
+      } else {
+        table.entries.push(entry);
+        showToast('Entry added', 'success');
+      }
+
+      saveData();
+      hideInlineEditor();
+      updateEditorEntryCount();
+      renderQuickEntryList();
+    }
+
+    function editQuickEntry(index) {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table || !table.entries[index]) return;
+
+      showInlineEditor(table.entries[index].type, index);
+    }
+
+    function deleteQuickEntry(index) {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table) return;
+
+      showConfirm('Delete Entry', `Delete entry #${index + 1}?`, () => {
+        table.entries.splice(index, 1);
+        saveData();
+
+        if (inlineEditingIndex === index) {
+          hideInlineEditor();
+        } else if (inlineEditingIndex !== null && inlineEditingIndex > index) {
+          inlineEditingIndex--;
+        }
+
+        updateEditorEntryCount();
+        renderQuickEntryList();
+        closeConfirm();
+        showToast('Entry deleted', 'success');
+      });
+    }
+
+    function moveEntry(index, direction) {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table) return;
+
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= table.entries.length) return;
+
+      // Swap entries
+      [table.entries[index], table.entries[newIndex]] = [table.entries[newIndex], table.entries[index]];
+
+      // Update editing index if needed
+      if (inlineEditingIndex === index) {
+        inlineEditingIndex = newIndex;
+      } else if (inlineEditingIndex === newIndex) {
+        inlineEditingIndex = index;
+      }
+
+      saveData();
+      renderQuickEntryList();
+    }
+
+    function duplicateEntry(index) {
+      const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
+      if (!table || table.entries.length >= 100) {
+        showToast('Maximum 100 entries per table', 'error');
+        return;
+      }
+
+      const original = table.entries[index];
+      const copy = JSON.parse(JSON.stringify(original));
+
+      // Insert after the original
+      table.entries.splice(index + 1, 0, copy);
+
+      saveData();
+      updateEditorEntryCount();
+      renderQuickEntryList();
+      showToast('Entry duplicated', 'success');
+    }
+
+    async function handleInlineImageUpload(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'error');
+        return;
+      }
+
+      try {
+        inlineImageData = await fileToDataUrl(file);
+        const uploadArea = document.getElementById('inline-image-upload');
+        uploadArea.innerHTML = `<img src="${inlineImageData}" alt="">`;
+        uploadArea.classList.add('has-image');
+      } catch (e) {
+        showToast('Failed to load image', 'error');
+      }
+    }
+
+    function clearInlineImage() {
+      inlineImageData = null;
+      const uploadArea = document.getElementById('inline-image-upload');
+      uploadArea.innerHTML = '<span class="inline-image-upload-text">Click to upload image</span>';
+      uploadArea.classList.remove('has-image');
+    }
+
+    function previewInlineCard() {
+      const title = document.getElementById('inline-card-title').value.trim() || 'Untitled';
+      const body = document.getElementById('inline-card-body').value.trim();
+      const effects = document.getElementById('inline-card-effects').value.trim();
+      const tagsStr = document.getElementById('inline-card-tags').value;
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+      openCardModal({
+        type: 'card',
+        title: title,
+        body: body,
+        effects: effects,
+        tags: tags,
+        image: inlineImageData
+      });
+    }
+
+    // ============================================
+    // SETTINGS MODAL
+    // ============================================
+    function openSettings() {
+      document.getElementById('settings-modal').classList.add('active');
+      renderSettingsCategories();
+      renderSettingsCategorySelect();
+      renderEntriesCategorySelect();
+      renderBackgroundPreview();
+    }
+
+    function closeSettings() {
+      document.getElementById('settings-modal').classList.remove('active');
+      renderAll();
+    }
+
+    function switchSettingsTab(tab) {
+      document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`.settings-tab[data-tab="${tab}"]`).classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+
+      if (tab === 'tables') {
+        renderSettingsCategorySelect();
+        renderSettingsTables();
+      } else if (tab === 'entries') {
+        renderEntriesCategorySelect();
+        renderEntriesTableSelect();
+        renderSettingsEntries();
+      }
+    }
+
+    // Categories editor
+    function renderSettingsCategories() {
+      const list = document.getElementById('settings-categories-list');
+      if (appData.categories.length === 0) {
+        list.innerHTML = '<div class="editor-empty">No categories</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      for (const cat of appData.categories) {
+        const item = document.createElement('div');
+        item.className = 'editor-list-item' + (cat.id === editingCategoryId ? ' selected' : '');
+        item.innerHTML = `
+          <span class="editor-list-item-name">${escapeHtml(cat.name)}</span>
+          <div class="editor-list-item-actions">
+            <button class="small" data-action="edit" data-id="${cat.id}">Edit</button>
+            <button class="small danger" data-action="delete" data-id="${cat.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(item);
+      }
+
+      list.querySelectorAll('button[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', () => editCategory(btn.dataset.id));
+      });
+      list.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', () => deleteCategory(btn.dataset.id));
+      });
+    }
+
+    function addCategory() {
+      editingCategoryId = null;
+      document.getElementById('category-name-input').value = '';
+      document.getElementById('category-editor').classList.remove('hidden');
+    }
+
+    function editCategory(id) {
+      const cat = getCategory(id);
+      if (!cat) return;
+      editingCategoryId = id;
+      document.getElementById('category-name-input').value = cat.name;
+      document.getElementById('category-editor').classList.remove('hidden');
+      renderSettingsCategories();
+    }
+
+    function saveCategory() {
+      const name = document.getElementById('category-name-input').value.trim();
+      if (!name) {
+        showToast('Name is required', 'error');
+        return;
+      }
+
+      if (editingCategoryId) {
+        const cat = getCategory(editingCategoryId);
+        if (cat) cat.name = name;
+      } else {
+        appData.categories.push({
+          id: generateId(),
+          name: name,
+          tables: []
+        });
+      }
+
+      saveData();
+      cancelCategoryEdit();
+      renderSettingsCategories();
+      renderSettingsCategorySelect();
+      renderEntriesCategorySelect();
+    }
+
+    function cancelCategoryEdit() {
+      editingCategoryId = null;
+      document.getElementById('category-editor').classList.add('hidden');
+      renderSettingsCategories();
+    }
+
+    function deleteCategory(id) {
+      const cat = getCategory(id);
+      if (!cat) return;
+
+      showConfirm('Delete Category', `Delete "${cat.name}" and all its tables?`, () => {
+        appData.categories = appData.categories.filter(c => c.id !== id);
+        if (selectedCategoryId === id) {
+          selectedCategoryId = null;
+          selectedTableId = null;
+        }
+        saveData();
+        renderSettingsCategories();
+        renderSettingsCategorySelect();
+        renderEntriesCategorySelect();
+        closeConfirm();
+      });
+    }
+
+    // Tables editor
+    function renderSettingsCategorySelect() {
+      const select = document.getElementById('settings-category-select');
+      select.innerHTML = appData.categories.map(c =>
+        `<option value="${c.id}">${escapeHtml(c.name)}</option>`
+      ).join('');
+      renderSettingsTables();
+    }
+
+    function renderSettingsTables() {
+      const select = document.getElementById('settings-category-select');
+      const catId = select.value;
+      const cat = getCategory(catId);
+      const list = document.getElementById('settings-tables-list');
+
+      if (!cat || cat.tables.length === 0) {
+        list.innerHTML = '<div class="editor-empty">No tables</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      for (const table of cat.tables) {
+        const item = document.createElement('div');
+        item.className = 'editor-list-item' + (table.id === editingTableId ? ' selected' : '');
+        item.innerHTML = `
+          <span class="editor-list-item-name">${escapeHtml(table.name)} (${table.entries.length})</span>
+          <div class="editor-list-item-actions">
+            <button class="small" data-action="edit" data-id="${table.id}">Edit</button>
+            <button class="small danger" data-action="delete" data-id="${table.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(item);
+      }
+
+      list.querySelectorAll('button[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', () => editTable(btn.dataset.id));
+      });
+      list.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', () => deleteTable(btn.dataset.id));
+      });
+    }
+
+    function addTable() {
+      const catId = document.getElementById('settings-category-select').value;
+      if (!catId) {
+        showToast('Select a category first', 'error');
+        return;
+      }
+      editingTableId = null;
+      document.getElementById('table-name-input').value = '';
+      document.getElementById('table-editor').classList.remove('hidden');
+    }
+
+    function editTable(id) {
+      const catId = document.getElementById('settings-category-select').value;
+      const table = getTable(catId, id);
+      if (!table) return;
+      editingTableId = id;
+      document.getElementById('table-name-input').value = table.name;
+      document.getElementById('table-editor').classList.remove('hidden');
+      renderSettingsTables();
+    }
+
+    function saveTable() {
+      const name = document.getElementById('table-name-input').value.trim();
+      if (!name) {
+        showToast('Name is required', 'error');
+        return;
+      }
+
+      const catId = document.getElementById('settings-category-select').value;
+      const cat = getCategory(catId);
+      if (!cat) return;
+
+      if (editingTableId) {
+        const table = cat.tables.find(t => t.id === editingTableId);
+        if (table) table.name = name;
+      } else {
+        cat.tables.push({
+          id: generateId(),
+          name: name,
+          entries: []
+        });
+      }
+
+      saveData();
+      cancelTableEdit();
+      renderSettingsTables();
+      renderEntriesTableSelect();
+    }
+
+    function cancelTableEdit() {
+      editingTableId = null;
+      document.getElementById('table-editor').classList.add('hidden');
+      renderSettingsTables();
+    }
+
+    function deleteTable(id) {
+      const catId = document.getElementById('settings-category-select').value;
+      const table = getTable(catId, id);
+      if (!table) return;
+
+      showConfirm('Delete Table', `Delete "${table.name}" and all its entries?`, () => {
+        const cat = getCategory(catId);
+        cat.tables = cat.tables.filter(t => t.id !== id);
+        if (selectedTableId === id) {
+          selectedTableId = null;
+        }
+        saveData();
+        renderSettingsTables();
+        renderEntriesTableSelect();
+        closeConfirm();
+      });
+    }
+
+    // Entries editor
+    function renderEntriesCategorySelect() {
+      const select = document.getElementById('entries-category-select');
+      select.innerHTML = appData.categories.map(c =>
+        `<option value="${c.id}">${escapeHtml(c.name)}</option>`
+      ).join('');
+      renderEntriesTableSelect();
+    }
+
+    function renderEntriesTableSelect() {
+      const catSelect = document.getElementById('entries-category-select');
+      const tableSelect = document.getElementById('entries-table-select');
+      const cat = getCategory(catSelect.value);
+
+      if (!cat || cat.tables.length === 0) {
+        tableSelect.innerHTML = '<option value="">No tables</option>';
+        renderSettingsEntries();
+        return;
+      }
+
+      tableSelect.innerHTML = cat.tables.map(t =>
+        `<option value="${t.id}">${escapeHtml(t.name)}</option>`
+      ).join('');
+      renderSettingsEntries();
+    }
+
+    function renderSettingsEntries() {
+      const catId = document.getElementById('entries-category-select').value;
+      const tableId = document.getElementById('entries-table-select').value;
+      const table = getTable(catId, tableId);
+      const list = document.getElementById('settings-entries-list');
+      const countEl = document.getElementById('entry-count');
+
+      if (!table) {
+        list.innerHTML = '<div class="editor-empty">Select a table</div>';
+        countEl.textContent = '(0/100)';
+        return;
+      }
+
+      countEl.textContent = `(${table.entries.length}/100)`;
+
+      if (table.entries.length === 0) {
+        list.innerHTML = '<div class="editor-empty">No entries</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      table.entries.forEach((entry, index) => {
+        const displayText = entry.type === 'card'
+          ? `[Card] ${entry.title || 'Untitled'}`
+          : (entry.text || '').substring(0, 40) + ((entry.text || '').length > 40 ? '...' : '');
+
+        const item = document.createElement('div');
+        item.className = 'editor-list-item' + (index === editingEntryIndex ? ' selected' : '');
+        item.innerHTML = `
+          <span class="editor-list-item-name">${index + 1}. ${escapeHtml(displayText)}</span>
+          <div class="editor-list-item-actions">
+            <button class="small" data-action="edit" data-index="${index}">Edit</button>
+            <button class="small danger" data-action="delete" data-index="${index}">Delete</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll('button[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', () => editEntry(parseInt(btn.dataset.index)));
+      });
+      list.querySelectorAll('button[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', () => deleteEntry(parseInt(btn.dataset.index)));
+      });
+
+      // Populate follow-up select
+      const followupSelect = document.getElementById('entry-followup-select');
+      const allTables = getAllTables();
+      followupSelect.innerHTML = allTables.map(t =>
+        `<option value="${t.id}">${escapeHtml(t.categoryName)}: ${escapeHtml(t.name)}</option>`
+      ).join('');
+    }
+
+    function addEntry() {
+      const catId = document.getElementById('entries-category-select').value;
+      const tableId = document.getElementById('entries-table-select').value;
+      const table = getTable(catId, tableId);
+
+      if (!table) {
+        showToast('Select a table first', 'error');
+        return;
+      }
+
+      if (table.entries.length >= 100) {
+        showToast('Maximum 100 entries per table', 'error');
+        return;
+      }
+
+      editingEntryIndex = null;
+      entryImageData = null;
+      resetEntryForm();
+      document.getElementById('entry-editor').classList.remove('hidden');
+    }
+
+    function editEntry(index) {
+      const catId = document.getElementById('entries-category-select').value;
+      const tableId = document.getElementById('entries-table-select').value;
+      const table = getTable(catId, tableId);
+      if (!table || !table.entries[index]) return;
+
+      const entry = table.entries[index];
+      editingEntryIndex = index;
+      entryImageData = entry.image || null;
+
+      // Set type
+      const isCard = entry.type === 'card';
+      document.querySelectorAll('.entry-type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === (isCard ? 'card' : 'text'));
+      });
+      document.getElementById('text-fields').classList.toggle('active', !isCard);
+      document.getElementById('card-fields').classList.toggle('active', isCard);
+
+      if (isCard) {
+        document.getElementById('entry-title-input').value = entry.title || '';
+        document.getElementById('entry-body-input').value = entry.body || '';
+        document.getElementById('entry-effects-input').value = entry.effects || '';
+        document.getElementById('entry-tags-input').value = (entry.tags || []).join(', ');
+
+        // Set follow-up tables
+        const followupSelect = document.getElementById('entry-followup-select');
+        Array.from(followupSelect.options).forEach(opt => {
+          opt.selected = (entry.followUpTables || []).includes(opt.value);
+        });
+
+        // Set image preview
+        const uploadArea = document.getElementById('entry-image-upload');
+        if (entry.image) {
+          uploadArea.innerHTML = `<img src="${entry.image}" alt="">`;
+          uploadArea.classList.add('has-image');
+        } else {
+          uploadArea.innerHTML = '<span class="image-upload-text">Click or drag to upload image</span>';
+          uploadArea.classList.remove('has-image');
+        }
+      } else {
+        document.getElementById('entry-text-input').value = entry.text || '';
+      }
+
+      document.getElementById('entry-editor').classList.remove('hidden');
+      renderSettingsEntries();
+    }
+
+    function resetEntryForm() {
+      document.querySelectorAll('.entry-type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === 'text');
+      });
+      document.getElementById('text-fields').classList.add('active');
+      document.getElementById('card-fields').classList.remove('active');
+
+      document.getElementById('entry-text-input').value = '';
+      document.getElementById('entry-title-input').value = '';
+      document.getElementById('entry-body-input').value = '';
+      document.getElementById('entry-effects-input').value = '';
+      document.getElementById('entry-tags-input').value = '';
+
+      const followupSelect = document.getElementById('entry-followup-select');
+      Array.from(followupSelect.options).forEach(opt => opt.selected = false);
+
+      const uploadArea = document.getElementById('entry-image-upload');
+      uploadArea.innerHTML = '<span class="image-upload-text">Click or drag to upload image</span>';
+      uploadArea.classList.remove('has-image');
+    }
+
+    function saveEntry() {
+      const catId = document.getElementById('entries-category-select').value;
+      const tableId = document.getElementById('entries-table-select').value;
+      const table = getTable(catId, tableId);
+      if (!table) return;
+
+      const isCard = document.querySelector('.entry-type-btn.active').dataset.type === 'card';
+
+      let entry;
+      if (isCard) {
+        const title = document.getElementById('entry-title-input').value.trim();
+        if (!title) {
+          showToast('Title is required for cards', 'error');
+          return;
+        }
+
+        const tagsStr = document.getElementById('entry-tags-input').value;
+        const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+        const followupSelect = document.getElementById('entry-followup-select');
+        const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
+
+        entry = {
+          type: 'card',
+          title: title,
+          body: document.getElementById('entry-body-input').value.trim(),
+          effects: document.getElementById('entry-effects-input').value.trim(),
+          tags: tags,
+          followUpTables: followUpTables,
+          image: entryImageData
+        };
+      } else {
+        const text = document.getElementById('entry-text-input').value.trim();
+        if (!text) {
+          showToast('Text is required', 'error');
+          return;
+        }
+        entry = { type: 'text', text: text };
+      }
+
+      if (editingEntryIndex !== null) {
+        table.entries[editingEntryIndex] = entry;
+      } else {
+        table.entries.push(entry);
+      }
+
+      saveData();
+      cancelEntryEdit();
+      renderSettingsEntries();
+    }
+
+    function cancelEntryEdit() {
+      editingEntryIndex = null;
+      entryImageData = null;
+      document.getElementById('entry-editor').classList.add('hidden');
+      renderSettingsEntries();
+    }
+
+    function deleteEntry(index) {
+      const catId = document.getElementById('entries-category-select').value;
+      const tableId = document.getElementById('entries-table-select').value;
+      const table = getTable(catId, tableId);
+      if (!table) return;
+
+      showConfirm('Delete Entry', 'Delete this entry?', () => {
+        table.entries.splice(index, 1);
+        saveData();
+        renderSettingsEntries();
+        closeConfirm();
+      });
+    }
+
+    function switchEntryType(type) {
+      document.querySelectorAll('.entry-type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+      document.getElementById('text-fields').classList.toggle('active', type === 'text');
+      document.getElementById('card-fields').classList.toggle('active', type === 'card');
+    }
+
+    async function handleEntryImageUpload(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'error');
+        return;
+      }
+
+      try {
+        entryImageData = await fileToDataUrl(file);
+        const uploadArea = document.getElementById('entry-image-upload');
+        uploadArea.innerHTML = `<img src="${entryImageData}" alt="">`;
+        uploadArea.classList.add('has-image');
+      } catch (e) {
+        showToast('Failed to load image', 'error');
+      }
+    }
+
+    function clearEntryImage() {
+      entryImageData = null;
+      const uploadArea = document.getElementById('entry-image-upload');
+      uploadArea.innerHTML = '<span class="image-upload-text">Click or drag to upload image</span>';
+      uploadArea.classList.remove('has-image');
+    }
+
+    function previewEntryCard() {
+      const title = document.getElementById('entry-title-input').value.trim() || 'Untitled';
+      const body = document.getElementById('entry-body-input').value.trim();
+      const effects = document.getElementById('entry-effects-input').value.trim();
+      const tagsStr = document.getElementById('entry-tags-input').value;
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+      openCardModal({
+        type: 'card',
+        title: title,
+        body: body,
+        effects: effects,
+        tags: tags,
+        image: entryImageData
+      });
+    }
+
+    // Background settings
+    function renderBackgroundPreview() {
+      const preview = document.getElementById('bg-preview');
+      const img = appData.backgroundImage || pendingBackgroundImage;
+      if (img) {
+        preview.innerHTML = `<img src="${img}" alt="">`;
+      } else {
+        preview.innerHTML = '<span class="bg-preview-placeholder">No background image set</span>';
+      }
+    }
+
+    async function handleBackgroundUpload(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'error');
+        return;
+      }
+
+      try {
+        pendingBackgroundImage = await fileToDataUrl(file);
+        renderBackgroundPreview();
+      } catch (e) {
+        showToast('Failed to load image', 'error');
+      }
+    }
+
+    function saveBackground() {
+      if (pendingBackgroundImage) {
+        appData.backgroundImage = pendingBackgroundImage;
+        pendingBackgroundImage = null;
+        saveData();
+        renderBackground();
+        showToast('Background saved', 'success');
+      } else {
+        showToast('No new background to save', 'error');
+      }
+    }
+
+    function clearBackground() {
+      appData.backgroundImage = null;
+      pendingBackgroundImage = null;
+      saveData();
+      renderBackground();
+      renderBackgroundPreview();
+      showToast('Background cleared', 'success');
+    }
+
+    // Import/Export
+    function exportJson() {
+      const dataStr = JSON.stringify(appData, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.download = 'oakhart-rolltables-export.json';
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast('Data exported', 'success');
+    }
+
+    function importJson(file) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported.categories || !Array.isArray(imported.categories)) {
+            throw new Error('Invalid format');
+          }
+
+          showConfirm('Import Data', 'This will replace all your current tables. Continue?', () => {
+            appData = { ...imported, version: DATA_VERSION };
+            saveData();
+            selectedCategoryId = null;
+            selectedTableId = null;
+            renderAll();
+            renderSettingsCategories();
+            renderSettingsCategorySelect();
+            renderEntriesCategorySelect();
+            closeConfirm();
+            showToast('Data imported successfully', 'success');
+          });
+        } catch (err) {
+          showToast('Invalid JSON file', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    function initEventListeners() {
+      // Header
+      document.getElementById('btn-settings').addEventListener('click', openSettings);
+
+      // Table search
+      document.getElementById('table-search').addEventListener('input', renderTables);
+
+      // History
+      document.getElementById('btn-clear-history').addEventListener('click', () => {
+        rollHistory = [];
+        renderHistory();
+        renderCurrentResult();
+      });
+
+      // Card modal
+      document.getElementById('card-modal').querySelector('.modal-close').addEventListener('click', closeCardModal);
+      document.getElementById('btn-close-card').addEventListener('click', closeCardModal);
+      document.getElementById('btn-copy-text').addEventListener('click', copyCardText);
+      document.getElementById('btn-copy-image').addEventListener('click', copyCardImage);
+      document.getElementById('btn-download-card').addEventListener('click', downloadCardPng);
+
+      // Settings modal
+      document.getElementById('settings-modal').querySelector('.modal-close').addEventListener('click', closeSettings);
+      document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
+
+      // Settings tabs
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchSettingsTab(tab.dataset.tab));
+      });
+
+      // Categories editor
+      document.getElementById('btn-add-category').addEventListener('click', addCategory);
+      document.getElementById('btn-save-category').addEventListener('click', saveCategory);
+      document.getElementById('btn-cancel-category').addEventListener('click', cancelCategoryEdit);
+
+      // Tables editor
+      document.getElementById('settings-category-select').addEventListener('change', renderSettingsTables);
+      document.getElementById('btn-add-table').addEventListener('click', addTable);
+      document.getElementById('btn-save-table').addEventListener('click', saveTable);
+      document.getElementById('btn-cancel-table').addEventListener('click', cancelTableEdit);
+
+      // Entries editor
+      document.getElementById('entries-category-select').addEventListener('change', () => {
+        renderEntriesTableSelect();
+        renderSettingsEntries();
+      });
+      document.getElementById('entries-table-select').addEventListener('change', renderSettingsEntries);
+      document.getElementById('btn-add-entry').addEventListener('click', addEntry);
+      document.getElementById('btn-save-entry').addEventListener('click', saveEntry);
+      document.getElementById('btn-cancel-entry').addEventListener('click', cancelEntryEdit);
+
+      // Entry type toggle
+      document.querySelectorAll('.entry-type-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchEntryType(btn.dataset.type));
+      });
+
+      // Entry image upload
+      const entryImageUpload = document.getElementById('entry-image-upload');
+      const entryImageFile = document.getElementById('entry-image-file');
+      entryImageUpload.addEventListener('click', () => entryImageFile.click());
+      entryImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
+      entryImageUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        handleEntryImageUpload(e.dataTransfer.files[0]);
+      });
+      entryImageFile.addEventListener('change', () => {
+        handleEntryImageUpload(entryImageFile.files[0]);
+        entryImageFile.value = '';
+      });
+      document.getElementById('btn-clear-entry-image').addEventListener('click', clearEntryImage);
+      document.getElementById('btn-preview-card').addEventListener('click', previewEntryCard);
+
+      // Background upload
+      const bgImageUpload = document.getElementById('bg-image-upload');
+      const bgImageFile = document.getElementById('bg-image-file');
+      bgImageUpload.addEventListener('click', () => bgImageFile.click());
+      bgImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
+      bgImageUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        handleBackgroundUpload(e.dataTransfer.files[0]);
+      });
+      bgImageFile.addEventListener('change', () => {
+        handleBackgroundUpload(bgImageFile.files[0]);
+        bgImageFile.value = '';
+      });
+      document.getElementById('btn-save-background').addEventListener('click', saveBackground);
+      document.getElementById('btn-clear-background').addEventListener('click', clearBackground);
+
+      // Import/Export
+      document.getElementById('btn-export-json').addEventListener('click', exportJson);
+      document.getElementById('btn-import-json').addEventListener('click', () => {
+        document.getElementById('import-file').click();
+      });
+      document.getElementById('import-file').addEventListener('change', (e) => {
+        importJson(e.target.files[0]);
+        e.target.value = '';
+      });
+      document.getElementById('btn-reset-defaults').addEventListener('click', () => {
+        showConfirm('Reset to Defaults', 'This will delete all your custom tables and reset to default content. This cannot be undone.', () => {
+          resetToDefaults();
+          closeConfirm();
+        });
+      });
+
+      // Confirm modal
+      document.getElementById('confirm-modal').querySelector('.modal-close').addEventListener('click', closeConfirm);
+      document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirm);
+      document.getElementById('btn-confirm-ok').addEventListener('click', () => {
+        if (confirmCallback) confirmCallback();
+      });
+
+      // Table Editor Panel
+      document.getElementById('btn-close-editor-panel').addEventListener('click', closeTableEditorPanel);
+      document.getElementById('btn-done-editing').addEventListener('click', closeTableEditorPanel);
+      document.getElementById('panel-backdrop').addEventListener('click', closeTableEditorPanel);
+
+      document.getElementById('btn-quick-add-text').addEventListener('click', () => showInlineEditor('text'));
+      document.getElementById('btn-quick-add-card').addEventListener('click', () => showInlineEditor('card'));
+
+      document.getElementById('btn-cancel-inline-edit').addEventListener('click', hideInlineEditor);
+      document.getElementById('btn-save-inline-entry').addEventListener('click', saveInlineEntry);
+      document.getElementById('btn-delete-inline-entry').addEventListener('click', () => {
+        if (inlineEditingIndex !== null) deleteQuickEntry(inlineEditingIndex);
+      });
+
+      document.getElementById('inline-tab-text').addEventListener('click', () => switchInlineEditorType('text'));
+      document.getElementById('inline-tab-card').addEventListener('click', () => switchInlineEditorType('card'));
+
+      // Inline image upload
+      const inlineImageUpload = document.getElementById('inline-image-upload');
+      const inlineImageFile = document.getElementById('inline-image-file');
+      inlineImageUpload.addEventListener('click', () => inlineImageFile.click());
+      inlineImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
+      inlineImageUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        handleInlineImageUpload(e.dataTransfer.files[0]);
+      });
+      inlineImageFile.addEventListener('change', () => {
+        handleInlineImageUpload(inlineImageFile.files[0]);
+        inlineImageFile.value = '';
+      });
+      document.getElementById('btn-inline-clear-image').addEventListener('click', clearInlineImage);
+      document.getElementById('btn-inline-preview-card').addEventListener('click', previewInlineCard);
+
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('confirm-modal').classList.contains('active')) {
+            closeConfirm();
+          } else if (document.getElementById('card-modal').classList.contains('active')) {
+            closeCardModal();
+          } else if (document.getElementById('table-editor-panel').classList.contains('active')) {
+            if (!document.getElementById('inline-entry-editor').classList.contains('hidden')) {
+              hideInlineEditor();
+            } else {
+              closeTableEditorPanel();
+            }
+          } else if (document.getElementById('settings-modal').classList.contains('active')) {
+            closeSettings();
+          }
+        }
+      });
+
+      // Click outside modal to close
+      [document.getElementById('card-modal'), document.getElementById('settings-modal'), document.getElementById('confirm-modal')].forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            if (modal.id === 'card-modal') closeCardModal();
+            else if (modal.id === 'settings-modal') closeSettings();
+            else if (modal.id === 'confirm-modal') closeConfirm();
+          }
+        });
+      });
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    function init() {
+      loadData();
+      initEventListeners();
+      renderAll();
+    }
+
+    // Start the app
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
