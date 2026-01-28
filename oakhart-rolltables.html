@@ -1091,6 +1091,130 @@
       margin-top: 0.75rem;
     }
 
+    /* Global Search Modal */
+    .search-modal {
+      width: 600px;
+      max-width: 95vw;
+      max-height: 80vh;
+    }
+
+    .global-search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .global-search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .search-results {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .search-result-item:hover {
+      border-color: var(--accent);
+      background: var(--bg-card);
+    }
+
+    .search-result-number {
+      background: var(--accent);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .search-result-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-result-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.125rem;
+    }
+
+    .search-result-type {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.125rem 0.375rem;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .search-result-type.card {
+      background: var(--accent);
+      color: white;
+    }
+
+    .search-result-type.text {
+      background: var(--bg-card);
+      color: var(--text-muted);
+    }
+
+    .search-result-image {
+      color: var(--accent);
+      font-size: 0.875rem;
+    }
+
+    .search-empty {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+    }
+
+    .search-empty-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .search-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .search-result-count {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
     /* Settings Modal */
     .settings-modal {
       width: 800px;
@@ -1590,6 +1714,7 @@
         Oakhart Roll Tables
       </h1>
       <div class="header-actions">
+        <button id="btn-global-search" aria-label="Search all entries" title="Search all entries (Ctrl+K)">🔍 Search</button>
         <button id="btn-settings" aria-label="Open Settings">⚙️ Settings</button>
         <button class="help-btn" id="btn-help" aria-label="Help" title="How to use this app">?</button>
       </div>
@@ -1675,6 +1800,26 @@
         <button id="btn-copy-image">Copy Image</button>
         <button id="btn-download-card">Download PNG</button>
         <button class="primary" id="btn-close-card">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Search Modal -->
+  <div class="modal-overlay" id="global-search-modal" role="dialog" aria-modal="true" aria-labelledby="search-modal-title">
+    <div class="modal search-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="search-modal-title">Search All Entries</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="global-search-input" class="global-search-input" placeholder="Type to search entries..." autofocus>
+        <div class="search-hint">Search by entry title, text, effects, or tags</div>
+        <div id="search-results" class="search-results">
+          <div class="search-empty">
+            <div class="search-empty-icon">🔍</div>
+            <div>Start typing to search across all tables</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2755,6 +2900,158 @@
     function closeCardModal() {
       document.getElementById('card-modal').classList.remove('active');
       currentCardData = null;
+    }
+
+    // ============================================
+    // GLOBAL SEARCH
+    // ============================================
+    function openGlobalSearch() {
+      const modal = document.getElementById('global-search-modal');
+      const input = document.getElementById('global-search-input');
+      modal.classList.add('active');
+      input.value = '';
+      input.focus();
+      renderSearchResults('');
+    }
+
+    function closeGlobalSearch() {
+      document.getElementById('global-search-modal').classList.remove('active');
+    }
+
+    function searchAllEntries(query) {
+      const results = [];
+      const searchTerm = query.toLowerCase().trim();
+
+      if (!searchTerm) return results;
+
+      for (const category of appData.categories) {
+        for (const table of category.tables) {
+          table.entries.forEach((entry, index) => {
+            let matches = false;
+            let matchText = '';
+
+            if (entry.type === 'card') {
+              const title = (entry.title || '').toLowerCase();
+              const body = (entry.body || '').toLowerCase();
+              const effects = (entry.effects || '').toLowerCase();
+              const tags = (entry.tags || []).join(' ').toLowerCase();
+
+              if (title.includes(searchTerm)) {
+                matches = true;
+                matchText = entry.title;
+              } else if (body.includes(searchTerm)) {
+                matches = true;
+                matchText = entry.title || entry.body.substring(0, 50);
+              } else if (effects.includes(searchTerm)) {
+                matches = true;
+                matchText = entry.title || 'Effects match';
+              } else if (tags.includes(searchTerm)) {
+                matches = true;
+                matchText = entry.title || 'Tag match';
+              }
+            } else {
+              const text = (entry.text || '').toLowerCase();
+              if (text.includes(searchTerm)) {
+                matches = true;
+                matchText = entry.text.substring(0, 50);
+              }
+            }
+
+            if (matches) {
+              results.push({
+                entry: entry,
+                entryIndex: index,
+                categoryId: category.id,
+                categoryName: category.name,
+                tableId: table.id,
+                tableName: table.name,
+                matchText: matchText
+              });
+            }
+          });
+        }
+      }
+
+      return results;
+    }
+
+    function renderSearchResults(query) {
+      const container = document.getElementById('search-results');
+      const results = searchAllEntries(query);
+
+      if (!query.trim()) {
+        container.innerHTML = `
+          <div class="search-empty">
+            <div class="search-empty-icon">🔍</div>
+            <div>Start typing to search across all tables</div>
+          </div>
+        `;
+        return;
+      }
+
+      if (results.length === 0) {
+        container.innerHTML = `
+          <div class="search-empty">
+            <div class="search-empty-icon">😕</div>
+            <div>No entries found for "${escapeHtml(query)}"</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `<div class="search-result-count">${results.length} result${results.length !== 1 ? 's' : ''} found</div>`;
+
+      for (const result of results) {
+        const entry = result.entry;
+        const isCard = entry.type === 'card';
+        const hasImage = isCard && entry.image;
+        const displayText = isCard ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 60);
+
+        html += `
+          <div class="search-result-item" data-category-id="${result.categoryId}" data-table-id="${result.tableId}" data-entry-index="${result.entryIndex}">
+            <span class="search-result-number">#${result.entryIndex + 1}</span>
+            <span class="search-result-type ${isCard ? 'card' : 'text'}">${isCard ? 'Card' : 'Text'}</span>
+            <div class="search-result-content">
+              <div class="search-result-title">${escapeHtml(displayText)}</div>
+              <div class="search-result-meta">${escapeHtml(result.categoryName)} → ${escapeHtml(result.tableName)}</div>
+            </div>
+            ${hasImage ? '<span class="search-result-image">🖼️</span>' : ''}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      // Add click handlers
+      container.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const categoryId = item.dataset.categoryId;
+          const tableId = item.dataset.tableId;
+          const entryIndex = parseInt(item.dataset.entryIndex);
+
+          const category = getCategory(categoryId);
+          if (!category) return;
+
+          const table = category.tables.find(t => t.id === tableId);
+          if (!table || !table.entries[entryIndex]) return;
+
+          const entry = table.entries[entryIndex];
+          closeGlobalSearch();
+
+          if (entry.type === 'card') {
+            openCardModal(entry);
+          } else {
+            openCardModal({
+              type: 'card',
+              title: `${table.name} #${entryIndex + 1}`,
+              body: entry.text || '',
+              effects: null,
+              tags: [],
+              image: null
+            });
+          }
+        });
+      });
     }
 
     function copyCardText() {
@@ -4021,8 +4318,30 @@
     // ============================================
     function initEventListeners() {
       // Header
+      document.getElementById('btn-global-search').addEventListener('click', openGlobalSearch);
       document.getElementById('btn-settings').addEventListener('click', openSettings);
       document.getElementById('btn-help').addEventListener('click', openHelpModal);
+
+      // Global search modal
+      document.getElementById('global-search-modal').querySelector('.modal-close').addEventListener('click', closeGlobalSearch);
+      document.getElementById('global-search-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'global-search-modal') closeGlobalSearch();
+      });
+      document.getElementById('global-search-input').addEventListener('input', (e) => {
+        renderSearchResults(e.target.value);
+      });
+
+      // Keyboard shortcut for global search (Ctrl+K or Cmd+K)
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          openGlobalSearch();
+        }
+        // Close search on Escape
+        if (e.key === 'Escape' && document.getElementById('global-search-modal').classList.contains('active')) {
+          closeGlobalSearch();
+        }
+      });
 
       // Welcome modal
       document.getElementById('welcome-modal').querySelector('.modal-close').addEventListener('click', closeWelcomeModal);
