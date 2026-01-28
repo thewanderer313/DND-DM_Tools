@@ -1908,48 +1908,36 @@
           </div>
           <div id="entry-editor" class="hidden">
             <h3 style="margin-bottom: 1rem;">Edit Entry</h3>
-            <div class="entry-type-toggle">
-              <button class="entry-type-btn active" data-type="text">Text Entry</button>
-              <button class="entry-type-btn" data-type="card">Card Entry</button>
+            <div class="form-group">
+              <label class="form-label">Title *</label>
+              <input type="text" class="form-input" id="entry-title-input" maxlength="100" placeholder="Entry title...">
             </div>
-            <div class="text-fields active" id="text-fields">
-              <div class="form-group">
-                <label class="form-label">Text Content</label>
-                <textarea class="form-textarea" id="entry-text-input" placeholder="Enter the result text..."></textarea>
-              </div>
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea class="form-textarea" id="entry-body-input" placeholder="Entry description..."></textarea>
             </div>
-            <div class="card-fields" id="card-fields">
-              <div class="form-group">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-input" id="entry-title-input" maxlength="100">
+            <div class="form-group">
+              <label class="form-label">Image (optional)</label>
+              <div class="image-upload-area" id="entry-image-upload">
+                <span class="image-upload-text">Click or drag to upload image</span>
               </div>
-              <div class="form-group">
-                <label class="form-label">Image</label>
-                <div class="image-upload-area" id="entry-image-upload">
-                  <span class="image-upload-text">Click or drag to upload image</span>
-                </div>
-                <input type="file" id="entry-image-file" accept="image/*" class="hidden">
-                <button class="small" id="btn-clear-entry-image">Clear Image</button>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Body</label>
-                <textarea class="form-textarea" id="entry-body-input" placeholder="Enter the card body text..."></textarea>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Effects</label>
-                <input type="text" class="form-input" id="entry-effects-input" placeholder="Optional mechanical effects...">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Tags (comma-separated)</label>
-                <input type="text" class="form-input" id="entry-tags-input" placeholder="tag1, tag2, tag3">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Follow-up Tables</label>
-                <select class="form-select" id="entry-followup-select" multiple style="height: 100px;"></select>
-                <div class="form-hint">Hold Ctrl/Cmd to select multiple</div>
-              </div>
-              <button class="small" id="btn-preview-card" style="margin-bottom: 1rem;">Preview Card</button>
+              <input type="file" id="entry-image-file" accept="image/*" class="hidden">
+              <button class="small" id="btn-clear-entry-image">Clear Image</button>
             </div>
+            <div class="form-group">
+              <label class="form-label">Effects (optional)</label>
+              <input type="text" class="form-input" id="entry-effects-input" placeholder="Mechanical effects...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tags (optional, comma-separated)</label>
+              <input type="text" class="form-input" id="entry-tags-input" placeholder="tag1, tag2, tag3">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Follow-up Tables (optional)</label>
+              <select class="form-select" id="entry-followup-select" multiple style="height: 100px;"></select>
+              <div class="form-hint">Hold Ctrl/Cmd to select multiple</div>
+            </div>
+            <button class="small" id="btn-preview-card" style="margin-bottom: 1rem;">Preview Card</button>
             <div style="display: flex; gap: 0.5rem;">
               <button class="primary" id="btn-save-entry">Save</button>
               <button id="btn-cancel-entry">Cancel</button>
@@ -2091,8 +2079,7 @@
     <div class="table-editor-body">
       <!-- Add Entry Section -->
       <div class="add-entry-section">
-        <button class="primary" id="btn-quick-add-text">+ Text Entry</button>
-        <button id="btn-quick-add-card">+ Card Entry</button>
+        <button class="primary" id="btn-quick-add-entry" style="flex: 1;">+ Add Entry</button>
       </div>
 
       <!-- Inline Entry Editor (shown when editing/adding) -->
@@ -2102,56 +2089,42 @@
           <button class="small" id="btn-cancel-inline-edit">Cancel</button>
         </div>
 
-        <div class="inline-editor-tabs">
-          <button class="inline-editor-tab active" data-type="text" id="inline-tab-text">Text</button>
-          <button class="inline-editor-tab" data-type="card" id="inline-tab-card">Card</button>
+        <div class="inline-form-group">
+          <label class="inline-form-label">Title *</label>
+          <input type="text" class="inline-form-input" id="inline-card-title" placeholder="Entry title...">
         </div>
 
-        <!-- Text Entry Fields -->
-        <div class="inline-editor-fields active" id="inline-text-fields">
+        <div class="inline-form-group">
+          <label class="inline-form-label">Description *</label>
+          <textarea class="inline-form-textarea" id="inline-card-body" placeholder="Entry description..." rows="4"></textarea>
+        </div>
+
+        <div class="inline-form-group">
+          <label class="inline-form-label">Image (optional)</label>
+          <div class="inline-image-upload" id="inline-image-upload">
+            <span class="inline-image-upload-text">Click to upload image</span>
+          </div>
+          <input type="file" id="inline-image-file" accept="image/*" class="hidden">
+          <button class="small" id="btn-inline-clear-image" style="margin-top: 0.5rem;">Clear Image</button>
+        </div>
+
+        <div class="inline-form-row">
           <div class="inline-form-group">
-            <label class="inline-form-label">Content</label>
-            <textarea class="inline-form-textarea" id="inline-text-content" placeholder="Enter the result text..." rows="4"></textarea>
+            <label class="inline-form-label">Effects (optional)</label>
+            <input type="text" class="inline-form-input" id="inline-card-effects" placeholder="Mechanical effects...">
+          </div>
+          <div class="inline-form-group">
+            <label class="inline-form-label">Tags (optional)</label>
+            <input type="text" class="inline-form-input" id="inline-card-tags" placeholder="tag1, tag2...">
           </div>
         </div>
 
-        <!-- Card Entry Fields -->
-        <div class="inline-editor-fields" id="inline-card-fields">
-          <div class="inline-form-group">
-            <label class="inline-form-label">Title *</label>
-            <input type="text" class="inline-form-input" id="inline-card-title" placeholder="Card title...">
-          </div>
+        <div class="inline-form-group">
+          <label class="inline-form-label">Follow-up Tables (optional)</label>
+          <select class="inline-form-select" id="inline-card-followup" multiple style="height: 70px;"></select>
+        </div>
 
-          <div class="inline-form-group">
-            <label class="inline-form-label">Image</label>
-            <div class="inline-image-upload" id="inline-image-upload">
-              <span class="inline-image-upload-text">Click to upload image</span>
-            </div>
-            <input type="file" id="inline-image-file" accept="image/*" class="hidden">
-            <button class="small" id="btn-inline-clear-image" style="margin-top: 0.5rem;">Clear Image</button>
-          </div>
-
-          <div class="inline-form-group">
-            <label class="inline-form-label">Description</label>
-            <textarea class="inline-form-textarea" id="inline-card-body" placeholder="Card description/body text..." rows="3"></textarea>
-          </div>
-
-          <div class="inline-form-row">
-            <div class="inline-form-group">
-              <label class="inline-form-label">Effects</label>
-              <input type="text" class="inline-form-input" id="inline-card-effects" placeholder="Mechanical effects...">
-            </div>
-            <div class="inline-form-group">
-              <label class="inline-form-label">Tags</label>
-              <input type="text" class="inline-form-input" id="inline-card-tags" placeholder="tag1, tag2...">
-            </div>
-          </div>
-
-          <div class="inline-form-group">
-            <label class="inline-form-label">Follow-up Tables</label>
-            <select class="inline-form-select" id="inline-card-followup" multiple style="height: 70px;"></select>
-          </div>
-
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
           <button class="small" id="btn-inline-preview-card">Preview Card</button>
         </div>
 
@@ -3005,12 +2978,12 @@
         const entry = result.entry;
         const isCard = entry.type === 'card';
         const hasImage = isCard && entry.image;
-        const displayText = isCard ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 60);
+        // Handle both old "text" entries and "card" entries
+        const displayText = isCard ? (entry.title || 'Untitled') : (entry.text || '').split(/[.!?\n]/)[0].substring(0, 50) || 'Untitled';
 
         html += `
           <div class="search-result-item" data-category-id="${result.categoryId}" data-table-id="${result.tableId}" data-entry-index="${result.entryIndex}">
             <span class="search-result-number">#${result.entryIndex + 1}</span>
-            <span class="search-result-type ${isCard ? 'card' : 'text'}">${isCard ? 'Card' : 'Text'}</span>
             <div class="search-result-content">
               <div class="search-result-title">${escapeHtml(displayText)}</div>
               <div class="search-result-meta">${escapeHtml(result.categoryName)} → ${escapeHtml(result.tableName)}</div>
@@ -3366,8 +3339,9 @@
 
       list.innerHTML = '';
       table.entries.forEach((entry, index) => {
+        // Handle both old "text" entries and new "card" entries
         const isCard = entry.type === 'card';
-        const preview = isCard ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 50);
+        const title = isCard ? (entry.title || 'Untitled') : (entry.text || '').split(/[.!?\n]/)[0].substring(0, 40) || 'Untitled';
         const hasImage = isCard && entry.image;
         const isEditing = index === inlineEditingIndex;
 
@@ -3375,11 +3349,10 @@
         item.className = 'quick-entry-item' + (isEditing ? ' editing' : '');
         item.innerHTML = `
           <span class="quick-entry-number">${index + 1}</span>
-          <span class="quick-entry-type ${isCard ? 'card' : 'text'}">${isCard ? 'Card' : 'Text'}</span>
-          <span class="quick-entry-preview" data-index="${index}" title="Click to view">${escapeHtml(preview)}</span>
+          <span class="quick-entry-preview" data-index="${index}" title="Click to view">${escapeHtml(title)}</span>
           ${hasImage ? '<span class="quick-entry-image-indicator">🖼️</span>' : ''}
           <div class="quick-entry-actions">
-            <button data-action="view" data-index="${index}" title="View card">👁️</button>
+            <button data-action="view" data-index="${index}" title="View">👁️</button>
             <button data-action="up" data-index="${index}" ${index === 0 ? 'disabled' : ''} title="Move up">↑</button>
             <button data-action="down" data-index="${index}" ${index === table.entries.length - 1 ? 'disabled' : ''} title="Move down">↓</button>
             <button data-action="edit" data-index="${index}" title="Edit">✏️</button>
@@ -3421,7 +3394,7 @@
       ).join('');
     }
 
-    function showInlineEditor(type, index = null) {
+    function showInlineEditor(index = null) {
       const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
       if (!table) return;
 
@@ -3447,14 +3420,14 @@
         titleEl.textContent = 'New Entry';
         deleteBtn.classList.add('hidden');
         clearInlineEditor();
-        switchInlineEditorType(type);
       }
 
       editor.classList.remove('hidden');
       renderQuickEntryList();
 
-      // Scroll to editor
+      // Scroll to editor and focus title
       editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('inline-card-title').focus(), 100);
     }
 
     function hideInlineEditor() {
@@ -3465,7 +3438,6 @@
     }
 
     function clearInlineEditor() {
-      document.getElementById('inline-text-content').value = '';
       document.getElementById('inline-card-title').value = '';
       document.getElementById('inline-card-body').value = '';
       document.getElementById('inline-card-effects').value = '';
@@ -3481,78 +3453,71 @@
     }
 
     function populateInlineEditor(entry) {
-      const isCard = entry.type === 'card';
-      switchInlineEditorType(isCard ? 'card' : 'text');
-
-      if (isCard) {
+      // Handle both old "text" entries and "card" entries
+      if (entry.type === 'text') {
+        // Convert old text entry: use text as body, generate title from first words
+        const text = entry.text || '';
+        const autoTitle = text.split(/[.!?\n]/)[0].substring(0, 50).trim() || 'Untitled';
+        document.getElementById('inline-card-title').value = autoTitle;
+        document.getElementById('inline-card-body').value = text;
+        document.getElementById('inline-card-effects').value = '';
+        document.getElementById('inline-card-tags').value = '';
+        inlineImageData = null;
+      } else {
         document.getElementById('inline-card-title').value = entry.title || '';
         document.getElementById('inline-card-body').value = entry.body || '';
         document.getElementById('inline-card-effects').value = entry.effects || '';
         document.getElementById('inline-card-tags').value = (entry.tags || []).join(', ');
         inlineImageData = entry.image || null;
-
-        const imageUpload = document.getElementById('inline-image-upload');
-        if (entry.image) {
-          imageUpload.innerHTML = `<img src="${entry.image}" alt="">`;
-          imageUpload.classList.add('has-image');
-        } else {
-          imageUpload.innerHTML = '<span class="inline-image-upload-text">Click to upload image</span>';
-          imageUpload.classList.remove('has-image');
-        }
-
-        const followupSelect = document.getElementById('inline-card-followup');
-        Array.from(followupSelect.options).forEach(opt => {
-          opt.selected = (entry.followUpTables || []).includes(opt.value);
-        });
-      } else {
-        document.getElementById('inline-text-content').value = entry.text || '';
       }
-    }
 
-    function switchInlineEditorType(type) {
-      document.getElementById('inline-tab-text').classList.toggle('active', type === 'text');
-      document.getElementById('inline-tab-card').classList.toggle('active', type === 'card');
-      document.getElementById('inline-text-fields').classList.toggle('active', type === 'text');
-      document.getElementById('inline-card-fields').classList.toggle('active', type === 'card');
+      const imageUpload = document.getElementById('inline-image-upload');
+      if (inlineImageData) {
+        imageUpload.innerHTML = `<img src="${inlineImageData}" alt="">`;
+        imageUpload.classList.add('has-image');
+      } else {
+        imageUpload.innerHTML = '<span class="inline-image-upload-text">Click to upload image</span>';
+        imageUpload.classList.remove('has-image');
+      }
+
+      const followupSelect = document.getElementById('inline-card-followup');
+      Array.from(followupSelect.options).forEach(opt => {
+        opt.selected = (entry.followUpTables || []).includes(opt.value);
+      });
     }
 
     function saveInlineEntry() {
       const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
       if (!table) return;
 
-      const isCard = document.getElementById('inline-tab-card').classList.contains('active');
-      let entry;
+      const title = document.getElementById('inline-card-title').value.trim();
+      const body = document.getElementById('inline-card-body').value.trim();
 
-      if (isCard) {
-        const title = document.getElementById('inline-card-title').value.trim();
-        if (!title) {
-          showToast('Title is required for cards', 'error');
-          return;
-        }
-
-        const tagsStr = document.getElementById('inline-card-tags').value;
-        const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
-
-        const followupSelect = document.getElementById('inline-card-followup');
-        const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
-
-        entry = {
-          type: 'card',
-          title: title,
-          body: document.getElementById('inline-card-body').value.trim(),
-          effects: document.getElementById('inline-card-effects').value.trim(),
-          tags: tags,
-          followUpTables: followUpTables,
-          image: inlineImageData
-        };
-      } else {
-        const text = document.getElementById('inline-text-content').value.trim();
-        if (!text) {
-          showToast('Text content is required', 'error');
-          return;
-        }
-        entry = { type: 'text', text: text };
+      if (!title) {
+        showToast('Title is required', 'error');
+        return;
       }
+
+      if (!body) {
+        showToast('Description is required', 'error');
+        return;
+      }
+
+      const tagsStr = document.getElementById('inline-card-tags').value;
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+      const followupSelect = document.getElementById('inline-card-followup');
+      const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
+
+      const entry = {
+        type: 'card',
+        title: title,
+        body: body,
+        effects: document.getElementById('inline-card-effects').value.trim(),
+        tags: tags,
+        followUpTables: followUpTables,
+        image: inlineImageData
+      };
 
       if (inlineEditingIndex !== null) {
         table.entries[inlineEditingIndex] = entry;
@@ -3573,10 +3538,8 @@
       if (!table || !table.entries[index]) return;
 
       const entry = table.entries[index];
-      if (entry.type === 'card') {
-        openCardModal(entry);
-      } else {
-        // For text entries, show them in the card modal with the text as the body
+      // Handle both old "text" entries and "card" entries
+      if (entry.type === 'text') {
         openCardModal({
           type: 'card',
           title: `Entry #${index + 1}`,
@@ -3585,6 +3548,8 @@
           tags: [],
           image: null
         });
+      } else {
+        openCardModal(entry);
       }
     }
 
@@ -3592,7 +3557,7 @@
       const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
       if (!table || !table.entries[index]) return;
 
-      showInlineEditor(table.entries[index].type, index);
+      showInlineEditor(index);
     }
 
     function deleteQuickEntry(index) {
@@ -4047,37 +4012,35 @@
       editingEntryIndex = index;
       entryImageData = entry.image || null;
 
-      // Set type
-      const isCard = entry.type === 'card';
-      document.querySelectorAll('.entry-type-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.type === (isCard ? 'card' : 'text'));
-      });
-      document.getElementById('text-fields').classList.toggle('active', !isCard);
-      document.getElementById('card-fields').classList.toggle('active', isCard);
-
-      if (isCard) {
+      // Handle both old "text" entries and "card" entries
+      if (entry.type === 'text') {
+        const text = entry.text || '';
+        const autoTitle = text.split(/[.!?\n]/)[0].substring(0, 50).trim() || 'Untitled';
+        document.getElementById('entry-title-input').value = autoTitle;
+        document.getElementById('entry-body-input').value = text;
+        document.getElementById('entry-effects-input').value = '';
+        document.getElementById('entry-tags-input').value = '';
+      } else {
         document.getElementById('entry-title-input').value = entry.title || '';
         document.getElementById('entry-body-input').value = entry.body || '';
         document.getElementById('entry-effects-input').value = entry.effects || '';
         document.getElementById('entry-tags-input').value = (entry.tags || []).join(', ');
+      }
 
-        // Set follow-up tables
-        const followupSelect = document.getElementById('entry-followup-select');
-        Array.from(followupSelect.options).forEach(opt => {
-          opt.selected = (entry.followUpTables || []).includes(opt.value);
-        });
+      // Set follow-up tables
+      const followupSelect = document.getElementById('entry-followup-select');
+      Array.from(followupSelect.options).forEach(opt => {
+        opt.selected = (entry.followUpTables || []).includes(opt.value);
+      });
 
-        // Set image preview
-        const uploadArea = document.getElementById('entry-image-upload');
-        if (entry.image) {
-          uploadArea.innerHTML = `<img src="${entry.image}" alt="">`;
-          uploadArea.classList.add('has-image');
-        } else {
-          uploadArea.innerHTML = '<span class="image-upload-text">Click or drag to upload image</span>';
-          uploadArea.classList.remove('has-image');
-        }
+      // Set image preview
+      const uploadArea = document.getElementById('entry-image-upload');
+      if (entryImageData) {
+        uploadArea.innerHTML = `<img src="${entryImageData}" alt="">`;
+        uploadArea.classList.add('has-image');
       } else {
-        document.getElementById('entry-text-input').value = entry.text || '';
+        uploadArea.innerHTML = '<span class="image-upload-text">Click or drag to upload image</span>';
+        uploadArea.classList.remove('has-image');
       }
 
       document.getElementById('entry-editor').classList.remove('hidden');
@@ -4085,13 +4048,6 @@
     }
 
     function resetEntryForm() {
-      document.querySelectorAll('.entry-type-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.type === 'text');
-      });
-      document.getElementById('text-fields').classList.add('active');
-      document.getElementById('card-fields').classList.remove('active');
-
-      document.getElementById('entry-text-input').value = '';
       document.getElementById('entry-title-input').value = '';
       document.getElementById('entry-body-input').value = '';
       document.getElementById('entry-effects-input').value = '';
@@ -4111,39 +4067,34 @@
       const table = getTable(catId, tableId);
       if (!table) return;
 
-      const isCard = document.querySelector('.entry-type-btn.active').dataset.type === 'card';
+      const title = document.getElementById('entry-title-input').value.trim();
+      const body = document.getElementById('entry-body-input').value.trim();
 
-      let entry;
-      if (isCard) {
-        const title = document.getElementById('entry-title-input').value.trim();
-        if (!title) {
-          showToast('Title is required for cards', 'error');
-          return;
-        }
-
-        const tagsStr = document.getElementById('entry-tags-input').value;
-        const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
-
-        const followupSelect = document.getElementById('entry-followup-select');
-        const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
-
-        entry = {
-          type: 'card',
-          title: title,
-          body: document.getElementById('entry-body-input').value.trim(),
-          effects: document.getElementById('entry-effects-input').value.trim(),
-          tags: tags,
-          followUpTables: followUpTables,
-          image: entryImageData
-        };
-      } else {
-        const text = document.getElementById('entry-text-input').value.trim();
-        if (!text) {
-          showToast('Text is required', 'error');
-          return;
-        }
-        entry = { type: 'text', text: text };
+      if (!title) {
+        showToast('Title is required', 'error');
+        return;
       }
+
+      if (!body) {
+        showToast('Description is required', 'error');
+        return;
+      }
+
+      const tagsStr = document.getElementById('entry-tags-input').value;
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+
+      const followupSelect = document.getElementById('entry-followup-select');
+      const followUpTables = Array.from(followupSelect.selectedOptions).map(opt => opt.value);
+
+      const entry = {
+        type: 'card',
+        title: title,
+        body: body,
+        effects: document.getElementById('entry-effects-input').value.trim(),
+        tags: tags,
+        followUpTables: followUpTables,
+        image: entryImageData
+      };
 
       if (editingEntryIndex !== null) {
         table.entries[editingEntryIndex] = entry;
@@ -4177,13 +4128,6 @@
       });
     }
 
-    function switchEntryType(type) {
-      document.querySelectorAll('.entry-type-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.type === type);
-      });
-      document.getElementById('text-fields').classList.toggle('active', type === 'text');
-      document.getElementById('card-fields').classList.toggle('active', type === 'card');
-    }
 
     async function handleEntryImageUpload(file) {
       if (!file || !file.type.startsWith('image/')) {
@@ -4397,11 +4341,6 @@
       document.getElementById('btn-save-entry').addEventListener('click', saveEntry);
       document.getElementById('btn-cancel-entry').addEventListener('click', cancelEntryEdit);
 
-      // Entry type toggle
-      document.querySelectorAll('.entry-type-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchEntryType(btn.dataset.type));
-      });
-
       // Entry image upload
       const entryImageUpload = document.getElementById('entry-image-upload');
       const entryImageFile = document.getElementById('entry-image-file');
@@ -4462,8 +4401,7 @@
       document.getElementById('btn-done-editing').addEventListener('click', closeTableEditorPanel);
       document.getElementById('panel-backdrop').addEventListener('click', closeTableEditorPanel);
 
-      document.getElementById('btn-quick-add-text').addEventListener('click', () => showInlineEditor('text'));
-      document.getElementById('btn-quick-add-card').addEventListener('click', () => showInlineEditor('card'));
+      document.getElementById('btn-quick-add-entry').addEventListener('click', () => showInlineEditor());
 
       document.getElementById('btn-cancel-inline-edit').addEventListener('click', hideInlineEditor);
       document.getElementById('btn-save-inline-entry').addEventListener('click', saveInlineEntry);
@@ -4471,8 +4409,6 @@
         if (inlineEditingIndex !== null) deleteQuickEntry(inlineEditingIndex);
       });
 
-      document.getElementById('inline-tab-text').addEventListener('click', () => switchInlineEditorType('text'));
-      document.getElementById('inline-tab-card').addEventListener('click', () => switchInlineEditorType('card'));
 
       // Inline image upload
       const inlineImageUpload = document.getElementById('inline-image-upload');
