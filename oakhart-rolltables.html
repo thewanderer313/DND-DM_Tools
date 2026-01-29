@@ -3875,6 +3875,21 @@
       }
     }
 
+    function getThemeColors() {
+      const style = getComputedStyle(document.documentElement);
+      return {
+        bgCard: style.getPropertyValue('--bg-card').trim() || '#212d28',
+        bgTertiary: style.getPropertyValue('--bg-tertiary').trim() || '#1c2723',
+        bgPrimary: style.getPropertyValue('--bg-primary').trim() || '#111816',
+        textPrimary: style.getPropertyValue('--text-primary').trim() || '#e4ebe4',
+        textSecondary: style.getPropertyValue('--text-secondary').trim() || '#9aaa9a',
+        textMuted: style.getPropertyValue('--text-muted').trim() || '#5a6a5a',
+        borderStrong: style.getPropertyValue('--border-strong').trim() || '#3a4a42',
+        warning: style.getPropertyValue('--warning').trim() || '#8b7355',
+        accent: style.getPropertyValue('--accent').trim() || '#4a7c59'
+      };
+    }
+
     function renderCardToCanvas() {
       return new Promise((resolve, reject) => {
         const canvas = document.createElement('canvas');
@@ -3882,6 +3897,9 @@
         const width = 600;
         const padding = 24;
         const textWidth = width - (padding * 2);
+
+        // Get current theme colors
+        const colors = getThemeColors();
 
         // Calculate heights
         ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -3912,19 +3930,19 @@
             canvas.height = height;
 
             // Background
-            ctx.fillStyle = '#1e2b25';
+            ctx.fillStyle = colors.bgCard;
             ctx.fillRect(0, 0, width, height);
 
             // Image
             ctx.drawImage(img, 0, 0, width, imgDisplayHeight);
 
             // Text area background
-            ctx.fillStyle = '#1a2621';
+            ctx.fillStyle = colors.bgTertiary;
             ctx.fillRect(0, imgDisplayHeight, width, textSectionHeight);
 
             // Draw text
             let y = imgDisplayHeight + padding;
-            ctx.fillStyle = '#e8efe8';
+            ctx.fillStyle = colors.textPrimary;
             ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
             for (const line of titleLines) {
               ctx.fillText(line, padding, y + 24);
@@ -3932,7 +3950,7 @@
             }
 
             y += 8;
-            ctx.fillStyle = '#a8b8a8';
+            ctx.fillStyle = colors.textSecondary;
             ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
             for (const line of bodyLines) {
               ctx.fillText(line, padding, y + 16);
@@ -3941,7 +3959,7 @@
 
             if (effectsLines.length) {
               y += 12;
-              ctx.fillStyle = '#8b7355';
+              ctx.fillStyle = colors.warning;
               ctx.font = 'italic 16px -apple-system, BlinkMacSystemFont, sans-serif';
               for (const line of effectsLines) {
                 ctx.fillText(line, padding, y + 14);
@@ -3950,7 +3968,7 @@
             }
 
             // Border
-            ctx.strokeStyle = '#3d5246';
+            ctx.strokeStyle = colors.accent;
             ctx.lineWidth = 4;
             ctx.strokeRect(2, 2, width - 4, height - 4);
 
@@ -3964,13 +3982,13 @@
           canvas.height = height;
 
           // Background
-          ctx.fillStyle = '#1e2b25';
+          ctx.fillStyle = colors.bgCard;
           ctx.fillRect(0, 0, width, height);
 
           // Placeholder area
-          ctx.fillStyle = '#151d19';
+          ctx.fillStyle = colors.bgPrimary;
           ctx.fillRect(0, 0, width, 100);
-          ctx.fillStyle = '#6a7a6a';
+          ctx.fillStyle = colors.textMuted;
           ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText('No Image', width / 2, 55);
@@ -3978,7 +3996,7 @@
 
           // Draw text
           let y = 100 + padding;
-          ctx.fillStyle = '#e8efe8';
+          ctx.fillStyle = colors.textPrimary;
           ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, sans-serif';
           for (const line of titleLines) {
             ctx.fillText(line, padding, y + 24);
@@ -3986,7 +4004,7 @@
           }
 
           y += 8;
-          ctx.fillStyle = '#a8b8a8';
+          ctx.fillStyle = colors.textSecondary;
           ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
           for (const line of bodyLines) {
             ctx.fillText(line, padding, y + 16);
@@ -3995,7 +4013,7 @@
 
           if (effectsLines.length) {
             y += 12;
-            ctx.fillStyle = '#8b7355';
+            ctx.fillStyle = colors.warning;
             ctx.font = 'italic 16px -apple-system, BlinkMacSystemFont, sans-serif';
             for (const line of effectsLines) {
               ctx.fillText(line, padding, y + 14);
@@ -4004,7 +4022,7 @@
           }
 
           // Border
-          ctx.strokeStyle = '#3d5246';
+          ctx.strokeStyle = colors.accent;
           ctx.lineWidth = 4;
           ctx.strokeRect(2, 2, width - 4, height - 4);
 
