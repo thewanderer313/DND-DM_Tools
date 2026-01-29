@@ -176,10 +176,21 @@
       cursor: not-allowed;
     }
 
+    #images-folder-status {
+      padding: 0.5rem;
+      border-radius: 4px;
+      background: var(--bg-tertiary);
+    }
+
+    #images-folder-status.active {
+      color: var(--success);
+      background: rgba(100, 180, 100, 0.15);
+    }
+
     /* Main Layout */
     .main-content {
       display: grid;
-      grid-template-columns: 180px 260px 1fr;
+      grid-template-columns: minmax(140px, 180px) minmax(180px, 260px) 1fr;
       flex: 1;
       overflow: hidden;
       gap: var(--section-gap);
@@ -1779,6 +1790,52 @@
       clip: rect(0, 0, 0, 0);
       border: 0;
     }
+
+    /* Responsive styles for smaller screens */
+    @media (max-width: 1100px) {
+      .main-content {
+        grid-template-columns: 150px 200px 1fr;
+      }
+      .column-header {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.7rem;
+      }
+      .result-display {
+        padding: 0.75rem;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .main-content {
+        grid-template-columns: 130px 170px 1fr;
+      }
+      .app-header h1 {
+        font-size: 0.9rem;
+      }
+      .header-controls button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+      }
+      .roll-control button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 750px) {
+      .main-content {
+        grid-template-columns: 110px 140px 1fr;
+        gap: 1px;
+      }
+      .step-badge {
+        display: none;
+      }
+      .column-add-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.875rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2058,6 +2115,29 @@
             <button id="btn-import-json">Import JSON</button>
             <input type="file" id="import-file" accept=".json" class="hidden">
           </div>
+
+          <h3 style="margin-bottom: 1rem;">Image Storage</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+            Configure where images are stored. For local HTML files, use the manual path option.
+          </p>
+
+          <div id="manual-path-section" style="margin-bottom: 1rem;">
+            <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+              Image folder path (relative to HTML file):
+            </label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="manual-image-path" class="form-input" placeholder="images" style="flex: 1;">
+              <button id="btn-set-image-path">Set Path</button>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Example: "images" will save to the images/ folder next to this HTML file
+            </div>
+          </div>
+
+          <div id="images-folder-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 2rem;">
+            No folder configured (images stored as base64 in browser)
+          </div>
+
           <h3 style="margin-bottom: 1rem;">Reset Data</h3>
           <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
             Reset all tables to the default content. This cannot be undone.
@@ -2570,6 +2650,184 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    }
+
+    // ============================================
+    // FILE SYSTEM ACCESS API (for saving images to folder)
+    // ============================================
+    let imagesFolderHandle = null;
+    const IMAGES_FOLDER_NAME = 'images';
+
+    function isFileSystemAccessSupported() {
+      return 'showDirectoryPicker' in window;
+    }
+
+    async function selectImagesFolder() {
+      if (!isFileSystemAccessSupported()) {
+        showToast('Your browser does not support folder access. Use the manual path option below.', 'error');
+        return false;
+      }
+
+      // Check if running from file:// protocol
+      if (window.location.protocol === 'file:') {
+        showToast('Folder picker requires a web server. Use the manual path option below.', 'error');
+        return false;
+      }
+
+      try {
+        imagesFolderHandle = await window.showDirectoryPicker({
+          mode: 'readwrite',
+          startIn: 'documents'
+        });
+        showToast(`Images folder set: ${imagesFolderHandle.name}`, 'success');
+        updateImagesFolderStatus();
+        return true;
+      } catch (err) {
+        console.error('Folder selection error:', err);
+        if (err.name !== 'AbortError') {
+          showToast(`Failed to select folder: ${err.message}`, 'error');
+        }
+        return false;
+      }
+    }
+
+    // Manual image path prefix for file:// usage
+    let manualImagePath = localStorage.getItem('oakhartImagePath') || '';
+
+    function setManualImagePath(path) {
+      manualImagePath = path.trim();
+      if (manualImagePath && !manualImagePath.endsWith('/')) {
+        manualImagePath += '/';
+      }
+      localStorage.setItem('oakhartImagePath', manualImagePath);
+      updateImagesFolderStatus();
+      showToast(manualImagePath ? `Image path set: ${manualImagePath}` : 'Image path cleared', 'success');
+    }
+
+    function downloadImageFile(file, filename) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    async function processImageUpload(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Please select an image file', 'error');
+        return null;
+      }
+
+      const ext = file.name.split('.').pop() || 'png';
+      const timestamp = Date.now();
+      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').replace(/\.[^.]+$/, '');
+      const filename = `${safeName}-${timestamp}.${ext}`;
+
+      // If running in Electron, use native file saving
+      if (window.electronAPI) {
+        try {
+          const dataUrl = await fileToDataUrl(file);
+          const result = await window.electronAPI.saveImage(filename, dataUrl);
+          if (result.success) {
+            showToast(`Image saved: ${filename}`, 'success');
+            return result.path;
+          }
+        } catch (e) {
+          console.error('Electron save failed:', e);
+        }
+        // Fall through to base64 if Electron save fails
+      }
+
+      // If manual path is set (browser mode), download the file and return the path
+      if (manualImagePath) {
+        const fullPath = `${manualImagePath}${filename}`;
+
+        // Download the file for the user to save
+        downloadImageFile(file, filename);
+        showToast(`Save the downloaded image to your "${manualImagePath}" folder`, 'success');
+
+        return fullPath;
+      }
+
+      // If folder handle exists (web server context), save directly
+      if (imagesFolderHandle) {
+        const savedPath = await saveImageToFolder(file);
+        if (savedPath) return savedPath;
+      }
+
+      // Fallback to base64
+      return await fileToDataUrl(file);
+    }
+
+    async function saveImageToFolder(file) {
+      if (!imagesFolderHandle) {
+        return null; // No folder selected, fall back to base64
+      }
+
+      try {
+        // Verify we still have permission
+        const permission = await imagesFolderHandle.queryPermission({ mode: 'readwrite' });
+        if (permission !== 'granted') {
+          const request = await imagesFolderHandle.requestPermission({ mode: 'readwrite' });
+          if (request !== 'granted') {
+            showToast('Folder permission denied. Using base64.', 'error');
+            return null;
+          }
+        }
+
+        // Generate unique filename
+        const ext = file.name.split('.').pop() || 'png';
+        const timestamp = Date.now();
+        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').replace(/\.[^.]+$/, '');
+        const filename = `${safeName}-${timestamp}.${ext}`;
+
+        // Write file to folder
+        const fileHandle = await imagesFolderHandle.getFileHandle(filename, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(file);
+        await writable.close();
+
+        // Return relative path
+        const relativePath = `${imagesFolderHandle.name}/${filename}`;
+        showToast(`Image saved: ${filename}`, 'success');
+        return relativePath;
+      } catch (err) {
+        console.error('Failed to save image:', err);
+        showToast('Failed to save image to folder. Using base64.', 'error');
+        return null;
+      }
+    }
+
+    function updateImagesFolderStatus() {
+      const statusEl = document.getElementById('images-folder-status');
+      const pathInput = document.getElementById('manual-image-path');
+      const pathSection = document.getElementById('manual-path-section');
+
+      if (pathInput && manualImagePath) {
+        pathInput.value = manualImagePath.replace(/\/$/, '');
+      }
+
+      if (statusEl) {
+        // Check if running in Electron
+        if (window.electronAPI) {
+          statusEl.textContent = 'Running in desktop app - images save automatically to images/ folder';
+          statusEl.classList.add('active');
+          // Hide manual path section in Electron mode
+          if (pathSection) pathSection.style.display = 'none';
+        } else if (imagesFolderHandle) {
+          statusEl.textContent = `Folder connected: ${imagesFolderHandle.name} (auto-save enabled)`;
+          statusEl.classList.add('active');
+        } else if (manualImagePath) {
+          statusEl.textContent = `Path set: ${manualImagePath} (images will download for you to save)`;
+          statusEl.classList.add('active');
+        } else {
+          statusEl.textContent = 'No folder configured (images stored as base64 in browser)';
+          statusEl.classList.remove('active');
+        }
+      }
     }
 
     // ============================================
@@ -3878,15 +4136,19 @@
     }
 
     async function handleInlineImageUpload(file) {
-      if (!file || !file.type.startsWith('image/')) {
-        showToast('Please select an image file', 'error');
-        return;
-      }
-
       try {
-        inlineImageData = await fileToDataUrl(file);
+        const result = await processImageUpload(file);
+        if (!result) return;
+
+        inlineImageData = result;
         const uploadArea = document.getElementById('inline-image-upload');
-        uploadArea.innerHTML = `<img src="${inlineImageData}" alt="">`;
+
+        // For path-based images, show a placeholder until file is saved
+        if (!result.startsWith('data:')) {
+          uploadArea.innerHTML = `<div style="padding: 0.5rem; text-align: center; font-size: 0.75rem;">Image: ${result}<br><small>(save downloaded file to folder)</small></div>`;
+        } else {
+          uploadArea.innerHTML = `<img src="${result}" alt="">`;
+        }
         uploadArea.classList.add('has-image');
       } catch (e) {
         showToast('Failed to load image', 'error');
@@ -4386,15 +4648,19 @@
 
 
     async function handleEntryImageUpload(file) {
-      if (!file || !file.type.startsWith('image/')) {
-        showToast('Please select an image file', 'error');
-        return;
-      }
-
       try {
-        entryImageData = await fileToDataUrl(file);
+        const result = await processImageUpload(file);
+        if (!result) return;
+
+        entryImageData = result;
         const uploadArea = document.getElementById('entry-image-upload');
-        uploadArea.innerHTML = `<img src="${entryImageData}" alt="">`;
+
+        // For path-based images, show a placeholder until file is saved
+        if (!result.startsWith('data:')) {
+          uploadArea.innerHTML = `<div style="padding: 0.5rem; text-align: center; font-size: 0.75rem;">Image: ${result}<br><small>(save downloaded file to folder)</small></div>`;
+        } else {
+          uploadArea.innerHTML = `<img src="${result}" alt="">`;
+        }
         uploadArea.classList.add('has-image');
       } catch (e) {
         showToast('Failed to load image', 'error');
@@ -4643,6 +4909,17 @@
         });
       });
 
+      // Images folder/path configuration
+      document.getElementById('btn-set-image-path').addEventListener('click', () => {
+        const path = document.getElementById('manual-image-path').value;
+        setManualImagePath(path);
+      });
+      document.getElementById('manual-image-path').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          setManualImagePath(e.target.value);
+        }
+      });
+
       // Confirm modal
       document.getElementById('confirm-modal').querySelector('.modal-close').addEventListener('click', closeConfirm);
       document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirm);
@@ -4734,6 +5011,7 @@
       initEventListeners();
       renderAll();
       updateSelectionDisplay();
+      updateImagesFolderStatus();
       showWelcomeModal();
     }
 
