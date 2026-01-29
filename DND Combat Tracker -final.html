@@ -7667,6 +7667,38 @@ function hydrateSettingsControlsFromCurrent() {
             });
         })();
 
+        // Listen for combatants from Roll Tables
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'addToCombat') {
+                var data = event.data.data;
+                var newCombatant = {
+                    id: genId(),
+                    name: data.name || 'Unknown',
+                    initiative: 10,
+                    type: 'monster',
+                    conditions: [],
+                    hp: null,
+                    maxHp: null,
+                    ac: null,
+                    charClass: null,
+                    notes: data.notes || '',
+                    effects: data.effects || '',
+                    statBlockImage: data.image || null,
+                    vulnerabilities: [],
+                    resistances: [],
+                    immunities: [],
+                    legendaryActions: { max: 0, current: 0 },
+                    reactions: { max: 1, used: false },
+                    spellSlots: null,
+                    concentration: null
+                };
+                combatants.push(newCombatant);
+                save();
+                render();
+                showAlert('Added "' + data.name + '" from Roll Tables!');
+            }
+        });
+
 </script>
 </body>
 </html>

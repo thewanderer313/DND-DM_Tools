@@ -259,6 +259,19 @@
                 document.getElementById('app-version').textContent = `v${info.version}`;
             });
         }
+
+        // Cross-iframe communication: Relay messages between Roll Tables and Combat Tracker
+        window.addEventListener('message', (event) => {
+            // Handle "addToCombat" from Roll Tables - relay to Combat Tracker
+            if (event.data && event.data.type === 'addToCombat') {
+                const combatIframe = document.getElementById('iframe-combat');
+                if (combatIframe && combatIframe.contentWindow) {
+                    combatIframe.contentWindow.postMessage(event.data, '*');
+                    // Switch to Combat Tracker tab
+                    tabs[1].click();
+                }
+            }
+        });
     </script>
 </body>
 </html>

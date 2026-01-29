@@ -1970,6 +1970,7 @@
         <button id="btn-copy-text">Copy Text</button>
         <button id="btn-copy-image">Copy Image</button>
         <button id="btn-download-card">Download PNG</button>
+        <button id="btn-add-to-combat" title="Add this entry to Combat Tracker">⚔️ Add to Combat</button>
         <button class="primary" id="btn-close-card">Close</button>
       </div>
     </div>
@@ -3903,6 +3904,31 @@
       }
     }
 
+    function addToCombat() {
+      if (!currentCardData) return;
+
+      // Prepare combatant data from card
+      const combatantData = {
+        name: currentCardData.title || 'Unknown',
+        notes: currentCardData.body || '',
+        effects: currentCardData.effects || '',
+        image: currentCardData.image || null,
+        tags: currentCardData.tags || []
+      };
+
+      // Send message to parent window to relay to Combat Tracker
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'addToCombat',
+          data: combatantData
+        }, '*');
+        showToast('Sent to Combat Tracker!', 'success');
+        closeCardModal();
+      } else {
+        showToast('Combat Tracker not available', 'error');
+      }
+    }
+
     function getThemeColors() {
       const style = getComputedStyle(document.documentElement);
       return {
@@ -5212,6 +5238,7 @@
       document.getElementById('btn-copy-text').addEventListener('click', copyCardText);
       document.getElementById('btn-copy-image').addEventListener('click', copyCardImage);
       document.getElementById('btn-download-card').addEventListener('click', downloadCardPng);
+      document.getElementById('btn-add-to-combat').addEventListener('click', addToCombat);
 
       // Settings modal
       document.getElementById('settings-modal').querySelector('.modal-close').addEventListener('click', closeSettings);
