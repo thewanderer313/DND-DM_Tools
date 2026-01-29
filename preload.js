@@ -20,6 +20,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAppInfo: () =>
     ipcRenderer.invoke('get-app-info'),
 
+  // Open images folder in explorer
+  openImagesFolder: () =>
+    ipcRenderer.invoke('open-images-folder'),
+
   // File dialogs
   saveDataFile: (defaultName, data) =>
     ipcRenderer.invoke('save-data-file', { defaultName, data }),

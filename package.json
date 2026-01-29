@@ -36,6 +36,12 @@
     },
     "portable": {
       "artifactName": "OakhartDMTools.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }

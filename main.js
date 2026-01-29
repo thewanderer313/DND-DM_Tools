@@ -161,6 +161,14 @@ ipcMain.handle('get-app-info', async () => {
   };
 });
 
+// Open images folder in file explorer
+ipcMain.handle('open-images-folder', async () => {
+  const { shell } = require('electron');
+  const imagesDir = getPortableImagesDir();
+  shell.openPath(imagesDir);
+  return { success: true, path: imagesDir };
+});
+
 // Save data to file (for backup/export)
 ipcMain.handle('save-data-file', async (event, { defaultName, data }) => {
   try {

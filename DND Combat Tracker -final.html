@@ -2905,6 +2905,33 @@
         .settings-row { display: flex; flex-direction: column; gap: 6px; }
         .mini-note { color: var(--muted-text); font-size: 0.85rem; opacity: 0.85; }
         .settings-actions { display:flex; gap:10px; margin-top:14px; justify-content:flex-end; }
+        .settings-actions button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: Georgia, serif;
+            transition: all 0.2s ease;
+        }
+        .settings-actions .cancel {
+            background: rgba(80, 60, 60, 0.6);
+            border: 2px solid rgba(180, 120, 120, 0.4);
+            color: #e8d8d8;
+        }
+        .settings-actions .cancel:hover {
+            background: rgba(100, 70, 70, 0.7);
+            border-color: rgba(200, 140, 140, 0.5);
+        }
+        .settings-actions .confirm {
+            background: linear-gradient(135deg, #9bb87f 0%, #7a8b6f 100%);
+            border: 2px solid #8b9f6f;
+            color: #1a2415;
+            font-weight: bold;
+        }
+        .settings-actions .confirm:hover {
+            background: linear-gradient(135deg, #aac88f 0%, #8a9b7f 100%);
+            border-color: #a8c898;
+        }
         .secondary-btn {
             background: rgba(255,255,255,0.08) !important;
             color: var(--text-color) !important;
@@ -3649,7 +3676,7 @@
             <div class="settings-actions">
                 <button class="secondary-btn" onclick="resetThemeDefaults()">Reset</button>
                 <button class="cancel" onclick="closeSettingsModal({ target: { id: 'settingsModal' } })">Cancel</button>
-                <button onclick="saveThemeSettings()">Save</button>
+                <button class="confirm" onclick="saveThemeSettings()">Save</button>
             </div>
         </div>
     </div>

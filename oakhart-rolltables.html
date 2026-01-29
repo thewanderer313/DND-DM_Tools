@@ -2134,9 +2134,11 @@
             </div>
           </div>
 
-          <div id="images-folder-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 2rem;">
+          <div id="images-folder-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
             No folder configured (images stored as base64 in browser)
           </div>
+
+          <button id="btn-open-images-folder" style="margin-bottom: 2rem; display: none;">Open Images Folder</button>
 
           <h3 style="margin-bottom: 1rem;">Reset Data</h3>
           <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
@@ -2805,6 +2807,7 @@
       const statusEl = document.getElementById('images-folder-status');
       const pathInput = document.getElementById('manual-image-path');
       const pathSection = document.getElementById('manual-path-section');
+      const openFolderBtn = document.getElementById('btn-open-images-folder');
 
       if (pathInput && manualImagePath) {
         pathInput.value = manualImagePath.replace(/\/$/, '');
@@ -2817,6 +2820,8 @@
           statusEl.classList.add('active');
           // Hide manual path section in Electron mode
           if (pathSection) pathSection.style.display = 'none';
+          // Show open folder button in Electron mode
+          if (openFolderBtn) openFolderBtn.style.display = 'block';
         } else if (imagesFolderHandle) {
           statusEl.textContent = `Folder connected: ${imagesFolderHandle.name} (auto-save enabled)`;
           statusEl.classList.add('active');
@@ -4917,6 +4922,16 @@
       document.getElementById('manual-image-path').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           setManualImagePath(e.target.value);
+        }
+      });
+
+      // Open images folder button (Electron only)
+      document.getElementById('btn-open-images-folder').addEventListener('click', async () => {
+        if (window.electronAPI && window.electronAPI.openImagesFolder) {
+          const result = await window.electronAPI.openImagesFolder();
+          if (result.success) {
+            showToast('Opened images folder', 'success');
+          }
         }
       });
 
