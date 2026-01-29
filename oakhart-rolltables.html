@@ -1847,7 +1847,7 @@
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
         </svg>
-        Oakhart Roll Tables
+        <span id="app-title-text">Oakhart Roll Tables</span>
       </h1>
       <div class="header-actions">
         <button id="btn-global-search" aria-label="Search all entries" title="Search all entries (Ctrl+K)">🔍 Search</button>
@@ -2090,6 +2090,35 @@
 
         <!-- Appearance Panel -->
         <div class="settings-panel" id="panel-appearance">
+          <h3 style="margin-bottom: 1rem;">App Title</h3>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label">Title displayed in the header</label>
+            <input type="text" class="form-input" id="app-title-input" placeholder="Oakhart Roll Tables" maxlength="50">
+            <button class="primary small" id="btn-save-title" style="margin-top: 0.5rem;">Save Title</button>
+          </div>
+
+          <h3 style="margin-bottom: 1rem;">Theme</h3>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label">Color preset</label>
+            <select class="form-select" id="theme-select">
+              <option value="forest">Forest (Default)</option>
+              <option value="ocean">Ocean</option>
+              <option value="desert">Desert</option>
+              <option value="winter">Winter</option>
+              <option value="volcanic">Volcanic</option>
+              <option value="amethyst">Amethyst</option>
+            </select>
+            <div class="theme-preview" id="theme-preview" style="margin-top: 0.75rem; padding: 1rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <div class="theme-swatch" id="swatch-bg" style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border-strong);"></div>
+                <div class="theme-swatch" id="swatch-accent" style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border-strong);"></div>
+                <div class="theme-swatch" id="swatch-text" style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border-strong);"></div>
+                <span id="theme-name" style="color: var(--text-secondary); font-size: 0.875rem; margin-left: 0.5rem;">Forest</span>
+              </div>
+            </div>
+            <button class="primary small" id="btn-apply-theme" style="margin-top: 0.75rem;">Apply Theme</button>
+          </div>
+
           <h3 style="margin-bottom: 1rem;">Background Image</h3>
           <div class="bg-preview" id="bg-preview">
             <span class="bg-preview-placeholder">No background image set</span>
@@ -2120,36 +2149,34 @@
 
           <!-- Desktop App Section -->
           <div id="electron-images-section" style="display: none; margin-bottom: 2rem;">
-            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
-              Choose where card images are saved on your computer.
+            <p style="color: var(--text-secondary); margin-bottom: 0.75rem; font-size: 0.875rem;">
+              Images added to cards are saved in this folder on your computer:
             </p>
-            <div id="images-folder-path" style="font-size: 0.85rem; color: var(--accent); background: var(--bg-tertiary); padding: 0.5rem 0.75rem; border-radius: 4px; margin-bottom: 0.75rem; word-break: break-all;">
+            <div id="images-folder-path" style="font-size: 0.85rem; color: var(--accent); background: var(--bg-tertiary); padding: 0.5rem 0.75rem; border-radius: 4px; margin-bottom: 1rem; word-break: break-all;">
               Loading...
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button id="btn-choose-images-folder" class="primary">Choose Folder</button>
-              <button id="btn-open-images-folder">Open in Explorer</button>
+              <button id="btn-open-images-folder" class="primary">Open Images Folder</button>
+              <button id="btn-choose-images-folder">Change Location</button>
             </div>
+            <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;">
+              Changing the location will only affect new images. Existing images stay in the original folder.
+            </p>
           </div>
 
-          <!-- Browser Section -->
+          <!-- Browser Section (only shown when not running as desktop app) -->
           <div id="manual-path-section" style="margin-bottom: 2rem;">
-            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
-              Configure where images are stored. For local HTML files, use the manual path option.
+            <p style="color: var(--text-secondary); margin-bottom: 0.75rem; font-size: 0.875rem;">
+              When running in a browser, images are stored in the browser's memory and may be lost when cleared.
             </p>
-            <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
-              Image folder path (relative to HTML file):
-            </label>
-            <div style="display: flex; gap: 0.5rem;">
-              <input type="text" id="manual-image-path" class="form-input" placeholder="images" style="flex: 1;">
-              <button id="btn-set-image-path">Set Path</button>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.75rem;">
+              For a better experience, use the <strong>Oakhart DM Tools desktop app</strong> which saves images to a folder on your computer.
+            </p>
+            <div id="images-folder-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem; display: none;">
             </div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
-              Example: "images" will save to the images/ folder next to this HTML file
-            </div>
-            <div id="images-folder-status" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem;">
-              No folder configured (images stored as base64 in browser)
-            </div>
+            <!-- Hidden inputs for legacy support -->
+            <input type="hidden" id="manual-image-path">
+            <button id="btn-set-image-path" style="display: none;"></button>
           </div>
 
           <h3 style="margin-bottom: 1rem;">Reset Data</h3>
@@ -2344,7 +2371,138 @@
     // DATA MODEL & STORAGE
     // ============================================
     const STORAGE_KEY = 'oakhartRollTables.v1';
+    const SETTINGS_STORAGE_KEY = 'oakhartRollTables.settings';
     const DATA_VERSION = 1;
+
+    // Theme presets
+    const THEME_PRESETS = {
+      forest: {
+        name: 'Forest',
+        vars: {
+          '--bg-primary': '#111816',
+          '--bg-secondary': '#161f1b',
+          '--bg-tertiary': '#1c2723',
+          '--bg-card': '#212d28',
+          '--border-color': '#2a3832',
+          '--border-strong': '#3a4a42',
+          '--text-primary': '#e4ebe4',
+          '--text-secondary': '#9aaa9a',
+          '--text-muted': '#5a6a5a',
+          '--accent': '#4a7c59',
+          '--accent-hover': '#5a9469',
+          '--accent-glow': 'rgba(74, 124, 89, 0.25)',
+          '--danger': '#8b3a3a',
+          '--danger-hover': '#a04545',
+          '--warning': '#8b7355',
+          '--success': '#4a7c59'
+        }
+      },
+      ocean: {
+        name: 'Ocean',
+        vars: {
+          '--bg-primary': '#0a1520',
+          '--bg-secondary': '#0f1c28',
+          '--bg-tertiary': '#142430',
+          '--bg-card': '#1a2d3a',
+          '--border-color': '#2a4050',
+          '--border-strong': '#3a5565',
+          '--text-primary': '#e4eef5',
+          '--text-secondary': '#8ab0c8',
+          '--text-muted': '#5a7a90',
+          '--accent': '#3a8cb5',
+          '--accent-hover': '#4a9cc8',
+          '--accent-glow': 'rgba(58, 140, 181, 0.25)',
+          '--danger': '#8b4a4a',
+          '--danger-hover': '#a05555',
+          '--warning': '#8b8055',
+          '--success': '#3a8c7c'
+        }
+      },
+      desert: {
+        name: 'Desert',
+        vars: {
+          '--bg-primary': '#1a1510',
+          '--bg-secondary': '#221c15',
+          '--bg-tertiary': '#2a241c',
+          '--bg-card': '#352d22',
+          '--border-color': '#4a4030',
+          '--border-strong': '#5a5040',
+          '--text-primary': '#f0e8dc',
+          '--text-secondary': '#c8b898',
+          '--text-muted': '#8a7860',
+          '--accent': '#c89040',
+          '--accent-hover': '#d8a050',
+          '--accent-glow': 'rgba(200, 144, 64, 0.25)',
+          '--danger': '#a04040',
+          '--danger-hover': '#b05050',
+          '--warning': '#c89040',
+          '--success': '#6a9050'
+        }
+      },
+      winter: {
+        name: 'Winter',
+        vars: {
+          '--bg-primary': '#0c1015',
+          '--bg-secondary': '#10151c',
+          '--bg-tertiary': '#151c25',
+          '--bg-card': '#1c2530',
+          '--border-color': '#2a3545',
+          '--border-strong': '#3a4a5a',
+          '--text-primary': '#e8f0f8',
+          '--text-secondary': '#a0b8d0',
+          '--text-muted': '#6080a0',
+          '--accent': '#5090c0',
+          '--accent-hover': '#60a0d0',
+          '--accent-glow': 'rgba(80, 144, 192, 0.25)',
+          '--danger': '#904050',
+          '--danger-hover': '#a05060',
+          '--warning': '#a08050',
+          '--success': '#408080'
+        }
+      },
+      volcanic: {
+        name: 'Volcanic',
+        vars: {
+          '--bg-primary': '#181010',
+          '--bg-secondary': '#201515',
+          '--bg-tertiary': '#281c1c',
+          '--bg-card': '#322222',
+          '--border-color': '#4a3030',
+          '--border-strong': '#5a4040',
+          '--text-primary': '#f5e8e4',
+          '--text-secondary': '#c8a098',
+          '--text-muted': '#8a6860',
+          '--accent': '#c85040',
+          '--accent-hover': '#d86050',
+          '--accent-glow': 'rgba(200, 80, 64, 0.25)',
+          '--danger': '#c84040',
+          '--danger-hover': '#d85050',
+          '--warning': '#c88040',
+          '--success': '#609050'
+        }
+      },
+      amethyst: {
+        name: 'Amethyst',
+        vars: {
+          '--bg-primary': '#14101a',
+          '--bg-secondary': '#1a1522',
+          '--bg-tertiary': '#221c2c',
+          '--bg-card': '#2a2438',
+          '--border-color': '#3a3050',
+          '--border-strong': '#4a4065',
+          '--text-primary': '#f0e8f5',
+          '--text-secondary': '#b8a0c8',
+          '--text-muted': '#7a6090',
+          '--accent': '#8050a0',
+          '--accent-hover': '#9060b0',
+          '--accent-glow': 'rgba(128, 80, 160, 0.25)',
+          '--danger': '#a04060',
+          '--danger-hover': '#b05070',
+          '--warning': '#a08050',
+          '--success': '#508070'
+        }
+      }
+    };
 
     const defaultData = {
       version: DATA_VERSION,
@@ -2573,6 +2731,102 @@
       selectedTableId = null;
       renderAll();
       showToast('Data reset to defaults', 'success');
+    }
+
+    // ============================================
+    // THEME & SETTINGS
+    // ============================================
+    function loadAppSettings() {
+      try {
+        const stored = localStorage.getItem(SETTINGS_STORAGE_KEY);
+        if (stored) {
+          return JSON.parse(stored);
+        }
+      } catch (e) {
+        console.error('Failed to load app settings:', e);
+      }
+      return { theme: 'forest', title: 'Oakhart Roll Tables' };
+    }
+
+    function saveAppSettings(settings) {
+      try {
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+      } catch (e) {
+        console.error('Failed to save app settings:', e);
+      }
+    }
+
+    function applyTheme(themeId) {
+      const theme = THEME_PRESETS[themeId] || THEME_PRESETS.forest;
+      const root = document.documentElement;
+
+      // Apply all CSS variables
+      for (const [key, value] of Object.entries(theme.vars)) {
+        root.style.setProperty(key, value);
+      }
+
+      // Update settings
+      const settings = loadAppSettings();
+      settings.theme = themeId;
+      saveAppSettings(settings);
+
+      // Update the select dropdown
+      const select = document.getElementById('theme-select');
+      if (select) {
+        select.value = themeId;
+      }
+
+      // Update preview
+      updateThemePreview(themeId);
+    }
+
+    function updateThemePreview(themeId) {
+      const theme = THEME_PRESETS[themeId] || THEME_PRESETS.forest;
+
+      const swatchBg = document.getElementById('swatch-bg');
+      const swatchAccent = document.getElementById('swatch-accent');
+      const swatchText = document.getElementById('swatch-text');
+      const themeName = document.getElementById('theme-name');
+
+      if (swatchBg) swatchBg.style.backgroundColor = theme.vars['--bg-primary'];
+      if (swatchAccent) swatchAccent.style.backgroundColor = theme.vars['--accent'];
+      if (swatchText) swatchText.style.backgroundColor = theme.vars['--text-primary'];
+      if (themeName) themeName.textContent = theme.name;
+    }
+
+    function applyTitle(title) {
+      const titleEl = document.getElementById('app-title-text');
+      if (titleEl) {
+        titleEl.textContent = title || 'Oakhart Roll Tables';
+      }
+
+      // Also update the document title
+      document.title = title || 'Oakhart Roll Tables';
+
+      // Save to settings
+      const settings = loadAppSettings();
+      settings.title = title || 'Oakhart Roll Tables';
+      saveAppSettings(settings);
+    }
+
+    function initAppSettings() {
+      const settings = loadAppSettings();
+
+      // Apply saved theme
+      applyTheme(settings.theme || 'forest');
+
+      // Apply saved title
+      const titleEl = document.getElementById('app-title-text');
+      if (titleEl && settings.title) {
+        titleEl.textContent = settings.title;
+        document.title = settings.title;
+      }
+
+      // Update input field
+      const titleInput = document.getElementById('app-title-input');
+      if (titleInput) {
+        titleInput.value = settings.title || 'Oakhart Roll Tables';
+      }
     }
 
     // ============================================
@@ -4908,6 +5162,24 @@
       document.getElementById('btn-clear-entry-image').addEventListener('click', clearEntryImage);
       document.getElementById('btn-preview-card').addEventListener('click', previewEntryCard);
 
+      // Title and Theme
+      document.getElementById('btn-save-title').addEventListener('click', () => {
+        const titleInput = document.getElementById('app-title-input');
+        const newTitle = titleInput.value.trim() || 'Oakhart Roll Tables';
+        applyTitle(newTitle);
+        showToast('Title updated', 'success');
+      });
+
+      document.getElementById('theme-select').addEventListener('change', (e) => {
+        updateThemePreview(e.target.value);
+      });
+
+      document.getElementById('btn-apply-theme').addEventListener('click', () => {
+        const themeSelect = document.getElementById('theme-select');
+        applyTheme(themeSelect.value);
+        showToast('Theme applied', 'success');
+      });
+
       // Background upload
       const bgImageUpload = document.getElementById('bg-image-upload');
       const bgImageFile = document.getElementById('bg-image-file');
@@ -5063,6 +5335,7 @@
     function init() {
       loadData();
       initEventListeners();
+      initAppSettings();
       renderAll();
       updateSelectionDisplay();
       updateImagesFolderStatus();
