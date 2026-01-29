@@ -1,33 +1,48 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 // Keep a global reference of the window object
 let mainWindow;
 
-// Get the app's data directory for storing images
-function getImagesDir() {
-  const userDataPath = app.getPath('userData');
-  const imagesDir = path.join(userDataPath, 'images');
+// Settings file for storing user preferences
+const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 
-  // Create images directory if it doesn't exist
-  if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir, { recursive: true });
+function loadSettings() {
+  try {
+    if (fs.existsSync(settingsPath)) {
+      return JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+  } catch (e) {
+    console.error('Failed to load settings:', e);
   }
-
-  return imagesDir;
+  return {};
 }
 
-// Get portable images directory (next to exe)
-function getPortableImagesDir() {
-  const exeDir = path.dirname(app.getPath('exe'));
-  const imagesDir = path.join(exeDir, 'images');
+function saveSettings(settings) {
+  try {
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+  } catch (e) {
+    console.error('Failed to save settings:', e);
+  }
+}
 
-  if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir, { recursive: true });
+// Get the images directory - uses custom path if set, otherwise default
+function getImagesDir() {
+  const settings = loadSettings();
+
+  if (settings.imagesPath && fs.existsSync(settings.imagesPath)) {
+    return settings.imagesPath;
   }
 
-  return imagesDir;
+  // Default to Documents/OakhartDMTools/images
+  const defaultPath = path.join(app.getPath('documents'), 'OakhartDMTools', 'images');
+
+  if (!fs.existsSync(defaultPath)) {
+    fs.mkdirSync(defaultPath, { recursive: true });
+  }
+
+  return defaultPath;
 }
 
 function createWindow() {
@@ -84,7 +99,7 @@ app.on('activate', () => {
 // Save an image file
 ipcMain.handle('save-image', async (event, { fileName, dataUrl }) => {
   try {
-    const imagesDir = getPortableImagesDir();
+    const imagesDir = getImagesDir();
     const filePath = path.join(imagesDir, fileName);
 
     // Convert data URL to buffer
@@ -104,7 +119,7 @@ ipcMain.handle('save-image', async (event, { fileName, dataUrl }) => {
 // Read an image file and return as data URL
 ipcMain.handle('read-image', async (event, relativePath) => {
   try {
-    const imagesDir = getPortableImagesDir();
+    const imagesDir = getImagesDir();
     const fileName = path.basename(relativePath);
     const filePath = path.join(imagesDir, fileName);
 
@@ -125,7 +140,7 @@ ipcMain.handle('read-image', async (event, relativePath) => {
 // Get list of saved images
 ipcMain.handle('list-images', async () => {
   try {
-    const imagesDir = getPortableImagesDir();
+    const imagesDir = getImagesDir();
     const files = fs.readdirSync(imagesDir).filter(f =>
       /\.(jpg|jpeg|png|gif|webp)$/i.test(f)
     );
@@ -138,7 +153,7 @@ ipcMain.handle('list-images', async () => {
 // Delete an image file
 ipcMain.handle('delete-image', async (event, relativePath) => {
   try {
-    const imagesDir = getPortableImagesDir();
+    const imagesDir = getImagesDir();
     const fileName = path.basename(relativePath);
     const filePath = path.join(imagesDir, fileName);
 
@@ -157,16 +172,38 @@ ipcMain.handle('delete-image', async (event, relativePath) => {
 ipcMain.handle('get-app-info', async () => {
   return {
     version: app.getVersion(),
-    imagesPath: getPortableImagesDir()
+    imagesPath: getImagesDir()
   };
 });
 
 // Open images folder in file explorer
 ipcMain.handle('open-images-folder', async () => {
-  const { shell } = require('electron');
-  const imagesDir = getPortableImagesDir();
+  const imagesDir = getImagesDir();
   shell.openPath(imagesDir);
   return { success: true, path: imagesDir };
+});
+
+// Choose images folder location
+ipcMain.handle('choose-images-folder', async () => {
+  try {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Choose Images Folder',
+      defaultPath: getImagesDir(),
+      properties: ['openDirectory', 'createDirectory']
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      const newPath = result.filePaths[0];
+      const settings = loadSettings();
+      settings.imagesPath = newPath;
+      saveSettings(settings);
+      return { success: true, path: newPath };
+    }
+
+    return { success: false, canceled: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 // Save data to file (for backup/export)

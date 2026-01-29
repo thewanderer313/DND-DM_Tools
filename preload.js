@@ -24,6 +24,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openImagesFolder: () =>
     ipcRenderer.invoke('open-images-folder'),
 
+  // Choose images folder location
+  chooseImagesFolder: () =>
+    ipcRenderer.invoke('choose-images-folder'),
+
   // File dialogs
   saveDataFile: (defaultName, data) =>
     ipcRenderer.invoke('save-data-file', { defaultName, data }),
