@@ -1,0 +1,41 @@
+{
+  "name": "oakhart-dm-tools",
+  "version": "1.0.0",
+  "description": "Oakhart DM Tools - Roll Tables and Combat Tracker for D&D",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis"
+  },
+  "author": "Ryan",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.oakhart.dmtools",
+    "productName": "Oakhart DM Tools",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "oakhart-dm-tools-electron.html",
+      "oakhart-rolltables.html",
+      "DND Combat Tracker -final.html",
+      "images/**/*"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "icon.png"
+    },
+    "portable": {
+      "artifactName": "OakhartDMTools.exe"
+    }
+  }
+}

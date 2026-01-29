@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oakhart DM Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #0f1510;
+            --text-color: #e8f0d8;
+            --panel-bg: rgba(20, 30, 18, 0.95);
+            --border-color: #8b9f6f;
+            --accent: #9bb87f;
+            --accent-hover: #b5d090;
+            --tab-inactive: rgba(30, 40, 25, 0.8);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: Georgia, serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            display: flex;
+            background: var(--panel-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .tab {
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-family: Georgia, serif;
+            background: var(--tab-inactive);
+            border: none;
+            border-right: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: rgba(80, 100, 60, 0.3);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: #1a2415;
+            font-weight: bold;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .tab-icon {
+            margin-right: 8px;
+        }
+
+        /* Title area */
+        .title-area {
+            margin-left: auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            color: #a8b88f;
+            font-size: 0.9rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Loading state */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="tab-bar">
+            <button class="tab active" data-tab="rolltables">
+                <span class="tab-icon">🎲</span>Roll Tables
+            </button>
+            <button class="tab" data-tab="combat">
+                <span class="tab-icon">⚔️</span>Combat Tracker
+            </button>
+            <div class="title-area">
+                Oakhart DM Tools
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="tab-content active" id="content-rolltables">
+                <div class="loading-overlay" id="loading-rolltables">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading Roll Tables...</div>
+                </div>
+                <iframe src="oakhart-rolltables.html" id="iframe-rolltables"></iframe>
+            </div>
+            <div class="tab-content" id="content-combat">
+                <div class="loading-overlay" id="loading-combat">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading Combat Tracker...</div>
+                </div>
+                <iframe src="DND Combat Tracker -final.html" id="iframe-combat"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+
+                // Update tab states
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update content states
+                contents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `content-${targetId}`) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Hide loading overlays when iframes load
+        document.getElementById('iframe-rolltables').addEventListener('load', () => {
+            document.getElementById('loading-rolltables').classList.add('hidden');
+        });
+
+        document.getElementById('iframe-combat').addEventListener('load', () => {
+            document.getElementById('loading-combat').classList.add('hidden');
+        });
+
+        // Keyboard shortcuts for tab switching
+        document.addEventListener('keydown', (e) => {
+            // Alt+1 for Roll Tables, Alt+2 for Combat Tracker
+            if (e.altKey && e.key === '1') {
+                e.preventDefault();
+                tabs[0].click();
+            } else if (e.altKey && e.key === '2') {
+                e.preventDefault();
+                tabs[1].click();
+            }
+        });
+    </script>
+</body>
+</html>
