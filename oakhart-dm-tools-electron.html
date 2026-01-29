@@ -175,6 +175,9 @@
             <button class="tab" data-tab="combat">
                 <span class="tab-icon">⚔️</span>Combat Tracker
             </button>
+            <button class="tab" data-tab="rules">
+                <span class="tab-icon">📖</span>Rules Reference
+            </button>
             <div class="title-area">
                 <span>Oakhart DM Tools</span>
                 <span class="version" id="app-version"></span>
@@ -195,6 +198,13 @@
                     <div class="loading-text">Loading Combat Tracker...</div>
                 </div>
                 <iframe src="DND Combat Tracker -final.html" id="iframe-combat"></iframe>
+            </div>
+            <div class="tab-content" id="content-rules">
+                <div class="loading-overlay" id="loading-rules">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading Rules Reference...</div>
+                </div>
+                <iframe src="oakhart-rules-reference.html" id="iframe-rules"></iframe>
             </div>
         </div>
     </div>
@@ -242,7 +252,11 @@
             }
         });
 
-        // Keyboard shortcuts
+        document.getElementById('iframe-rules').addEventListener('load', () => {
+            document.getElementById('loading-rules').classList.add('hidden');
+        });
+
+        // Keyboard shortcuts (Alt+1/2/3 to switch tabs)
         document.addEventListener('keydown', (e) => {
             if (e.altKey && e.key === '1') {
                 e.preventDefault();
@@ -250,6 +264,9 @@
             } else if (e.altKey && e.key === '2') {
                 e.preventDefault();
                 tabs[1].click();
+            } else if (e.altKey && e.key === '3') {
+                e.preventDefault();
+                tabs[2].click();
             }
         });
 
