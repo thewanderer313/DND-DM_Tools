@@ -6,24 +6,25 @@
   <title>Oakhart Roll Tables</title>
   <style>
     :root {
-      --bg-primary: #0d1210;
-      --bg-secondary: #151d19;
-      --bg-tertiary: #1a2621;
-      --bg-card: #1e2b25;
-      --border-color: #2d3f36;
-      --border-light: #3d5246;
-      --text-primary: #e8efe8;
-      --text-secondary: #a8b8a8;
-      --text-muted: #6a7a6a;
+      --bg-primary: #111816;
+      --bg-secondary: #161f1b;
+      --bg-tertiary: #1c2723;
+      --bg-card: #212d28;
+      --border-color: #2a3832;
+      --border-strong: #3a4a42;
+      --text-primary: #e4ebe4;
+      --text-secondary: #9aaa9a;
+      --text-muted: #5a6a5a;
       --accent: #4a7c59;
       --accent-hover: #5a9469;
-      --accent-glow: rgba(74, 124, 89, 0.3);
+      --accent-glow: rgba(74, 124, 89, 0.25);
       --danger: #8b3a3a;
       --danger-hover: #a04545;
       --warning: #8b7355;
       --success: #4a7c59;
-      --shadow: rgba(0, 0, 0, 0.4);
-      --overlay: rgba(13, 18, 16, 0.85);
+      --shadow: rgba(0, 0, 0, 0.5);
+      --overlay: rgba(17, 24, 22, 0.88);
+      --section-gap: 2px;
     }
 
     * {
@@ -73,8 +74,8 @@
     /* Header */
     .app-header {
       background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-strong);
+      padding: 0.5rem 0.875rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -82,33 +83,33 @@
     }
 
     .app-title {
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 600;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .app-title svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       fill: var(--accent);
     }
 
     .header-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.375rem;
     }
 
     .help-btn {
       background: transparent;
       border: 1px solid var(--border-color);
-      width: 34px;
-      height: 34px;
+      width: 28px;
+      height: 28px;
       padding: 0;
       border-radius: 50%;
-      font-size: 1rem;
+      font-size: 0.875rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -123,24 +124,24 @@
     /* Buttons */
     button {
       font-family: inherit;
-      font-size: 0.875rem;
-      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 4px;
       background: var(--bg-tertiary);
       color: var(--text-primary);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.12s ease;
     }
 
     button:hover {
       background: var(--bg-card);
-      border-color: var(--border-light);
+      border-color: var(--border-strong);
     }
 
     button:focus {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+      outline: 1px solid var(--accent);
+      outline-offset: 1px;
     }
 
     button.primary {
@@ -166,43 +167,41 @@
     }
 
     button.small {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.75rem;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.6875rem;
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
     /* Main Layout */
     .main-content {
       display: grid;
-      grid-template-columns: 200px 280px 1fr;
+      grid-template-columns: 180px 260px 1fr;
       flex: 1;
       overflow: hidden;
+      gap: var(--section-gap);
+      background: var(--border-color);
     }
 
     .column {
       display: flex;
       flex-direction: column;
-      border-right: 1px solid var(--border-color);
+      background: var(--bg-primary);
       overflow: hidden;
     }
 
-    .column:last-child {
-      border-right: none;
-    }
-
     .column-header {
-      padding: 0.75rem 1rem;
+      padding: 0.6rem 0.875rem;
       background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 2px solid var(--border-strong);
       font-weight: 600;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
+      font-size: 0.75rem;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -212,13 +211,13 @@
     .step-badge {
       background: var(--accent);
       color: white;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
       font-weight: 700;
       flex-shrink: 0;
     }
@@ -228,12 +227,36 @@
       color: var(--text-muted);
     }
 
+    .column-add-btn {
+      margin-left: auto;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .column-add-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
     /* Selection breadcrumb */
     .selection-bar {
-      background: var(--bg-tertiary);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.5rem 1rem;
-      font-size: 0.8125rem;
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--border-strong);
+      padding: 0.4rem 0.875rem;
+      font-size: 0.75rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -256,16 +279,16 @@
     .column-content {
       flex: 1;
       overflow-y: auto;
-      padding: 0.5rem;
+      padding: 0.375rem;
     }
 
     /* Lists */
     .list-item {
-      padding: 0.625rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.5rem 0.625rem;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.15s ease;
-      margin-bottom: 2px;
+      transition: all 0.12s ease;
+      margin-bottom: 1px;
       border: 1px solid transparent;
     }
 
@@ -276,41 +299,40 @@
     .list-item.selected {
       background: var(--bg-card);
       border-color: var(--accent);
-      box-shadow: 0 0 8px var(--accent-glow);
     }
 
     .list-item-title {
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       font-weight: 500;
     }
 
     .list-item-meta {
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     /* Search Box */
     .search-box {
-      padding: 0.5rem;
+      padding: 0.375rem;
       border-bottom: 1px solid var(--border-color);
+      background: var(--bg-secondary);
       flex-shrink: 0;
     }
 
     .search-box input {
       width: 100%;
-      padding: 0.5rem 0.75rem;
+      padding: 0.375rem 0.625rem;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: 4px;
       background: var(--bg-tertiary);
       color: var(--text-primary);
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
     }
 
     .search-box input:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
     .search-box input::placeholder {
@@ -379,16 +401,17 @@
     }
 
     .current-result {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem;
+      border-bottom: 2px solid var(--border-strong);
       flex-shrink: 0;
+      background: var(--bg-secondary);
     }
 
     .result-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 6px;
+      padding: 0.875rem;
       position: relative;
     }
 
@@ -402,34 +425,34 @@
 
     .result-roll-number {
       position: absolute;
-      top: -8px;
-      right: 12px;
+      top: -6px;
+      right: 10px;
       background: var(--accent);
       color: white;
-      padding: 0.125rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.6875rem;
       font-weight: 600;
     }
 
     .result-title {
-      font-size: 1.125rem;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.375rem;
     }
 
     .result-body {
-      font-size: 0.9375rem;
+      font-size: 0.8125rem;
       color: var(--text-secondary);
       white-space: pre-wrap;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .result-effects {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--border-color);
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       color: var(--warning);
       font-style: italic;
     }
@@ -437,38 +460,38 @@
     .result-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.375rem;
-      margin-top: 0.75rem;
+      gap: 0.25rem;
+      margin-top: 0.5rem;
     }
 
     .tag {
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
-      padding: 0.125rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      padding: 0.1rem 0.375rem;
+      border-radius: 3px;
+      font-size: 0.6875rem;
       color: var(--text-muted);
     }
 
     .result-image-preview {
       width: 100%;
-      max-height: 200px;
+      max-height: 160px;
       object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
     }
 
     .click-hint {
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 0.5rem;
+      margin-top: 0.375rem;
     }
 
     /* Follow-up Suggestions */
     .follow-up-tables {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       border-top: 1px solid var(--border-color);
     }
 
@@ -500,110 +523,140 @@
       color: white;
     }
 
-    /* History */
-    .history-header {
-      padding: 0.75rem 1rem;
+    /* Entries List */
+    .entries-header {
+      padding: 0.4rem 0.625rem;
       background: var(--bg-secondary);
+      border-top: 2px solid var(--border-strong);
       border-bottom: 1px solid var(--border-color);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 0.5rem;
       flex-shrink: 0;
     }
 
-    .history-title {
+    .entries-title {
       font-weight: 600;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
+      font-size: 0.6875rem;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
     }
 
-    .history-list {
+    .entries-list {
       flex: 1;
       overflow-y: auto;
-      padding: 0.5rem;
+      padding: 0.375rem;
+      background: var(--bg-primary);
     }
 
-    .history-item {
-      padding: 0.5rem 0.75rem;
+    .entry-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.35rem 0.5rem;
       background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      margin-bottom: 0.375rem;
-      font-size: 0.8125rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      margin-bottom: 0.2rem;
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.12s ease;
     }
 
-    .history-item:hover {
+    .entry-item:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-card);
+    }
+
+    .entry-item.editing {
       border-color: var(--accent);
       background: var(--bg-card);
     }
 
-    .history-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.25rem;
-    }
-
-    .history-item-table {
-      font-weight: 500;
-      color: var(--accent);
-    }
-
-    .history-item-time {
-      font-size: 0.6875rem;
+    .entry-item-number {
       color: var(--text-muted);
+      font-size: 0.625rem;
+      min-width: 18px;
     }
 
-    .history-item-result {
+    .entry-item-title {
+      flex: 1;
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .entry-item-image {
+      color: var(--accent);
+      font-size: 0.625rem;
+    }
+
+    .entry-item-actions {
+      display: flex;
+      gap: 0.2rem;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+
+    .entry-item:hover .entry-item-actions {
+      opacity: 1;
+    }
+
+    .entry-item-actions button {
+      padding: 0.15rem 0.25rem;
+      font-size: 0.625rem;
+      min-width: 20px;
+    }
+
+    .empty-state-small {
+      padding: 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
     /* Dice Roller Widget */
     .dice-roller {
-      padding: 0.75rem;
+      padding: 0.5rem 0.75rem;
       background: var(--bg-secondary);
-      border-top: 1px solid var(--border-color);
+      border-top: 2px solid var(--border-strong);
       flex-shrink: 0;
     }
 
     .dice-roller-title {
-      font-size: 0.75rem;
+      font-size: 0.625rem;
       color: var(--text-muted);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.375rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
     }
 
     .dice-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.375rem;
+      gap: 0.25rem;
     }
 
     .dice-btn {
-      padding: 0.375rem 0.625rem;
-      font-size: 0.75rem;
-      min-width: 40px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.6875rem;
+      min-width: 36px;
     }
 
     .dice-result {
-      margin-top: 0.5rem;
-      padding: 0.5rem;
+      margin-top: 0.375rem;
+      padding: 0.375rem;
       background: var(--bg-tertiary);
-      border-radius: 6px;
+      border-radius: 4px;
       text-align: center;
-      font-size: 0.875rem;
-      min-height: 36px;
+      font-size: 0.8125rem;
+      min-height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--text-secondary);
     }
 
     /* Table Editor Slide Panel */
@@ -668,38 +721,37 @@
 
     /* Quick Entry List */
     .quick-entry-list {
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .quick-entry-item {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.625rem;
+      gap: 0.375rem;
+      padding: 0.4rem 0.5rem;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      margin-bottom: 0.375rem;
-      transition: all 0.15s ease;
+      border-radius: 4px;
+      margin-bottom: 0.25rem;
+      transition: all 0.12s ease;
     }
 
     .quick-entry-item:hover {
-      border-color: var(--border-light);
+      border-color: var(--border-strong);
     }
 
     .quick-entry-item.editing {
       border-color: var(--accent);
-      box-shadow: 0 0 8px var(--accent-glow);
     }
 
     .quick-entry-number {
       background: var(--bg-card);
       color: var(--text-muted);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+      font-size: 0.6875rem;
       font-weight: 600;
-      min-width: 28px;
+      min-width: 24px;
       text-align: center;
     }
 
@@ -1162,8 +1214,16 @@
       text-overflow: ellipsis;
     }
 
+    .search-result-context {
+      font-size: 0.6875rem;
+      color: var(--text-secondary);
+      margin-top: 0.125rem;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
     .search-result-meta {
-      font-size: 0.75rem;
+      font-size: 0.625rem;
       color: var(--text-muted);
       margin-top: 0.125rem;
     }
@@ -1520,6 +1580,25 @@
       margin-bottom: 1rem;
     }
 
+    .input-modal {
+      width: 350px;
+    }
+
+    .input-modal .form-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .input-modal .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
     /* Empty States */
     .empty-state {
       padding: 2rem 1rem;
@@ -1729,24 +1808,30 @@
     <main class="main-content">
       <!-- Categories Column -->
       <div class="column" id="categories-column">
-        <div class="column-header"><span class="step-badge">1</span> Categories</div>
+        <div class="column-header">
+          <span class="step-badge">1</span> Categories
+          <button class="column-add-btn" id="btn-add-category-quick" title="Add category">+</button>
+        </div>
         <div class="search-box">
-          <input type="text" id="category-search" placeholder="Search categories..." aria-label="Search categories">
+          <input type="text" id="category-search" placeholder="Search..." aria-label="Search categories">
         </div>
         <div class="column-content" id="categories-list"></div>
       </div>
 
       <!-- Tables Column -->
       <div class="column" id="tables-column">
-        <div class="column-header"><span class="step-badge waiting" id="step-2-badge">2</span> Tables</div>
+        <div class="column-header">
+          <span class="step-badge waiting" id="step-2-badge">2</span> Tables
+          <button class="column-add-btn" id="btn-add-table-quick" title="Add table">+</button>
+        </div>
         <div class="search-box">
-          <input type="text" id="table-search" placeholder="Search tables..." aria-label="Search tables">
+          <input type="text" id="table-search" placeholder="Search..." aria-label="Search tables">
         </div>
         <div class="column-content" id="tables-content">
           <div class="empty-state">
             <div class="empty-state-icon">👈</div>
             <div class="empty-state-title">Select a Category</div>
-            <div class="empty-state-hint">Choose a category from the left panel to see its tables</div>
+            <div class="empty-state-hint">Choose a category from the left panel</div>
           </div>
         </div>
       </div>
@@ -1758,16 +1843,17 @@
           <div class="empty-state">
             <div class="empty-state-icon">🎲</div>
             <div class="empty-state-title">Ready to Roll!</div>
-            <div class="empty-state-hint">Select a category and table, then click Roll to generate a random result</div>
+            <div class="empty-state-hint">Select a category and table, then click Roll</div>
           </div>
         </div>
-        <div class="history-header">
-          <span class="history-title">📜 History</span>
-          <button class="small" id="btn-clear-history">Clear</button>
+        <div class="entries-header">
+          <span class="entries-title">Entries</span>
+          <button class="column-add-btn" id="btn-add-entry-quick" title="Add entry">+</button>
         </div>
-        <div class="history-list" id="history-list"></div>
+        <div class="entries-list" id="entries-list">
+          <div class="empty-state-small">Select a table to see entries</div>
+        </div>
         <div class="dice-roller">
-          <div class="dice-roller-title">🎲 Quick Dice Roller</div>
           <div class="dice-buttons" id="dice-buttons"></div>
           <div class="dice-result" id="dice-result">Click a die to roll</div>
         </div>
@@ -1998,6 +2084,23 @@
       <div class="modal-footer">
         <button id="btn-confirm-cancel">Cancel</button>
         <button class="danger" id="btn-confirm-ok">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Modal -->
+  <div class="modal-overlay" id="input-modal" role="dialog" aria-modal="true">
+    <div class="modal input-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="input-modal-title">Enter Name</h2>
+        <button class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-input" id="input-modal-value" placeholder="Enter name..." autofocus>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-input-cancel">Cancel</button>
+        <button class="primary" id="btn-input-ok">Add</button>
       </div>
     </div>
   </div>
@@ -2431,6 +2534,35 @@
       confirmCallback = null;
     }
 
+    let inputCallback = null;
+
+    function showInputModal(title, placeholder, callback) {
+      document.getElementById('input-modal-title').textContent = title;
+      const input = document.getElementById('input-modal-value');
+      input.value = '';
+      input.placeholder = placeholder || 'Enter name...';
+      inputCallback = callback;
+      document.getElementById('input-modal').classList.add('active');
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function closeInputModal() {
+      document.getElementById('input-modal').classList.remove('active');
+      inputCallback = null;
+    }
+
+    function submitInputModal() {
+      const value = document.getElementById('input-modal-value').value.trim();
+      if (!value) {
+        showToast('Please enter a name', 'error');
+        return;
+      }
+      if (inputCallback) {
+        inputCallback(value);
+      }
+      closeInputModal();
+    }
+
     function fileToDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -2478,7 +2610,7 @@
       renderCategories();
       renderTables();
       renderCurrentResult();
-      renderHistory();
+      renderEntries();
       renderDiceButtons();
     }
 
@@ -2712,46 +2844,99 @@
       });
     }
 
-    function renderHistory() {
-      const list = document.getElementById('history-list');
+    function renderEntries() {
+      const list = document.getElementById('entries-list');
 
-      if (rollHistory.length === 0) {
-        list.innerHTML = '<div class="editor-empty" style="padding: 1rem; font-size: 0.8125rem;">Your roll history will appear here</div>';
+      if (!selectedCategoryId || !selectedTableId) {
+        list.innerHTML = '<div class="empty-state-small">Select a table to see entries</div>';
+        return;
+      }
+
+      const table = getTable(selectedCategoryId, selectedTableId);
+      if (!table || table.entries.length === 0) {
+        list.innerHTML = '<div class="empty-state-small">No entries yet. Click + to add one.</div>';
         return;
       }
 
       list.innerHTML = '';
-      for (let i = 0; i < rollHistory.length; i++) {
-        const item = rollHistory[i];
-        const entry = item.entry;
-        const displayText = entry.type === 'card' ? (entry.title || 'Untitled Card') : (entry.text || '').substring(0, 50);
+      table.entries.forEach((entry, index) => {
+        const isCard = entry.type === 'card';
+        const title = isCard ? (entry.title || 'Untitled') : (entry.text || '').split(/[.!?\n]/)[0].substring(0, 35) || 'Untitled';
+        const hasImage = isCard && entry.image;
 
         const div = document.createElement('div');
-        div.className = 'history-item';
-        div.style.cursor = 'pointer';
+        div.className = 'entry-item';
         div.innerHTML = `
-          <div class="history-item-header">
-            <span class="history-item-table">${escapeHtml(item.tableName)} #${item.rollNumber}</span>
-            <span class="history-item-time">${formatTime(item.timestamp)}</span>
+          <span class="entry-item-number">${index + 1}</span>
+          <span class="entry-item-title">${escapeHtml(title)}</span>
+          ${hasImage ? '<span class="entry-item-image">🖼</span>' : ''}
+          <div class="entry-item-actions">
+            <button data-action="edit" title="Edit">✏</button>
+            <button data-action="delete" class="danger" title="Delete">✕</button>
           </div>
-          <div class="history-item-result">${escapeHtml(displayText)}</div>
         `;
-        div.addEventListener('click', () => {
-          if (entry.type === 'card') {
-            openCardModal(entry);
-          } else {
-            openCardModal({
-              type: 'card',
-              title: `${item.tableName} #${item.rollNumber}`,
-              body: entry.text || '',
-              effects: null,
-              tags: [],
-              image: null
-            });
-          }
+
+        // Click to view
+        div.addEventListener('click', (e) => {
+          if (e.target.closest('.entry-item-actions')) return;
+          viewEntryFromList(index);
         });
+
+        // Action buttons
+        div.querySelectorAll('button[data-action]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const action = btn.dataset.action;
+            if (action === 'edit') {
+              editEntryInline(index);
+            } else if (action === 'delete') {
+              deleteEntryFromList(index);
+            }
+          });
+        });
+
         list.appendChild(div);
+      });
+    }
+
+    function viewEntryFromList(index) {
+      const table = getTable(selectedCategoryId, selectedTableId);
+      if (!table || !table.entries[index]) return;
+
+      const entry = table.entries[index];
+      if (entry.type === 'card') {
+        openCardModal(entry);
+      } else {
+        openCardModal({
+          type: 'card',
+          title: `Entry #${index + 1}`,
+          body: entry.text || '',
+          effects: null,
+          tags: [],
+          image: null
+        });
       }
+    }
+
+    function editEntryInline(index) {
+      // Open the inline editor for this entry
+      inlineEditorCategoryId = selectedCategoryId;
+      inlineEditorTableId = selectedTableId;
+      showInlineEditor(index);
+      document.getElementById('table-editor-panel').classList.add('active');
+      document.getElementById('panel-backdrop').classList.add('active');
+    }
+
+    function deleteEntryFromList(index) {
+      const table = getTable(selectedCategoryId, selectedTableId);
+      if (!table) return;
+
+      showConfirm('Delete Entry', `Delete entry #${index + 1}?`, () => {
+        table.entries.splice(index, 1);
+        saveData();
+        renderEntries();
+        closeConfirm();
+      });
     }
 
     function renderDiceButtons() {
@@ -2771,11 +2956,64 @@
     // ============================================
     // SELECTION & ROLLING
     // ============================================
+    function quickAddCategory() {
+      showInputModal('Add Category', 'Category name...', (name) => {
+        const id = 'cat-' + Date.now();
+        appData.categories.push({
+          id: id,
+          name: name,
+          tables: []
+        });
+        saveData();
+        renderCategories();
+        selectCategory(id);
+        showToast('Category added', 'success');
+      });
+    }
+
+    function quickAddTable() {
+      if (!selectedCategoryId) {
+        showToast('Select a category first', 'error');
+        return;
+      }
+
+      showInputModal('Add Table', 'Table name...', (name) => {
+        const category = getCategory(selectedCategoryId);
+        if (!category) return;
+
+        const id = 'table-' + Date.now();
+        category.tables.push({
+          id: id,
+          name: name,
+          entries: []
+        });
+        saveData();
+        renderTables();
+        selectTable(id);
+        showToast('Table added', 'success');
+      });
+    }
+
+    function quickAddEntry() {
+      if (!selectedCategoryId || !selectedTableId) {
+        showToast('Select a table first', 'error');
+        return;
+      }
+
+      // Open the inline editor for a new entry
+      inlineEditorCategoryId = selectedCategoryId;
+      inlineEditorTableId = selectedTableId;
+      showInlineEditor();
+      document.getElementById('table-editor-panel').classList.add('active');
+      document.getElementById('panel-backdrop').classList.add('active');
+    }
+
     function selectCategory(id) {
       selectedCategoryId = id;
       selectedTableId = null;
       renderCategories();
       renderTables();
+      renderEntries();
       updateSelectionDisplay();
     }
 
@@ -2783,6 +3021,7 @@
       selectedTableId = id;
       updateSelectionDisplay();
       renderTables();
+      renderEntries();
     }
 
     function rollOnTable() {
@@ -2902,6 +3141,7 @@
           table.entries.forEach((entry, index) => {
             let matches = false;
             let matchText = '';
+            let matchContext = '';
 
             if (entry.type === 'card') {
               const title = (entry.title || '').toLowerCase();
@@ -2914,19 +3154,32 @@
                 matchText = entry.title;
               } else if (body.includes(searchTerm)) {
                 matches = true;
-                matchText = entry.title || entry.body.substring(0, 50);
+                matchText = entry.title || 'Untitled';
+                // Show snippet of matching description
+                const bodyText = entry.body || '';
+                const matchIndex = body.indexOf(searchTerm);
+                const start = Math.max(0, matchIndex - 15);
+                const end = Math.min(bodyText.length, matchIndex + searchTerm.length + 25);
+                matchContext = (start > 0 ? '...' : '') + bodyText.substring(start, end).trim() + (end < bodyText.length ? '...' : '');
               } else if (effects.includes(searchTerm)) {
                 matches = true;
-                matchText = entry.title || 'Effects match';
+                matchText = entry.title || 'Untitled';
+                matchContext = 'Effects: ' + (entry.effects || '').substring(0, 35);
               } else if (tags.includes(searchTerm)) {
                 matches = true;
-                matchText = entry.title || 'Tag match';
+                matchText = entry.title || 'Untitled';
+                matchContext = 'Tags: ' + (entry.tags || []).join(', ');
               }
             } else {
               const text = (entry.text || '').toLowerCase();
               if (text.includes(searchTerm)) {
                 matches = true;
-                matchText = entry.text.substring(0, 50);
+                const fullText = entry.text || '';
+                matchText = fullText.split(/[.!?\n]/)[0].substring(0, 35) || 'Untitled';
+                const matchIndex = text.indexOf(searchTerm);
+                const start = Math.max(0, matchIndex - 15);
+                const end = Math.min(fullText.length, matchIndex + searchTerm.length + 25);
+                matchContext = (start > 0 ? '...' : '') + fullText.substring(start, end).trim() + (end < fullText.length ? '...' : '');
               }
             }
 
@@ -2938,7 +3191,8 @@
                 categoryName: category.name,
                 tableId: table.id,
                 tableName: table.name,
-                matchText: matchText
+                matchText: matchText,
+                matchContext: matchContext
               });
             }
           });
@@ -2978,14 +3232,13 @@
         const entry = result.entry;
         const isCard = entry.type === 'card';
         const hasImage = isCard && entry.image;
-        // Handle both old "text" entries and "card" entries
-        const displayText = isCard ? (entry.title || 'Untitled') : (entry.text || '').split(/[.!?\n]/)[0].substring(0, 50) || 'Untitled';
 
         html += `
           <div class="search-result-item" data-category-id="${result.categoryId}" data-table-id="${result.tableId}" data-entry-index="${result.entryIndex}">
             <span class="search-result-number">#${result.entryIndex + 1}</span>
             <div class="search-result-content">
-              <div class="search-result-title">${escapeHtml(displayText)}</div>
+              <div class="search-result-title">${escapeHtml(result.matchText)}</div>
+              ${result.matchContext ? `<div class="search-result-context">${escapeHtml(result.matchContext)}</div>` : ''}
               <div class="search-result-meta">${escapeHtml(result.categoryName)} → ${escapeHtml(result.tableName)}</div>
             </div>
             ${hasImage ? '<span class="search-result-image">🖼️</span>' : ''}
@@ -3316,7 +3569,8 @@
       hideInlineEditor();
       inlineEditorCategoryId = null;
       inlineEditorTableId = null;
-      renderTables(); // Refresh main view
+      renderTables();
+      renderEntries();
     }
 
     function updateEditorEntryCount() {
@@ -3531,6 +3785,7 @@
       hideInlineEditor();
       updateEditorEntryCount();
       renderQuickEntryList();
+      renderEntries();
     }
 
     function viewEntry(index) {
@@ -3576,6 +3831,7 @@
 
         updateEditorEntryCount();
         renderQuickEntryList();
+        renderEntries();
         closeConfirm();
         showToast('Entry deleted', 'success');
       });
@@ -4297,12 +4553,10 @@
       // Table search
       document.getElementById('table-search').addEventListener('input', renderTables);
 
-      // History
-      document.getElementById('btn-clear-history').addEventListener('click', () => {
-        rollHistory = [];
-        renderHistory();
-        renderCurrentResult();
-      });
+      // Quick add buttons
+      document.getElementById('btn-add-category-quick').addEventListener('click', quickAddCategory);
+      document.getElementById('btn-add-table-quick').addEventListener('click', quickAddTable);
+      document.getElementById('btn-add-entry-quick').addEventListener('click', quickAddEntry);
 
       // Card modal
       document.getElementById('card-modal').querySelector('.modal-close').addEventListener('click', closeCardModal);
@@ -4394,6 +4648,18 @@
       document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirm);
       document.getElementById('btn-confirm-ok').addEventListener('click', () => {
         if (confirmCallback) confirmCallback();
+      });
+
+      // Input modal
+      document.getElementById('input-modal').querySelector('.modal-close').addEventListener('click', closeInputModal);
+      document.getElementById('btn-input-cancel').addEventListener('click', closeInputModal);
+      document.getElementById('btn-input-ok').addEventListener('click', submitInputModal);
+      document.getElementById('input-modal-value').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitInputModal();
+        if (e.key === 'Escape') closeInputModal();
+      });
+      document.getElementById('input-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'input-modal') closeInputModal();
       });
 
       // Table Editor Panel
