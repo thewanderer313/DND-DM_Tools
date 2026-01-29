@@ -755,6 +755,34 @@
       border-color: var(--accent);
     }
 
+    .quick-entry-item.dragging {
+      opacity: 0.4;
+      border-color: var(--accent);
+      background: var(--bg-card);
+    }
+
+    .quick-entry-item.drag-over {
+      border-color: var(--accent);
+      border-top: 3px solid var(--accent);
+      margin-top: -2px;
+    }
+
+    .quick-entry-item .drag-handle {
+      cursor: grab;
+      color: var(--text-muted);
+      padding: 0 0.125rem;
+      font-size: 0.875rem;
+      user-select: none;
+    }
+
+    .quick-entry-item .drag-handle:hover {
+      color: var(--text-secondary);
+    }
+
+    .quick-entry-item.dragging .drag-handle {
+      cursor: grabbing;
+    }
+
     .quick-entry-number {
       background: var(--bg-card);
       color: var(--text-muted);
@@ -4143,6 +4171,8 @@
       }
     }
 
+    let draggedEntryIndex = null;
+
     function renderQuickEntryList() {
       const table = getTable(inlineEditorCategoryId, inlineEditorTableId);
       const list = document.getElementById('quick-entry-list');
@@ -4162,19 +4192,70 @@
 
         const item = document.createElement('div');
         item.className = 'quick-entry-item' + (isEditing ? ' editing' : '');
+        item.draggable = true;
+        item.dataset.index = index;
         item.innerHTML = `
+          <span class="drag-handle" title="Drag to reorder">⋮⋮</span>
           <span class="quick-entry-number">${index + 1}</span>
           <span class="quick-entry-preview" data-index="${index}" title="Click to view">${escapeHtml(title)}</span>
           ${hasImage ? '<span class="quick-entry-image-indicator">🖼️</span>' : ''}
           <div class="quick-entry-actions">
             <button data-action="view" data-index="${index}" title="View">👁️</button>
-            <button data-action="up" data-index="${index}" ${index === 0 ? 'disabled' : ''} title="Move up">↑</button>
-            <button data-action="down" data-index="${index}" ${index === table.entries.length - 1 ? 'disabled' : ''} title="Move down">↓</button>
             <button data-action="edit" data-index="${index}" title="Edit">✏️</button>
             <button data-action="duplicate" data-index="${index}" title="Duplicate">📋</button>
             <button data-action="delete" data-index="${index}" class="danger" title="Delete">🗑️</button>
           </div>
         `;
+
+        // Drag events
+        item.addEventListener('dragstart', (e) => {
+          draggedEntryIndex = index;
+          item.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', index);
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          draggedEntryIndex = null;
+          // Remove all drag-over classes
+          list.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+
+        item.addEventListener('dragenter', (e) => {
+          e.preventDefault();
+          if (draggedEntryIndex !== null && draggedEntryIndex !== index) {
+            item.classList.add('drag-over');
+          }
+        });
+
+        item.addEventListener('dragleave', () => {
+          item.classList.remove('drag-over');
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          item.classList.remove('drag-over');
+
+          if (draggedEntryIndex !== null && draggedEntryIndex !== index) {
+            // Reorder the entries
+            const fromIndex = draggedEntryIndex;
+            const toIndex = index;
+
+            const [movedEntry] = table.entries.splice(fromIndex, 1);
+            table.entries.splice(toIndex, 0, movedEntry);
+
+            saveData();
+            renderQuickEntryList();
+            showToast('Entry moved', 'success');
+          }
+        });
+
         list.appendChild(item);
       });
 
@@ -4191,8 +4272,6 @@
 
           switch (action) {
             case 'view': viewEntry(index); break;
-            case 'up': moveEntry(index, -1); break;
-            case 'down': moveEntry(index, 1); break;
             case 'edit': editQuickEntry(index); break;
             case 'duplicate': duplicateEntry(index); break;
             case 'delete': deleteQuickEntry(index); break;
