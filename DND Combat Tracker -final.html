@@ -159,6 +159,7 @@
             border-right: 1px solid #6a7b5f;
             padding: 18px;
             padding-top: 40px;
+            padding-bottom: 30px;
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -1021,11 +1022,51 @@
         }
         
         .combatant.active {
-            border: 3px solid #c9d8a8;
-            background: linear-gradient(135deg, rgba(70, 90, 55, 0.25) 0%, rgba(50, 70, 35, 0.25) 100%);
-            box-shadow: 0 0 20px rgba(201, 216, 168, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4);
+            border: 3px solid #ffd700 !important;
+            background: linear-gradient(135deg, rgba(100, 120, 60, 0.4) 0%, rgba(80, 100, 40, 0.35) 100%) !important;
+            box-shadow:
+                0 0 25px rgba(255, 215, 0, 0.5),
+                0 0 50px rgba(255, 215, 0, 0.25),
+                inset 0 0 30px rgba(255, 215, 0, 0.1),
+                0 4px 16px rgba(0, 0, 0, 0.4);
+            animation: activePulse 2s ease-in-out infinite;
+            position: relative;
         }
-        
+
+        .combatant.active::after {
+            content: '▶ CURRENT TURN';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+            color: #1a1a00;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 3px 12px;
+            border-radius: 10px;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        @keyframes activePulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 25px rgba(255, 215, 0, 0.5),
+                    0 0 50px rgba(255, 215, 0, 0.25),
+                    inset 0 0 30px rgba(255, 215, 0, 0.1),
+                    0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+            50% {
+                box-shadow:
+                    0 0 35px rgba(255, 215, 0, 0.7),
+                    0 0 70px rgba(255, 215, 0, 0.35),
+                    inset 0 0 40px rgba(255, 215, 0, 0.15),
+                    0 4px 16px rgba(0, 0, 0, 0.4);
+            }
+        }
+
         .combatant.player { 
             border-left: 6px solid #5a9a5a;
             background: linear-gradient(135deg, rgba(35, 45, 30, 0.95) 0%, rgba(30, 45, 25, 0.95) 100%);
@@ -1203,25 +1244,102 @@
             margin-left: 8px;
         }
 
-        .spell-target-item {
+        .spell-target-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .spell-target-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 8px;
+            background: rgba(30, 40, 25, 0.6);
+            border: 2px solid rgba(106, 123, 95, 0.4);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .spell-target-card:hover {
+            background: rgba(50, 70, 40, 0.6);
+            border-color: rgba(139, 159, 111, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .spell-target-card.selected {
+            background: rgba(74, 120, 74, 0.4);
+            border-color: #4ade80;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.3), inset 0 0 20px rgba(74, 222, 128, 0.1);
+        }
+
+        .spell-target-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #22c55e;
+            color: #000;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            padding: 6px 8px;
-            border-bottom: 1px solid rgba(106, 123, 95, 0.2);
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        .spell-target-item input[type="checkbox"] {
-            margin-right: 10px;
+        .spell-target-card.player {
+            border-left: 4px solid #5a9a5a;
         }
 
-        .spell-target-item .target-name {
-            flex: 1;
+        .spell-target-card.monster {
+            border-left: 4px solid #d47844;
+        }
+
+        .spell-target-card.npc {
+            border-left: 4px solid #6a89b0;
+        }
+
+        .spell-target-card .target-name {
             color: #c9d8a8;
+            font-weight: 500;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            word-break: break-word;
         }
 
-        .spell-target-item .target-ac {
-            font-size: 0.85rem;
+        .spell-target-card .target-stats {
+            display: flex;
+            gap: 8px;
+            font-size: 0.75rem;
             color: #a8b88f;
+        }
+
+        .spell-target-card .target-ac {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .spell-target-card .target-hp {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .spell-target-card .target-hp.bloodied {
+            color: #f0a8a8;
+        }
+
+        .spell-target-card .target-hp.critical {
+            color: #ff6b6b;
         }
 
         .init {
@@ -3315,10 +3433,8 @@
             transform: translateX(2px);
         }
         
-        .combatant.active {
-            box-shadow: 0 0 20px rgba(139, 159, 111, 0.4);
-        }
-        
+        /* Active combatant styling is defined in main styles with animation */
+
         .act-btn:hover {
             background: rgba(80, 100, 60, 0.5);
             box-shadow: 0 0 8px rgba(139, 159, 111, 0.3);
@@ -3474,15 +3590,198 @@
             border: 1px solid var(--border-color-2) !important;
         }
 
-    </style>
-    <!-- PDF.js library for D&D Beyond character sheet import -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        // Set the worker source for PDF.js
-        if (typeof pdfjsLib !== 'undefined') {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        /* ============ CUSTOM SPELL CREATOR MODAL ============ */
+        #customSpellModal .modal-box {
+            max-width: 850px;
+            width: 95%;
         }
-    </script>
+
+        .custom-spell-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .custom-spell-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .custom-spell-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-spell-form label {
+            color: #a8b88f;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .custom-spell-form input,
+        .custom-spell-form select,
+        .custom-spell-form textarea {
+            padding: 8px 10px;
+            background: #0f1510;
+            border: 1px solid #6a7b5f;
+            color: #e8f0d8;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .custom-spell-form textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .custom-spell-form input:focus,
+        .custom-spell-form select:focus,
+        .custom-spell-form textarea:focus {
+            border-color: #9bb87f;
+            outline: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .component-checkboxes {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        .damage-section, .healing-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .custom-spell-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #6a7b5f;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .custom-spell-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(106, 123, 95, 0.3);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .custom-spell-item:last-child {
+            border-bottom: none;
+        }
+
+        .custom-spell-item:hover {
+            background: rgba(155, 184, 127, 0.15);
+        }
+
+        .custom-spell-item.selected {
+            background: rgba(155, 184, 127, 0.25);
+            border-left: 3px solid #9bb87f;
+        }
+
+        .custom-spell-item-info {
+            flex: 1;
+        }
+
+        .custom-spell-item-name {
+            color: #c9d8a8;
+            font-weight: bold;
+        }
+
+        .custom-spell-item-meta {
+            font-size: 0.8rem;
+            color: #a8b88f;
+        }
+
+        .custom-spell-item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .custom-spell-item-actions button {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            background: rgba(100, 120, 90, 0.4);
+            border: 1px solid #6a7b5f;
+            color: #c9d8a8;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .custom-spell-item-actions button:hover {
+            background: rgba(140, 160, 130, 0.5);
+        }
+
+        .custom-spell-item-actions button.delete-btn {
+            background: rgba(139, 50, 50, 0.4);
+            border-color: rgba(180, 60, 60, 0.5);
+        }
+
+        .custom-spell-item-actions button.delete-btn:hover {
+            background: rgba(180, 70, 70, 0.5);
+        }
+
+        .spell-list-divider {
+            padding: 8px 12px;
+            background: rgba(100, 60, 140, 0.2);
+            border-bottom: 1px solid rgba(140, 100, 180, 0.4);
+            color: #c9a8d8;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .spell-list-item.custom-spell {
+            border-left: 3px solid rgba(140, 100, 180, 0.6);
+        }
+
+        .spell-list-item .custom-badge {
+            background: rgba(140, 100, 180, 0.3);
+            color: #c9a8d8;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+
+        .manage-spells-btn {
+            background: linear-gradient(135deg, rgba(100, 60, 140, 0.6), rgba(80, 40, 120, 0.6)) !important;
+            border-color: rgba(140, 100, 180, 0.6) !important;
+            font-size: 0.8rem !important;
+            padding: 4px 8px !important;
+        }
+
+        .manage-spells-btn:hover {
+            background: linear-gradient(135deg, rgba(120, 80, 160, 0.7), rgba(100, 60, 140, 0.7)) !important;
+        }
+
+    </style>
 </head>
 <body>
     <!-- Targeting Mode Indicator -->
@@ -3500,6 +3799,7 @@
             <button onclick="toggleCombatLog()">📜 Combat Log</button>
             <button onclick="toggleCoverRules()">🛡️ Cover Rules</button>
             <button onclick="toggleExhaustionRules()">😫 Exhaustion</button>
+            <button onclick="rollAllInitiative()">🎲 Roll Initiative</button>
             <button onclick="sortByInit()">Sort by Init</button>
             <button onclick="showImportExportModal()">📁 Import/Export</button>
             <button onclick="openSettingsModal()">⚙️ Settings</button>
@@ -3687,7 +3987,6 @@
             <button class="add-btn" onclick="addCombatant()">✚ Quick Add</button>
             <button class="add-btn" onclick="showCharacterSheetModal(-1)" style="background: linear-gradient(135deg, rgba(100, 80, 130, 0.8), rgba(80, 60, 110, 0.8)); border-color: #8878a8;">📋 Full Character Sheet</button>
             <button class="add-btn" onclick="showMonsterTemplates()" style="background: linear-gradient(135deg, rgba(130, 80, 80, 0.8), rgba(110, 60, 60, 0.8)); border-color: #a87878;">🐉 Monster Templates</button>
-            <button class="add-btn" onclick="showDndBeyondImport()" style="background: linear-gradient(135deg, rgba(200, 50, 50, 0.8), rgba(160, 30, 30, 0.8)); border-color: #c85050;">📄 Import D&D Beyond PDF</button>
         </div>
         </div>
 
@@ -5562,7 +5861,10 @@
 
             <!-- Spell Level Filter -->
             <div style="margin-bottom:15px;">
-                <label style="color:#a8b88f; font-size:0.85rem;">Filter by Level:</label>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <label style="color:#a8b88f; font-size:0.85rem;">Filter by Level:</label>
+                    <button class="manage-spells-btn" onclick="showCustomSpellModal()" style="padding:5px 10px; font-size:0.8rem; background:linear-gradient(135deg, rgba(100, 60, 140, 0.6), rgba(80, 40, 120, 0.6)); border:1px solid rgba(140, 100, 180, 0.6); color:#c9a8d8; border-radius:4px; cursor:pointer;">+ Custom Spell</button>
+                </div>
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:5px;">
                     <button class="spell-level-btn active" data-level="all" onclick="filterSpellList('all')">All</button>
                     <button class="spell-level-btn" data-level="0" onclick="filterSpellList(0)">Cantrips</button>
@@ -5571,6 +5873,10 @@
                     <button class="spell-level-btn" data-level="3" onclick="filterSpellList(3)">3rd</button>
                     <button class="spell-level-btn" data-level="4" onclick="filterSpellList(4)">4th</button>
                     <button class="spell-level-btn" data-level="5" onclick="filterSpellList(5)">5th</button>
+                    <button class="spell-level-btn" data-level="6" onclick="filterSpellList(6)">6th</button>
+                    <button class="spell-level-btn" data-level="7" onclick="filterSpellList(7)">7th</button>
+                    <button class="spell-level-btn" data-level="8" onclick="filterSpellList(8)">8th</button>
+                    <button class="spell-level-btn" data-level="9" onclick="filterSpellList(9)">9th</button>
                 </div>
             </div>
 
@@ -5598,8 +5904,8 @@
 
             <!-- Target Selection -->
             <div id="spellTargetSection" style="display:none; margin-bottom:15px;">
-                <label style="color:#a8b88f; font-size:0.85rem;">Target(s):</label>
-                <div id="spellTargetList" style="max-height:150px; overflow-y:auto; margin-top:5px; border:1px solid #6a7b5f; border-radius:4px; padding:5px;">
+                <label style="color:#a8b88f; font-size:0.85rem; display:block; margin-bottom:8px;">Select Target(s): <span id="selectedTargetCount" style="color:#4ade80;"></span></label>
+                <div id="spellTargetList" style="max-height:180px; overflow-y:auto; border:1px solid #6a7b5f; border-radius:6px; background:rgba(0,0,0,0.2);">
                     <!-- Populated by JS -->
                 </div>
             </div>
@@ -5618,9 +5924,9 @@
             <div id="attackResultContent">
                 <!-- Populated by JS -->
             </div>
-            <div class="modal-btns">
+            <div class="modal-btns" id="attackResultBtns">
                 <button class="cancel" onclick="hideAttackResultModal()">Cancel</button>
-                <button class="confirm" onclick="confirmAttackResult()">✓ Apply Damage</button>
+                <button class="confirm" id="btnConfirmAttack" onclick="confirmAttackResult()">✓ Apply Damage</button>
             </div>
         </div>
     </div>
@@ -5680,9 +5986,15 @@
             <div id="selectedMonsterPreview" style="display:none; margin-top:15px; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px;">
                 <h4 id="previewMonsterName" style="color:#c9d8a8; margin-bottom:10px;"></h4>
                 <div id="previewMonsterStats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; font-size:0.9rem; color:#a8b88f;"></div>
-                <div style="margin-top:15px;">
-                    <label style="color:#a8b88f; font-size:0.85rem;">Quantity to add:</label>
-                    <input type="number" id="monsterQuantity" value="1" min="1" max="20" style="width:60px; padding:6px; margin-left:10px;">
+                <div style="margin-top:15px; display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+                    <div>
+                        <label style="color:#a8b88f; font-size:0.85rem;">Quantity to add:</label>
+                        <input type="number" id="monsterQuantity" value="1" min="1" max="20" style="width:60px; padding:6px; margin-left:10px;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <input type="checkbox" id="monsterAutoRollInit" checked style="width:16px; height:16px; cursor:pointer;">
+                        <label for="monsterAutoRollInit" style="color:#a8b88f; font-size:0.85rem; cursor:pointer;">Auto-roll initiative (DEX)</label>
+                    </div>
                 </div>
             </div>
             <div class="modal-btns">
@@ -5692,133 +6004,6 @@
         </div>
     </div>
 
-    <!-- D&D Beyond PDF Import Modal -->
-    <div class="modal-bg" id="dndBeyondImportModal" onclick="closeDndBeyondImportModal(event)" style="display: none;">
-        <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 700px; max-height: 90vh;">
-            <h3>📄 Import D&D Beyond Character</h3>
-
-            <!-- Step 1: File Selection -->
-            <div id="ddbImportStep1">
-                <p style="color: #a8b88f; margin-bottom: 15px;">
-                    Select a character sheet PDF exported from D&D Beyond to import the character's stats.
-                </p>
-                <div style="border: 2px dashed #6a7b5f; border-radius: 8px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.2s;"
-                     id="ddbDropZone"
-                     onclick="document.getElementById('ddbFileInput').click()"
-                     ondragover="event.preventDefault(); this.style.borderColor='#9bb87f'; this.style.background='rgba(155,184,127,0.1)';"
-                     ondragleave="this.style.borderColor='#6a7b5f'; this.style.background='transparent';"
-                     ondrop="handleDdbFileDrop(event)">
-                    <div style="font-size: 3rem; margin-bottom: 10px;">📁</div>
-                    <div style="color: #c9d8a8; font-size: 1.1rem;">Drop PDF here or click to browse</div>
-                    <div style="color: #6a7b5f; font-size: 0.85rem; margin-top: 8px;">Supports D&D Beyond character sheet PDFs</div>
-                </div>
-                <input type="file" id="ddbFileInput" accept=".pdf" style="display: none;" onchange="handleDdbFileSelect(event)">
-
-                <div id="ddbFileStatus" style="margin-top: 15px; color: #a8b88f; display: none;">
-                    <span id="ddbFileName"></span>
-                    <span id="ddbParseStatus" style="margin-left: 10px;"></span>
-                </div>
-            </div>
-
-            <!-- Step 2: Preview & Edit -->
-            <div id="ddbImportStep2" style="display: none;">
-                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                    <h4 style="color: #c9d8a8; margin-bottom: 12px;" id="ddbPreviewName">Character Name</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">CLASS & LEVEL</div>
-                            <div id="ddbPreviewClass" style="color: #e8f0d8;">-</div>
-                        </div>
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">RACE</div>
-                            <div id="ddbPreviewRace" style="color: #e8f0d8;">-</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 15px;">
-                        <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">ABILITY SCORES</div>
-                        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; text-align: center;">
-                            <div class="ddb-ability-box"><div class="label">STR</div><div id="ddbPreviewStr" class="value">10</div></div>
-                            <div class="ddb-ability-box"><div class="label">DEX</div><div id="ddbPreviewDex" class="value">10</div></div>
-                            <div class="ddb-ability-box"><div class="label">CON</div><div id="ddbPreviewCon" class="value">10</div></div>
-                            <div class="ddb-ability-box"><div class="label">INT</div><div id="ddbPreviewInt" class="value">10</div></div>
-                            <div class="ddb-ability-box"><div class="label">WIS</div><div id="ddbPreviewWis" class="value">10</div></div>
-                            <div class="ddb-ability-box"><div class="label">CHA</div><div id="ddbPreviewCha" class="value">10</div></div>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">AC</div>
-                            <div id="ddbPreviewAC" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">10</div>
-                        </div>
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">HP</div>
-                            <div id="ddbPreviewHP" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">10</div>
-                        </div>
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">SPEED</div>
-                            <div id="ddbPreviewSpeed" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">30</div>
-                        </div>
-                        <div>
-                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">INIT</div>
-                            <div id="ddbPreviewInit" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">+0</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Attacks found -->
-                <div id="ddbAttacksSection" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
-                    <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">ATTACKS FOUND</div>
-                    <div id="ddbPreviewAttacks" style="font-size: 0.9rem;"></div>
-                </div>
-
-                <!-- Spellcasting found -->
-                <div id="ddbSpellsSection" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
-                    <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">SPELLCASTING</div>
-                    <div id="ddbPreviewSpells" style="font-size: 0.9rem;"></div>
-                </div>
-
-                <!-- Parse warnings -->
-                <div id="ddbWarnings" style="background: rgba(200, 150, 50, 0.2); border: 1px solid #c8963a; padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
-                    <div style="color: #d4a24a; font-size: 0.9rem;"><strong>Note:</strong> <span id="ddbWarningText"></span></div>
-                </div>
-
-                <div style="margin-top: 15px;">
-                    <label style="color: #a8b88f; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" id="ddbAddToLibrary" checked>
-                        Also save to Character Library
-                    </label>
-                </div>
-            </div>
-
-            <div class="modal-btns">
-                <button class="cancel" onclick="hideDndBeyondImportModal()">Cancel</button>
-                <button class="secondary-btn" id="ddbBackBtn" onclick="ddbGoBackToStep1()" style="display: none;">Back</button>
-                <button class="confirm" id="ddbImportBtn" onclick="confirmDdbImport()" disabled>Import Character</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .ddb-ability-box {
-            background: rgba(0,0,0,0.3);
-            padding: 8px 4px;
-            border-radius: 4px;
-            border: 1px solid #4a5b3f;
-        }
-        .ddb-ability-box .label {
-            color: #6a7b5f;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-        .ddb-ability-box .value {
-            color: #e8f0d8;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-    </style>
-
     <!-- Generic Alert/Confirm Modal -->
     <div class="modal-bg" id="genericModal" onclick="closeGenericModal(event)" style="display: none;">
         <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 450px;">
@@ -5826,6 +6011,238 @@
             <p id="genericModalText" style="color: #c9d8a8; margin: 15px 0; font-size: 1.1rem; white-space: pre-wrap;"></p>
             <div class="modal-btns" id="genericModalBtns">
                 <button class="confirm" id="genericModalOk" onclick="genericModalOkClick()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Spell Creator Modal -->
+    <div class="modal-bg" id="customSpellModal" onclick="closeCustomSpellModal(event)" style="display: none;">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h3>✨ Custom Spell Manager</h3>
+
+            <!-- Existing Custom Spells List -->
+            <div style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label style="color: #a8b88f; font-size: 0.9rem; margin: 0;">Your Custom Spells</label>
+                    <button onclick="startNewCustomSpell()" style="padding: 5px 12px; font-size: 0.85rem; background: linear-gradient(135deg, #9bb87f 0%, #7a8b6f 100%); border: 1px solid #8b9f6f; color: #1a2415; border-radius: 4px; cursor: pointer;">+ New Spell</button>
+                </div>
+                <div class="custom-spell-list" id="customSpellList">
+                    <div style="padding: 20px; text-align: center; color: #a8b88f;">No custom spells yet. Create one!</div>
+                </div>
+            </div>
+
+            <!-- Spell Editor Form -->
+            <div id="customSpellEditor" style="display: none; border-top: 1px solid #6a7b5f; padding-top: 15px;">
+                <h4 style="color: #c9d8a8; margin-bottom: 12px;" id="customSpellEditorTitle">Create New Spell</h4>
+
+                <div class="custom-spell-form">
+                    <!-- Row 1: Name & Level -->
+                    <div class="form-group">
+                        <label for="customSpellName">Spell Name *</label>
+                        <input type="text" id="customSpellName" placeholder="e.g., Arcane Blast">
+                    </div>
+                    <div class="form-group">
+                        <label for="customSpellLevel">Spell Level *</label>
+                        <select id="customSpellLevel">
+                            <option value="0">Cantrip</option>
+                            <option value="1" selected>1st Level</option>
+                            <option value="2">2nd Level</option>
+                            <option value="3">3rd Level</option>
+                            <option value="4">4th Level</option>
+                            <option value="5">5th Level</option>
+                            <option value="6">6th Level</option>
+                            <option value="7">7th Level</option>
+                            <option value="8">8th Level</option>
+                            <option value="9">9th Level</option>
+                        </select>
+                    </div>
+
+                    <!-- Row 2: School & Casting Time -->
+                    <div class="form-group">
+                        <label for="customSpellSchool">School</label>
+                        <select id="customSpellSchool">
+                            <option value="Abjuration">Abjuration</option>
+                            <option value="Conjuration">Conjuration</option>
+                            <option value="Divination">Divination</option>
+                            <option value="Enchantment">Enchantment</option>
+                            <option value="Evocation" selected>Evocation</option>
+                            <option value="Illusion">Illusion</option>
+                            <option value="Necromancy">Necromancy</option>
+                            <option value="Transmutation">Transmutation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customSpellCastingTime">Casting Time</label>
+                        <select id="customSpellCastingTime">
+                            <option value="1 action">1 Action</option>
+                            <option value="1 bonus action">1 Bonus Action</option>
+                            <option value="1 reaction">1 Reaction</option>
+                            <option value="1 minute">1 Minute</option>
+                            <option value="10 minutes">10 Minutes</option>
+                            <option value="1 hour">1 Hour</option>
+                        </select>
+                    </div>
+
+                    <!-- Row 3: Range & Duration -->
+                    <div class="form-group">
+                        <label for="customSpellRange">Range</label>
+                        <input type="text" id="customSpellRange" placeholder="e.g., 60 feet, Touch, Self">
+                    </div>
+                    <div class="form-group">
+                        <label for="customSpellDuration">Duration</label>
+                        <input type="text" id="customSpellDuration" placeholder="e.g., Instantaneous, 1 minute">
+                    </div>
+
+                    <!-- Row 4: Components -->
+                    <div class="form-group full-width">
+                        <label>Components</label>
+                        <div class="component-checkboxes">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="customSpellCompV" checked>
+                                <label for="customSpellCompV">Verbal (V)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="customSpellCompS" checked>
+                                <label for="customSpellCompS">Somatic (S)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="customSpellCompM">
+                                <label for="customSpellCompM">Material (M)</label>
+                            </div>
+                            <input type="text" id="customSpellMaterial" placeholder="Material component..." style="flex: 1; display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Concentration -->
+                    <div class="form-group full-width">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="customSpellConcentration">
+                            <label for="customSpellConcentration">Requires Concentration</label>
+                        </div>
+                    </div>
+
+                    <!-- Row 6: Attack Type -->
+                    <div class="form-group">
+                        <label for="customSpellAttackType">Spell Type</label>
+                        <select id="customSpellAttackType" onchange="updateCustomSpellTypeOptions()">
+                            <option value="none">Utility / Buff</option>
+                            <option value="melee">Melee Spell Attack</option>
+                            <option value="ranged">Ranged Spell Attack</option>
+                            <option value="save">Saving Throw</option>
+                            <option value="healing">Healing</option>
+                            <option value="mark">Mark / Curse (like Hunter's Mark)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customSpellSaveAbilityGroup" style="display: none;">
+                        <label for="customSpellSaveAbility">Save Ability</label>
+                        <select id="customSpellSaveAbility">
+                            <option value="str">Strength</option>
+                            <option value="dex">Dexterity</option>
+                            <option value="con">Constitution</option>
+                            <option value="int">Intelligence</option>
+                            <option value="wis">Wisdom</option>
+                            <option value="cha">Charisma</option>
+                        </select>
+                    </div>
+
+                    <!-- Row 7: Damage -->
+                    <div class="form-group full-width" id="customSpellDamageSection">
+                        <label>Damage</label>
+                        <div class="damage-section">
+                            <div class="form-group">
+                                <label for="customSpellDamageDice">Damage Dice</label>
+                                <input type="text" id="customSpellDamageDice" placeholder="e.g., 2d6, 8d6">
+                            </div>
+                            <div class="form-group">
+                                <label for="customSpellDamageType">Damage Type</label>
+                                <select id="customSpellDamageType">
+                                    <option value="fire">Fire</option>
+                                    <option value="cold">Cold</option>
+                                    <option value="lightning">Lightning</option>
+                                    <option value="thunder">Thunder</option>
+                                    <option value="acid">Acid</option>
+                                    <option value="poison">Poison</option>
+                                    <option value="necrotic">Necrotic</option>
+                                    <option value="radiant">Radiant</option>
+                                    <option value="force">Force</option>
+                                    <option value="psychic">Psychic</option>
+                                    <option value="bludgeoning">Bludgeoning</option>
+                                    <option value="piercing">Piercing</option>
+                                    <option value="slashing">Slashing</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="customSpellUpcast">Upcast Bonus (per level)</label>
+                                <input type="text" id="customSpellUpcast" placeholder="e.g., 1d6">
+                            </div>
+                            <div class="form-group" id="customSpellBonusDamageGroup" style="display: none;">
+                                <div class="checkbox-group" style="margin-top: 20px;">
+                                    <input type="checkbox" id="customSpellBonusDamage">
+                                    <label for="customSpellBonusDamage">Adds to weapon attacks</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 8: Healing (hidden by default) -->
+                    <div class="form-group full-width" id="customSpellHealingSection" style="display: none;">
+                        <label>Healing</label>
+                        <div class="healing-section">
+                            <div class="form-group">
+                                <label for="customSpellHealingDice">Healing Dice</label>
+                                <input type="text" id="customSpellHealingDice" placeholder="e.g., 1d8, 2d8+5">
+                            </div>
+                            <div class="form-group">
+                                <label for="customSpellHealingUpcast">Upcast Bonus (per level)</label>
+                                <input type="text" id="customSpellHealingUpcast" placeholder="e.g., 1d8">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 9: AoE -->
+                    <div class="form-group">
+                        <label for="customSpellAoeType">Area of Effect</label>
+                        <select id="customSpellAoeType">
+                            <option value="none">None (Single Target)</option>
+                            <option value="sphere">Sphere</option>
+                            <option value="cube">Cube</option>
+                            <option value="cone">Cone</option>
+                            <option value="line">Line</option>
+                            <option value="cylinder">Cylinder</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customSpellAoeSizeGroup" style="display: none;">
+                        <label for="customSpellAoeSize">AoE Size (feet)</label>
+                        <input type="number" id="customSpellAoeSize" placeholder="e.g., 20" min="5" step="5">
+                    </div>
+
+                    <!-- Row 10: Description -->
+                    <div class="form-group full-width">
+                        <label for="customSpellDescription">Description *</label>
+                        <textarea id="customSpellDescription" rows="3" placeholder="Describe what the spell does..."></textarea>
+                    </div>
+
+                    <!-- Row 11: Effects (conditions, etc.) -->
+                    <div class="form-group full-width">
+                        <label for="customSpellEffects">Effects / Conditions (one per line)</label>
+                        <textarea id="customSpellEffects" rows="2" placeholder="e.g., Target is blinded&#10;Advantage on next attack"></textarea>
+                    </div>
+
+                    <!-- Row 12: Classes -->
+                    <div class="form-group full-width">
+                        <label for="customSpellClasses">Available to Classes (comma-separated)</label>
+                        <input type="text" id="customSpellClasses" placeholder="e.g., wizard, sorcerer, warlock">
+                    </div>
+                </div>
+
+                <div class="modal-btns" style="margin-top: 15px;">
+                    <button class="cancel" onclick="cancelCustomSpellEdit()">Cancel</button>
+                    <button class="confirm" onclick="saveCustomSpell()">💾 Save Spell</button>
+                </div>
+            </div>
+
+            <div class="modal-btns" id="customSpellModalMainBtns">
+                <button class="cancel" onclick="hideCustomSpellModal()">Close</button>
             </div>
         </div>
     </div>
@@ -6637,6 +7054,36 @@
             render();
         }
         
+        // Roll initiative for all combatants
+        function rollAllInitiative() {
+            if (combatants.length === 0) {
+                showAlert('No combatants to roll initiative for.');
+                return;
+            }
+
+            clearUndo();
+
+            combatants.forEach(function(c) {
+                var roll = Math.floor(Math.random() * 20) + 1;
+                var bonus = c.initiativeBonus || 0;
+                // Also use DEX modifier if no explicit initiative bonus
+                if (!c.initiativeBonus && c.abilities && c.abilities.dex) {
+                    bonus = Math.floor((c.abilities.dex - 10) / 2);
+                }
+                c.initiative = roll + bonus;
+            });
+
+            // Sort by initiative after rolling
+            combatants.sort(function(a, b) {
+                return b.initiative - a.initiative;
+            });
+            activeIndex = 0;
+
+            save();
+            render();
+            addLogEntry('Initiative rolled for all combatants!', 'system');
+        }
+
         // Sort by initiative
         function sortByInit() {
             clearUndo();
@@ -7704,7 +8151,7 @@
                     html += ' (+' + action.attackBonus + ' to hit)';
                 }
                 if (action.damage) {
-                    html += ' - ' + action.damage + ' ' + (action.damageType || '') + ' damage';
+                    html += ' - ' + escapeHtml(action.damage) + ' ' + escapeHtml(action.damageType || '') + ' damage';
                 }
                 html += '</button>';
             });
@@ -7713,7 +8160,11 @@
             html += 'Custom Attack (manual entry)';
             html += '</button>';
 
-            showAlert(html, '⚔️ Choose Attack');
+            // Use innerHTML directly instead of showAlert which uses textContent
+            document.getElementById('genericModalTitle').textContent = '⚔️ Choose Attack';
+            document.getElementById('genericModalText').innerHTML = html;
+            document.getElementById('genericModalBtns').innerHTML = '';
+            document.getElementById('genericModal').style.display = 'block';
         }
 
         function performAction(actionIndex) {
@@ -7828,6 +8279,7 @@
                     context: {
                         result: result,
                         action: context.action,
+                        attacker: context.attacker,
                         target: context.target,
                         isCrit: isCrit
                     }
@@ -7841,6 +8293,7 @@
         function handleDamageRollResult(diceResult, context) {
             var result = context.result;
             var action = context.action;
+            var attacker = context.attacker;
             var target = context.target;
 
             // For manual rolls on crit, trust that player doubled dice
@@ -7872,6 +8325,13 @@
             result.damageModifier = diceResult.modifier;
             result.isManualDamageRoll = diceResult.isManual;
 
+            // Check for bonus damage from mark spells (Hunter's Mark, Hex, etc.)
+            var bonusDamageInfo = getBonusDamageFromMarks(attacker, target);
+            if (bonusDamageInfo.total > 0) {
+                result.totalDamage += bonusDamageInfo.total;
+                result.bonusDamage = bonusDamageInfo;
+            }
+
             // Apply resistances/immunities/vulnerabilities
             var dmgType = (action.damageType || '').toLowerCase();
             if (dmgType && target.immunities && target.immunities.indexOf(dmgType) >= 0) {
@@ -7886,6 +8346,39 @@
             }
 
             showAttackResultModal(result);
+        }
+
+        // Check for bonus damage from mark spells (Hunter's Mark, Hex, etc.)
+        function getBonusDamageFromMarks(attacker, target) {
+            var result = {
+                total: 0,
+                sources: [],
+                rolls: []
+            };
+
+            if (!attacker || !target || !target.conditions) return result;
+
+            var attackerName = attacker.name;
+
+            target.conditions.forEach(function(cond) {
+                // Check if this condition has bonus damage and is from the attacker
+                if (typeof cond === 'object' && cond.bonusDamage && cond.source === attackerName) {
+                    // Roll the bonus damage
+                    var bonusRoll = rollDiceFormula(cond.bonusDamage);
+                    if (bonusRoll.total > 0) {
+                        result.total += bonusRoll.total;
+                        result.sources.push({
+                            name: cond.name,
+                            formula: cond.bonusDamage,
+                            rolled: bonusRoll.total,
+                            rollStr: bonusRoll.rolls.join('+') + (bonusRoll.modifier ? (bonusRoll.modifier > 0 ? '+' : '') + bonusRoll.modifier : '')
+                        });
+                        result.rolls.push(bonusRoll.total);
+                    }
+                }
+            });
+
+            return result;
         }
 
         function rollDamageFormula(formula, isCrit) {
@@ -8065,11 +8558,29 @@
                 if (result.immunityApplied) {
                     html += '<br><span style="color:#666;">Target is immune!</span>';
                 }
+                // Show bonus damage from mark spells
+                if (result.bonusDamage && result.bonusDamage.sources && result.bonusDamage.sources.length > 0) {
+                    html += '<div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.2);">';
+                    html += '<span style="color:#c9a8d8;">✨ Bonus damage:</span>';
+                    result.bonusDamage.sources.forEach(function(src) {
+                        html += '<br><span style="color:#a890c8;">' + escapeHtml(src.name) + ': +' + src.rolled + ' (' + src.rollStr + ')</span>';
+                    });
+                    html += '</div>';
+                }
                 html += '</div>';
                 html += '</div>';
             }
 
             document.getElementById('attackResultContent').innerHTML = html;
+
+            // Update button text based on hit/miss
+            var confirmBtn = document.getElementById('btnConfirmAttack');
+            if (result.isMiss) {
+                confirmBtn.textContent = '✓ OK';
+            } else {
+                confirmBtn.textContent = '✓ Apply Damage';
+            }
+
             document.getElementById('attackResultModal').style.display = 'block';
         }
 
@@ -8196,12 +8707,27 @@
         // ==================== End Dice Roll Modal Functions ====================
 
         function confirmAttackResult() {
-            if (!pendingAttackResult || pendingAttackResult.isMiss) {
+            if (!pendingAttackResult) {
                 hideAttackResultModal();
                 return;
             }
 
             var targetIdx = pendingAttackResult.targetIndex;
+
+            // Handle miss - log it and clear targets
+            if (pendingAttackResult.isMiss) {
+                var missMsg = pendingAttackResult.attackerName + ' attacks ' + pendingAttackResult.targetName;
+                missMsg += ' (' + pendingAttackResult.attackRoll + '+' + pendingAttackResult.attackBonus + '=' + pendingAttackResult.attackTotal;
+                missMsg += ' vs AC ' + pendingAttackResult.targetAC + ') - MISS!';
+                addLogEntry(missMsg, 'combat');
+
+                // Clear targeting after miss
+                clearTargets();
+                hideAttackResultModal();
+                return;
+            }
+
+            // Handle hit
             if (targetIdx >= 0 && targetIdx < combatants.length) {
                 var target = combatants[targetIdx];
                 var damage = pendingAttackResult.totalDamage;
@@ -8227,7 +8753,12 @@
                     addLogEntry(target.name + ' must make DC ' + concDC + ' CON save to maintain concentration on ' + target.concentration, 'combat');
                 }
 
-                addLogEntry(pendingAttackResult.attackerName + ' dealt ' + pendingAttackResult.totalDamage + ' ' + (pendingAttackResult.damageType || '') + ' damage to ' + target.name, 'combat');
+                var logMsg = pendingAttackResult.attackerName + ' dealt ' + pendingAttackResult.totalDamage + ' ' + (pendingAttackResult.damageType || '') + ' damage to ' + target.name;
+                if (pendingAttackResult.bonusDamage && pendingAttackResult.bonusDamage.sources && pendingAttackResult.bonusDamage.sources.length > 0) {
+                    var bonusSources = pendingAttackResult.bonusDamage.sources.map(function(s) { return s.name + ' (+' + s.rolled + ')'; });
+                    logMsg += ' [includes ' + bonusSources.join(', ') + ']';
+                }
+                addLogEntry(logMsg, 'combat');
 
                 save();
                 render();
@@ -9974,7 +10505,7 @@
                 castingTime: '1 bonus action', range: '90 feet', duration: 'Concentration, 1 hour',
                 components: { v: true, s: true, m: null }, concentration: true,
                 description: 'Curse a target. Deal extra 1d6 necrotic on hits, disadvantage on one ability.',
-                attackType: 'none', saveAbility: null,
+                attackType: 'none', saveAbility: null, needsTarget: true, targetType: 'mark',
                 damage: { base: '1d6', type: 'necrotic', bonusDamage: true },
                 effects: ['Target has disadvantage on chosen ability checks'],
                 classes: ['warlock']
@@ -9984,7 +10515,7 @@
                 castingTime: '1 bonus action', range: '90 feet', duration: 'Concentration, 1 hour',
                 components: { v: true, s: false, m: null }, concentration: true,
                 description: 'Mark a creature. Deal extra 1d6 on weapon attacks against it.',
-                attackType: 'none', saveAbility: null,
+                attackType: 'none', saveAbility: null, needsTarget: true, targetType: 'mark',
                 damage: { base: '1d6', type: 'weapon', bonusDamage: true },
                 effects: ['Advantage on Perception/Survival to find target'],
                 classes: ['ranger']
@@ -10160,6 +10691,415 @@
             }
             return spells.sort(function(a, b) { return a.level - b.level || a.name.localeCompare(b.name); });
         }
+
+        // ============ CUSTOM SPELLS SYSTEM ============
+        var CUSTOM_SPELLS_KEY = 'oakhart-custom-spells';
+        var customSpells = {};
+        var editingCustomSpellId = null;
+
+        // Load custom spells from localStorage
+        function loadCustomSpells() {
+            try {
+                var saved = localStorage.getItem(CUSTOM_SPELLS_KEY);
+                if (saved) {
+                    customSpells = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading custom spells:', e);
+                customSpells = {};
+            }
+        }
+
+        // Save custom spells to localStorage
+        function saveCustomSpellsToStorage() {
+            try {
+                localStorage.setItem(CUSTOM_SPELLS_KEY, JSON.stringify(customSpells));
+            } catch (e) {
+                console.error('Error saving custom spells:', e);
+            }
+        }
+
+        // Get all spells (SRD + custom)
+        function getAllSpells() {
+            var all = {};
+            // Add SRD spells
+            for (var key in SRD_SPELLS) {
+                all[key] = SRD_SPELLS[key];
+            }
+            // Add custom spells
+            for (var key in customSpells) {
+                all[key] = customSpells[key];
+                all[key].isCustom = true;
+            }
+            return all;
+        }
+
+        // Get spell by ID or name (includes custom spells)
+        function getSpellIncludingCustom(idOrName) {
+            // Check SRD first
+            if (SRD_SPELLS[idOrName]) return SRD_SPELLS[idOrName];
+            for (var key in SRD_SPELLS) {
+                if (SRD_SPELLS[key].id === idOrName) return SRD_SPELLS[key];
+            }
+            // Check custom spells
+            if (customSpells[idOrName]) return customSpells[idOrName];
+            for (var key in customSpells) {
+                if (customSpells[key].id === idOrName) return customSpells[key];
+            }
+            return null;
+        }
+
+        // Show custom spell modal
+        function showCustomSpellModal() {
+            editingCustomSpellId = null;
+            document.getElementById('customSpellEditor').style.display = 'none';
+            document.getElementById('customSpellModalMainBtns').style.display = 'flex';
+            renderCustomSpellList();
+            document.getElementById('customSpellModal').style.display = 'block';
+        }
+
+        function hideCustomSpellModal() {
+            document.getElementById('customSpellModal').style.display = 'none';
+            editingCustomSpellId = null;
+            // Refresh the spell cast modal if open
+            if (document.getElementById('spellCastModal').style.display === 'block') {
+                renderSpellList();
+            }
+        }
+
+        function closeCustomSpellModal(e) {
+            if (e.target.id === 'customSpellModal') hideCustomSpellModal();
+        }
+
+        // Render the list of custom spells
+        function renderCustomSpellList() {
+            var html = '';
+            var spellKeys = Object.keys(customSpells).sort(function(a, b) {
+                var spellA = customSpells[a];
+                var spellB = customSpells[b];
+                return spellA.level - spellB.level || spellA.name.localeCompare(spellB.name);
+            });
+
+            if (spellKeys.length === 0) {
+                html = '<div style="padding: 20px; text-align: center; color: #a8b88f;">No custom spells yet. Create one!</div>';
+            } else {
+                spellKeys.forEach(function(key) {
+                    var spell = customSpells[key];
+                    var levelStr = spell.level === 0 ? 'Cantrip' : 'Level ' + spell.level;
+                    var isSelected = editingCustomSpellId === spell.id;
+
+                    html += '<div class="custom-spell-item' + (isSelected ? ' selected' : '') + '">';
+                    html += '<div class="custom-spell-item-info" onclick="editCustomSpell(\'' + spell.id + '\')">';
+                    html += '<div class="custom-spell-item-name">' + escapeHtml(spell.name) + '</div>';
+                    html += '<div class="custom-spell-item-meta">' + levelStr + ' ' + spell.school + ' • ' + spell.castingTime + '</div>';
+                    html += '</div>';
+                    html += '<div class="custom-spell-item-actions">';
+                    html += '<button onclick="editCustomSpell(\'' + spell.id + '\')">Edit</button>';
+                    html += '<button class="delete-btn" onclick="deleteCustomSpell(\'' + spell.id + '\')">Delete</button>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+            }
+
+            document.getElementById('customSpellList').innerHTML = html;
+        }
+
+        // Start creating a new custom spell
+        function startNewCustomSpell() {
+            editingCustomSpellId = null;
+            document.getElementById('customSpellEditorTitle').textContent = 'Create New Spell';
+            clearCustomSpellForm();
+            document.getElementById('customSpellEditor').style.display = 'block';
+            document.getElementById('customSpellModalMainBtns').style.display = 'none';
+        }
+
+        // Edit an existing custom spell
+        function editCustomSpell(spellId) {
+            var spell = customSpells[spellId];
+            if (!spell) return;
+
+            editingCustomSpellId = spellId;
+            document.getElementById('customSpellEditorTitle').textContent = 'Edit Spell: ' + spell.name;
+            populateCustomSpellForm(spell);
+            document.getElementById('customSpellEditor').style.display = 'block';
+            document.getElementById('customSpellModalMainBtns').style.display = 'none';
+            renderCustomSpellList();
+        }
+
+        // Clear the custom spell form
+        function clearCustomSpellForm() {
+            document.getElementById('customSpellName').value = '';
+            document.getElementById('customSpellLevel').value = '1';
+            document.getElementById('customSpellSchool').value = 'Evocation';
+            document.getElementById('customSpellCastingTime').value = '1 action';
+            document.getElementById('customSpellRange').value = '';
+            document.getElementById('customSpellDuration').value = '';
+            document.getElementById('customSpellCompV').checked = true;
+            document.getElementById('customSpellCompS').checked = true;
+            document.getElementById('customSpellCompM').checked = false;
+            document.getElementById('customSpellMaterial').value = '';
+            document.getElementById('customSpellMaterial').style.display = 'none';
+            document.getElementById('customSpellConcentration').checked = false;
+            document.getElementById('customSpellAttackType').value = 'none';
+            document.getElementById('customSpellSaveAbility').value = 'dex';
+            document.getElementById('customSpellDamageDice').value = '';
+            document.getElementById('customSpellDamageType').value = 'fire';
+            document.getElementById('customSpellUpcast').value = '';
+            document.getElementById('customSpellBonusDamage').checked = false;
+            document.getElementById('customSpellHealingDice').value = '';
+            document.getElementById('customSpellHealingUpcast').value = '';
+            document.getElementById('customSpellAoeType').value = 'none';
+            document.getElementById('customSpellAoeSize').value = '';
+            document.getElementById('customSpellDescription').value = '';
+            document.getElementById('customSpellEffects').value = '';
+            document.getElementById('customSpellClasses').value = '';
+            updateCustomSpellTypeOptions();
+        }
+
+        // Populate form with spell data
+        function populateCustomSpellForm(spell) {
+            document.getElementById('customSpellName').value = spell.name || '';
+            document.getElementById('customSpellLevel').value = spell.level || 0;
+            document.getElementById('customSpellSchool').value = spell.school || 'Evocation';
+            document.getElementById('customSpellCastingTime').value = spell.castingTime || '1 action';
+            document.getElementById('customSpellRange').value = spell.range || '';
+            document.getElementById('customSpellDuration').value = spell.duration || '';
+            document.getElementById('customSpellCompV').checked = spell.components ? spell.components.v : true;
+            document.getElementById('customSpellCompS').checked = spell.components ? spell.components.s : true;
+            document.getElementById('customSpellCompM').checked = spell.components ? !!spell.components.m : false;
+            document.getElementById('customSpellMaterial').value = spell.components && spell.components.m ? spell.components.m : '';
+            document.getElementById('customSpellMaterial').style.display = spell.components && spell.components.m ? 'block' : 'none';
+            document.getElementById('customSpellConcentration').checked = spell.concentration || false;
+
+            // Attack type
+            if (spell.healing) {
+                document.getElementById('customSpellAttackType').value = 'healing';
+            } else if (spell.targetType === 'mark') {
+                document.getElementById('customSpellAttackType').value = 'mark';
+            } else {
+                document.getElementById('customSpellAttackType').value = spell.attackType || 'none';
+            }
+            document.getElementById('customSpellSaveAbility').value = spell.saveAbility || 'dex';
+
+            // Damage
+            if (spell.damage) {
+                document.getElementById('customSpellDamageDice').value = spell.damage.base || '';
+                document.getElementById('customSpellDamageType').value = spell.damage.type || 'fire';
+                document.getElementById('customSpellUpcast').value = spell.damage.upcast || '';
+                document.getElementById('customSpellBonusDamage').checked = spell.damage.bonusDamage || false;
+            } else {
+                document.getElementById('customSpellDamageDice').value = '';
+                document.getElementById('customSpellDamageType').value = 'fire';
+                document.getElementById('customSpellUpcast').value = '';
+                document.getElementById('customSpellBonusDamage').checked = false;
+            }
+
+            // Healing
+            if (spell.healing) {
+                document.getElementById('customSpellHealingDice').value = spell.healing.base || '';
+                document.getElementById('customSpellHealingUpcast').value = spell.healing.upcast || '';
+            } else {
+                document.getElementById('customSpellHealingDice').value = '';
+                document.getElementById('customSpellHealingUpcast').value = '';
+            }
+
+            // AoE
+            if (spell.aoe) {
+                document.getElementById('customSpellAoeType').value = spell.aoe.type || 'none';
+                document.getElementById('customSpellAoeSize').value = spell.aoe.size || '';
+            } else {
+                document.getElementById('customSpellAoeType').value = 'none';
+                document.getElementById('customSpellAoeSize').value = '';
+            }
+
+            document.getElementById('customSpellDescription').value = spell.description || '';
+            document.getElementById('customSpellEffects').value = (spell.effects || []).join('\n');
+            document.getElementById('customSpellClasses').value = (spell.classes || []).join(', ');
+
+            updateCustomSpellTypeOptions();
+        }
+
+        // Update UI based on spell type selection
+        function updateCustomSpellTypeOptions() {
+            var attackType = document.getElementById('customSpellAttackType').value;
+
+            // Save ability (only for save spells)
+            document.getElementById('customSpellSaveAbilityGroup').style.display = attackType === 'save' ? 'block' : 'none';
+
+            // Damage section (not for healing or pure utility)
+            var showDamage = attackType !== 'healing' && attackType !== 'none';
+            document.getElementById('customSpellDamageSection').style.display = showDamage || attackType === 'mark' ? 'block' : 'none';
+
+            // Bonus damage option (only for mark spells)
+            document.getElementById('customSpellBonusDamageGroup').style.display = attackType === 'mark' ? 'block' : 'none';
+
+            // Healing section
+            document.getElementById('customSpellHealingSection').style.display = attackType === 'healing' ? 'block' : 'none';
+
+            // AoE size
+            var aoeType = document.getElementById('customSpellAoeType').value;
+            document.getElementById('customSpellAoeSizeGroup').style.display = aoeType !== 'none' ? 'block' : 'none';
+        }
+
+        // Material component checkbox handler
+        document.addEventListener('DOMContentLoaded', function() {
+            var compM = document.getElementById('customSpellCompM');
+            if (compM) {
+                compM.addEventListener('change', function() {
+                    document.getElementById('customSpellMaterial').style.display = this.checked ? 'block' : 'none';
+                });
+            }
+            var aoeType = document.getElementById('customSpellAoeType');
+            if (aoeType) {
+                aoeType.addEventListener('change', updateCustomSpellTypeOptions);
+            }
+        });
+
+        // Cancel editing
+        function cancelCustomSpellEdit() {
+            editingCustomSpellId = null;
+            document.getElementById('customSpellEditor').style.display = 'none';
+            document.getElementById('customSpellModalMainBtns').style.display = 'flex';
+            renderCustomSpellList();
+        }
+
+        // Save custom spell
+        function saveCustomSpell() {
+            var name = document.getElementById('customSpellName').value.trim();
+            if (!name) {
+                showAlert('Spell name is required.');
+                return;
+            }
+
+            var description = document.getElementById('customSpellDescription').value.trim();
+            if (!description) {
+                showAlert('Spell description is required.');
+                return;
+            }
+
+            // Generate ID
+            var spellId = editingCustomSpellId || 'custom-' + name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Date.now();
+
+            var attackType = document.getElementById('customSpellAttackType').value;
+            var isHealingSpell = attackType === 'healing';
+            var isMarkSpell = attackType === 'mark';
+
+            var spell = {
+                id: spellId,
+                name: name,
+                level: parseInt(document.getElementById('customSpellLevel').value),
+                school: document.getElementById('customSpellSchool').value,
+                castingTime: document.getElementById('customSpellCastingTime').value,
+                range: document.getElementById('customSpellRange').value || 'Self',
+                duration: document.getElementById('customSpellDuration').value || 'Instantaneous',
+                components: {
+                    v: document.getElementById('customSpellCompV').checked,
+                    s: document.getElementById('customSpellCompS').checked,
+                    m: document.getElementById('customSpellCompM').checked ? document.getElementById('customSpellMaterial').value : null
+                },
+                concentration: document.getElementById('customSpellConcentration').checked,
+                description: description,
+                isCustom: true
+            };
+
+            // Attack type
+            if (isHealingSpell) {
+                spell.attackType = 'none';
+                spell.saveAbility = null;
+            } else if (isMarkSpell) {
+                spell.attackType = 'none';
+                spell.saveAbility = null;
+                spell.needsTarget = true;
+                spell.targetType = 'mark';
+            } else {
+                spell.attackType = attackType;
+                spell.saveAbility = attackType === 'save' ? document.getElementById('customSpellSaveAbility').value : null;
+            }
+
+            // Damage
+            var damageDice = document.getElementById('customSpellDamageDice').value.trim();
+            if (damageDice && !isHealingSpell) {
+                spell.damage = {
+                    base: damageDice,
+                    type: document.getElementById('customSpellDamageType').value
+                };
+                var upcast = document.getElementById('customSpellUpcast').value.trim();
+                if (upcast) spell.damage.upcast = upcast;
+                if (isMarkSpell && document.getElementById('customSpellBonusDamage').checked) {
+                    spell.damage.bonusDamage = true;
+                }
+            }
+
+            // Healing
+            if (isHealingSpell) {
+                var healingDice = document.getElementById('customSpellHealingDice').value.trim();
+                if (healingDice) {
+                    spell.healing = { base: healingDice };
+                    var healUpcast = document.getElementById('customSpellHealingUpcast').value.trim();
+                    if (healUpcast) spell.healing.upcast = healUpcast;
+                }
+            }
+
+            // AoE
+            var aoeType = document.getElementById('customSpellAoeType').value;
+            if (aoeType !== 'none') {
+                spell.aoe = {
+                    type: aoeType,
+                    size: parseInt(document.getElementById('customSpellAoeSize').value) || 20
+                };
+            }
+
+            // Effects
+            var effectsText = document.getElementById('customSpellEffects').value.trim();
+            if (effectsText) {
+                spell.effects = effectsText.split('\n').filter(function(e) { return e.trim(); });
+            }
+
+            // Classes
+            var classesText = document.getElementById('customSpellClasses').value.trim();
+            if (classesText) {
+                spell.classes = classesText.split(',').map(function(c) { return c.trim().toLowerCase(); }).filter(function(c) { return c; });
+            } else {
+                spell.classes = [];
+            }
+
+            // Save to storage
+            customSpells[name] = spell;
+            saveCustomSpellsToStorage();
+
+            // Reset form
+            editingCustomSpellId = null;
+            document.getElementById('customSpellEditor').style.display = 'none';
+            document.getElementById('customSpellModalMainBtns').style.display = 'flex';
+            renderCustomSpellList();
+
+            addLogEntry('Custom spell created: ' + name, 'system');
+        }
+
+        // Delete custom spell
+        function deleteCustomSpell(spellId) {
+            var spell = null;
+            var spellKey = null;
+            for (var key in customSpells) {
+                if (customSpells[key].id === spellId) {
+                    spell = customSpells[key];
+                    spellKey = key;
+                    break;
+                }
+            }
+
+            if (!spell) return;
+
+            showConfirm('Delete "' + spell.name + '"? This cannot be undone.', function() {
+                delete customSpells[spellKey];
+                saveCustomSpellsToStorage();
+                renderCustomSpellList();
+                addLogEntry('Custom spell deleted: ' + spell.name, 'system');
+            });
+        }
+
+        // Initialize custom spells on load
+        loadCustomSpells();
 
         // ============ MONSTER TEMPLATE LIBRARY ============
         var MONSTER_TEMPLATES = {
@@ -10593,6 +11533,9 @@
             var template = MONSTER_TEMPLATES[selectedMonsterTemplate];
             var quantity = parseInt(document.getElementById('monsterQuantity').value) || 1;
             quantity = Math.max(1, Math.min(20, quantity));
+            var autoRollInit = document.getElementById('monsterAutoRollInit').checked;
+
+            var addedMonsters = [];
 
             for (var i = 0; i < quantity; i++) {
                 var combatant = createDefaultCombatant();
@@ -10612,481 +11555,44 @@
                 if (template.actions) combatant.actions = JSON.parse(JSON.stringify(template.actions));
                 if (template.features) combatant.features = JSON.parse(JSON.stringify(template.features));
 
+                // Auto-roll initiative if checkbox is checked
+                if (autoRollInit) {
+                    var dexMod = Math.floor((combatant.abilities.dex - 10) / 2);
+                    var roll = Math.floor(Math.random() * 20) + 1;
+                    combatant.initiative = roll + dexMod;
+                    combatant.initiativeBonus = dexMod;
+                }
+
                 combatants.push(combatant);
+                addedMonsters.push(combatant);
+            }
+
+            // Sort by initiative after adding if we auto-rolled
+            if (autoRollInit) {
+                combatants.sort(function(a, b) {
+                    return b.initiative - a.initiative;
+                });
+                // Find the new active index (preserve currently active combatant)
+                var currentActive = combatants.find(function(c) { return c.id === (combatants[activeIndex] || {}).id; });
+                if (currentActive) {
+                    activeIndex = combatants.indexOf(currentActive);
+                } else {
+                    activeIndex = 0;
+                }
             }
 
             save();
             render();
             hideMonsterTemplatesModal();
-            showAlert('Added ' + quantity + 'x ' + template.name + ' to combat!');
-        }
 
-        // ============ D&D BEYOND PDF IMPORT ============
-        var ddbParsedCharacter = null;
+            var initMsg = autoRollInit ? ' (initiative rolled)' : '';
+            showAlert('Added ' + quantity + 'x ' + template.name + ' to combat!' + initMsg);
 
-        function showDndBeyondImport() {
-            ddbParsedCharacter = null;
-            document.getElementById('ddbImportStep1').style.display = 'block';
-            document.getElementById('ddbImportStep2').style.display = 'none';
-            document.getElementById('ddbFileInput').value = '';
-            document.getElementById('ddbFileStatus').style.display = 'none';
-            document.getElementById('ddbImportBtn').disabled = true;
-            document.getElementById('ddbBackBtn').style.display = 'none';
-            document.getElementById('ddbDropZone').style.borderColor = '#6a7b5f';
-            document.getElementById('ddbDropZone').style.background = 'transparent';
-            document.getElementById('dndBeyondImportModal').style.display = 'block';
-        }
-
-        function hideDndBeyondImportModal() {
-            document.getElementById('dndBeyondImportModal').style.display = 'none';
-            ddbParsedCharacter = null;
-        }
-
-        function closeDndBeyondImportModal(e) {
-            if (e.target.id === 'dndBeyondImportModal') hideDndBeyondImportModal();
-        }
-
-        function ddbGoBackToStep1() {
-            document.getElementById('ddbImportStep1').style.display = 'block';
-            document.getElementById('ddbImportStep2').style.display = 'none';
-            document.getElementById('ddbBackBtn').style.display = 'none';
-            document.getElementById('ddbImportBtn').disabled = true;
-        }
-
-        function handleDdbFileDrop(e) {
-            e.preventDefault();
-            e.currentTarget.style.borderColor = '#6a7b5f';
-            e.currentTarget.style.background = 'transparent';
-
-            var files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'application/pdf') {
-                processDdbPdfFile(files[0]);
-            } else {
-                showAlert('Please drop a PDF file.');
-            }
-        }
-
-        function handleDdbFileSelect(e) {
-            var file = e.target.files[0];
-            if (file) {
-                processDdbPdfFile(file);
-            }
-        }
-
-        async function processDdbPdfFile(file) {
-            document.getElementById('ddbFileStatus').style.display = 'block';
-            document.getElementById('ddbFileName').textContent = file.name;
-            document.getElementById('ddbParseStatus').textContent = '(parsing...)';
-            document.getElementById('ddbParseStatus').style.color = '#d4a24a';
-
-            try {
-                var text = await extractTextFromPdf(file);
-                var character = parseDndBeyondCharacterSheet(text);
-
-                if (character && character.name) {
-                    ddbParsedCharacter = character;
-                    document.getElementById('ddbParseStatus').textContent = '(parsed successfully!)';
-                    document.getElementById('ddbParseStatus').style.color = '#9bb87f';
-                    showDdbPreview(character);
-                } else {
-                    document.getElementById('ddbParseStatus').textContent = '(could not parse character data)';
-                    document.getElementById('ddbParseStatus').style.color = '#d85050';
-                    showAlert('Could not extract character data from this PDF. Make sure it\'s a D&D Beyond character sheet export.');
-                }
-            } catch (err) {
-                console.error('PDF parsing error:', err);
-                document.getElementById('ddbParseStatus').textContent = '(error reading PDF)';
-                document.getElementById('ddbParseStatus').style.color = '#d85050';
-                showAlert('Error reading PDF: ' + err.message);
-            }
-        }
-
-        async function extractTextFromPdf(file) {
-            return new Promise(function(resolve, reject) {
-                var reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        var typedArray = new Uint8Array(e.target.result);
-                        var pdf = await pdfjsLib.getDocument(typedArray).promise;
-                        var allText = [];
-
-                        for (var i = 1; i <= pdf.numPages; i++) {
-                            var page = await pdf.getPage(i);
-                            var textContent = await page.getTextContent();
-                            var pageText = textContent.items.map(function(item) {
-                                return item.str;
-                            }).join(' ');
-                            allText.push(pageText);
-                        }
-
-                        resolve(allText.join('\n'));
-                    } catch (err) {
-                        reject(err);
-                    }
-                };
-                reader.onerror = function() {
-                    reject(new Error('Failed to read file'));
-                };
-                reader.readAsArrayBuffer(file);
+            // Log the additions
+            addedMonsters.forEach(function(m) {
+                var initStr = autoRollInit ? ' (Init: ' + m.initiative + ')' : '';
+                addLogEntry(m.name + ' joins the fight!' + initStr, 'system');
             });
-        }
-
-        function parseDndBeyondCharacterSheet(text) {
-            // D&D Beyond PDF parser - designed for the actual DDB export format
-            // The PDF has specific labeled sections we can identify
-
-            var character = {
-                name: '',
-                race: '',
-                classLevel: '',
-                level: 1,
-                abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
-                ac: 10,
-                hp: 10,
-                speed: 30,
-                initiativeBonus: 0,
-                proficiencyBonus: 2,
-                attacks: [],
-                spellcasting: null,
-                resistances: [],
-                warnings: []
-            };
-
-            // Keep original text for debugging
-            var originalText = text;
-
-            // D&D Beyond PDF structure (from actual export):
-            // Character name appears before "CHARACTER NAME" label
-            // Class appears before "CLASS & LEVEL" label
-            // Species/Race appears before "SPECIES" label
-
-            // Extract character name - look for text before CHARACTER NAME label
-            var nameMatch = text.match(/([A-Za-z][A-Za-z\s'-]{1,40}?)\s*CHARACTER NAME/i);
-            if (nameMatch) {
-                character.name = nameMatch[1].trim();
-            }
-
-            // Extract class and level - format like "Ranger 4 / Druid 3" before "CLASS & LEVEL"
-            var classLevelMatch = text.match(/([A-Za-z]+\s*\d+(?:\s*\/\s*[A-Za-z]+\s*\d+)*)\s*CLASS\s*&?\s*LEVEL/i);
-            if (classLevelMatch) {
-                character.classLevel = classLevelMatch[1].trim();
-                // Calculate total level from multiclass
-                var levelMatches = character.classLevel.match(/\d+/g);
-                if (levelMatches) {
-                    character.level = levelMatches.reduce(function(sum, num) { return sum + parseInt(num); }, 0);
-                }
-            }
-
-            // Extract species/race - appears before "SPECIES" label
-            var raceMatch = text.match(/([A-Za-z-]+)\s*SPECIES/i);
-            if (raceMatch) {
-                character.race = raceMatch[1].trim();
-            }
-
-            // Extract ability scores - D&D Beyond format has "STRENGTH" label with score below
-            // The pattern is: ABILITY_NAME followed by score (number) and modifier (+X or -X)
-            var abilityNames = [
-                { key: 'str', pattern: /STRENGTH\s+(\d+)\s*[+\-]\d+/i },
-                { key: 'dex', pattern: /DEXTERITY\s+(\d+)\s*[+\-]\d+/i },
-                { key: 'con', pattern: /CONSTITUTION\s+(\d+)\s*[+\-]\d+/i },
-                { key: 'int', pattern: /INTELLIGENCE\s+(\d+)\s*[+\-]\d+/i },
-                { key: 'wis', pattern: /WISDOM\s+(\d+)\s*[+\-]\d+/i },
-                { key: 'cha', pattern: /CHARISMA\s+(\d+)\s*[+\-]\d+/i }
-            ];
-
-            abilityNames.forEach(function(ability) {
-                var match = text.match(ability.pattern);
-                if (match) {
-                    character.abilities[ability.key] = parseInt(match[1]);
-                }
-            });
-
-            // Alternative ability score extraction - look for the score/modifier pattern
-            // Format in PDF often renders as "16 +3" near ability name
-            if (character.abilities.str === 10) {
-                // Try to find ability blocks - score followed by modifier
-                var strMatch = text.match(/STRENGTH[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-                var dexMatch = text.match(/DEXTERITY[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-                var conMatch = text.match(/CONSTITUTION[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-                var intMatch = text.match(/INTELLIGENCE[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-                var wisMatch = text.match(/WISDOM[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-                var chaMatch = text.match(/CHARISMA[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
-
-                if (strMatch) character.abilities.str = parseInt(strMatch[1]);
-                if (dexMatch) character.abilities.dex = parseInt(dexMatch[1]);
-                if (conMatch) character.abilities.con = parseInt(conMatch[1]);
-                if (intMatch) character.abilities.int = parseInt(intMatch[1]);
-                if (wisMatch) character.abilities.wis = parseInt(wisMatch[1]);
-                if (chaMatch) character.abilities.cha = parseInt(chaMatch[1]);
-            }
-
-            // Extract AC - appears near "ARMOR" and "CLASS" labels in the stat block
-            // The number before "ARMOR" or "CLASS" in the combat section
-            var acMatch = text.match(/(\d+)\s*(?:ARMOR|CLASS)\s/i);
-            if (!acMatch) {
-                acMatch = text.match(/ARMOR\s*(?:CLASS)?\s*(\d+)/i);
-            }
-            if (acMatch) {
-                var acVal = parseInt(acMatch[1]);
-                if (acVal >= 5 && acVal <= 30) {
-                    character.ac = acVal;
-                }
-            }
-
-            // Extract Initiative - appears near "INITIATIVE" label
-            var initMatch = text.match(/([+\-]?\d+)\s*INITIATIVE/i);
-            if (initMatch) {
-                character.initiativeBonus = parseInt(initMatch[1]);
-            }
-
-            // Extract Max HP - appears near "Max HP" label
-            var hpMatch = text.match(/Max HP\s*(?:Current HP\s*(?:Temp HP\s*)?)?\s*(\d+)/i);
-            if (!hpMatch) {
-                hpMatch = text.match(/(\d+)\s*(?:\d+|--)\s*(?:--|\d+)?\s*HIT POINTS/i);
-            }
-            if (!hpMatch) {
-                // Try finding HP near HIT POINTS label
-                hpMatch = text.match(/HIT POINTS[\s\S]{0,30}?(\d+)/i);
-            }
-            if (hpMatch) {
-                character.hp = parseInt(hpMatch[1]);
-            }
-
-            // Extract Speed - appears near "SPEED" label, format like "30 ft. (Walking)"
-            var speedMatch = text.match(/(\d+)\s*ft\.?\s*\(?(?:Walking|walking)?\)?\s*SPEED/i);
-            if (!speedMatch) {
-                speedMatch = text.match(/SPEED\s*(\d+)\s*ft/i);
-            }
-            if (speedMatch) {
-                character.speed = parseInt(speedMatch[1]);
-            }
-
-            // Extract Proficiency Bonus - appears near "PROFICIENCY BONUS" label
-            var profMatch = text.match(/([+\-]?\d+)\s*PROFICIENCY BONUS/i);
-            if (profMatch) {
-                character.proficiencyBonus = parseInt(profMatch[1].replace('+', ''));
-            } else {
-                // Calculate from level
-                character.proficiencyBonus = Math.floor((character.level - 1) / 4) + 2;
-            }
-
-            // Extract Resistances - appears in DEFENSES section
-            var resistMatch = text.match(/Resistances?\s*[-–]\s*([A-Za-z,\s]+?)(?:\s*DEFENSES|\s*HEROIC)/i);
-            if (resistMatch) {
-                character.resistances = resistMatch[1].split(/[,\s]+/).filter(function(r) {
-                    return r.length > 0 && r.toLowerCase() !== 'cold' ? true : r.toLowerCase() === 'cold';
-                });
-            }
-
-            // Extract attacks from WEAPON ATTACKS & CANTRIPS table
-            // Format: NAME | HIT | DAMAGE/TYPE
-            // Example: "Hollowfang +8 1d8+3 Piercing"
-            var attackSection = text.match(/WEAPON ATTACKS[\s\S]*?(?=FEATURES|SPELLS|$)/i);
-            if (attackSection) {
-                var attackText = attackSection[0];
-                // Look for weapon entries: Name followed by +X hit, then damage
-                var weaponPattern = /([A-Za-z][A-Za-z\s]{2,20}?)\s+([+\-]\d+)\s+(\d+d\d+(?:[+\-]\d+)?)\s+(Piercing|Slashing|Bludgeoning|Fire|Cold|Lightning|Thunder|Poison|Acid|Necrotic|Radiant|Force|Psychic)/gi;
-                var match;
-                while ((match = weaponPattern.exec(attackText)) !== null) {
-                    character.attacks.push({
-                        name: match[1].trim(),
-                        attackBonus: parseInt(match[2]),
-                        damage: match[3],
-                        damageType: match[4]
-                    });
-                }
-            }
-
-            // If no attacks found via section, try general pattern
-            if (character.attacks.length === 0) {
-                var generalAttackPattern = /(Longsword|Shortsword|Greataxe|Greatsword|Rapier|Dagger|Handaxe|Javelin|Light Crossbow|Heavy Crossbow|Longbow|Shortbow|Quarterstaff|Mace|Warhammer|Battleaxe|Scimitar|Hollowfang|Unarmed Strike)\s+([+\-]\d+)\s+(\d+d?\d*(?:[+\-]\d+)?)\s*(Piercing|Slashing|Bludgeoning|Necrotic|Radiant)?/gi;
-                var match;
-                while ((match = generalAttackPattern.exec(text)) !== null) {
-                    character.attacks.push({
-                        name: match[1].trim(),
-                        attackBonus: parseInt(match[2]),
-                        damage: match[3],
-                        damageType: match[4] || 'unknown'
-                    });
-                }
-            }
-
-            // Extract spellcasting info from SPELLCASTING section
-            var spellSection = text.match(/SPELLCASTING[\s\S]*?SPELL SAVE DC\s*(\d+)[\s\S]*?SPELL ATTACK[\s\S]*?([+\-]?\d+)/i);
-            if (spellSection) {
-                character.spellcasting = {
-                    detected: true,
-                    dc: parseInt(spellSection[1]),
-                    attackBonus: parseInt(spellSection[2])
-                };
-            } else {
-                // Try alternative patterns
-                var dcMatch = text.match(/SPELL SAVE DC\s*(\d+)/i);
-                var atkMatch = text.match(/SPELL ATTACK\s*(?:BONUS)?\s*([+\-]?\d+)/i);
-                if (dcMatch || atkMatch) {
-                    character.spellcasting = { detected: true };
-                    if (dcMatch) character.spellcasting.dc = parseInt(dcMatch[1]);
-                    if (atkMatch) character.spellcasting.attackBonus = parseInt(atkMatch[1]);
-                }
-            }
-
-            // Also check for "15 / 15" pattern for spell save DC (multiclass format)
-            var multiDcMatch = text.match(/(\d+)\s*\/\s*\d+\s*SPELL SAVE DC/i);
-            if (multiDcMatch && character.spellcasting) {
-                character.spellcasting.dc = parseInt(multiDcMatch[1]);
-            }
-            var multiAtkMatch = text.match(/([+\-]?\d+)\s*\/\s*[+\-]?\d+\s*SPELL ATTACK/i);
-            if (multiAtkMatch && character.spellcasting) {
-                character.spellcasting.attackBonus = parseInt(multiAtkMatch[1]);
-            }
-
-            // Add warnings for potentially missing data
-            if (character.abilities.str === 10 && character.abilities.dex === 10 &&
-                character.abilities.con === 10 && character.abilities.int === 10) {
-                character.warnings.push('Ability scores may not have been detected correctly. Please verify.');
-            }
-            if (!character.name) {
-                character.warnings.push('Character name was not detected.');
-            }
-            if (!character.classLevel) {
-                character.warnings.push('Class/level was not detected.');
-            }
-
-            // Debug: log extracted text for troubleshooting
-            console.log('DDB PDF Text (first 2000 chars):', text.substring(0, 2000));
-            console.log('Parsed character:', character);
-
-            return character;
-        }
-
-        function showDdbPreview(character) {
-            document.getElementById('ddbImportStep1').style.display = 'none';
-            document.getElementById('ddbImportStep2').style.display = 'block';
-            document.getElementById('ddbBackBtn').style.display = 'inline-block';
-            document.getElementById('ddbImportBtn').disabled = false;
-
-            // Populate preview
-            document.getElementById('ddbPreviewName').textContent = character.name || 'Unknown Character';
-            document.getElementById('ddbPreviewClass').textContent = character.classLevel || 'Unknown';
-            document.getElementById('ddbPreviewRace').textContent = character.race || 'Unknown';
-
-            document.getElementById('ddbPreviewStr').textContent = character.abilities.str;
-            document.getElementById('ddbPreviewDex').textContent = character.abilities.dex;
-            document.getElementById('ddbPreviewCon').textContent = character.abilities.con;
-            document.getElementById('ddbPreviewInt').textContent = character.abilities.int;
-            document.getElementById('ddbPreviewWis').textContent = character.abilities.wis;
-            document.getElementById('ddbPreviewCha').textContent = character.abilities.cha;
-
-            document.getElementById('ddbPreviewAC').textContent = character.ac;
-            document.getElementById('ddbPreviewHP').textContent = character.hp;
-            document.getElementById('ddbPreviewSpeed').textContent = character.speed + ' ft';
-            document.getElementById('ddbPreviewInit').textContent = (character.initiativeBonus >= 0 ? '+' : '') + character.initiativeBonus;
-
-            // Show attacks if found
-            var attacksSection = document.getElementById('ddbAttacksSection');
-            if (character.attacks && character.attacks.length > 0) {
-                attacksSection.style.display = 'block';
-                var attacksHtml = character.attacks.map(function(atk) {
-                    return '<div style="color:#e8f0d8; margin-bottom:4px;">' +
-                        '<strong>' + escapeHtml(atk.name) + '</strong>: ' +
-                        (atk.attackBonus >= 0 ? '+' : '') + atk.attackBonus + ' to hit, ' +
-                        atk.damage + ' ' + (atk.damageType || '') + ' damage</div>';
-                }).join('');
-                document.getElementById('ddbPreviewAttacks').innerHTML = attacksHtml;
-            } else {
-                attacksSection.style.display = 'none';
-            }
-
-            // Show spellcasting if detected
-            var spellsSection = document.getElementById('ddbSpellsSection');
-            if (character.spellcasting && character.spellcasting.detected) {
-                spellsSection.style.display = 'block';
-                var spellInfo = 'Spellcaster detected. ';
-                if (character.spellcasting.dc) spellInfo += 'Spell Save DC: ' + character.spellcasting.dc + '. ';
-                if (character.spellcasting.attackBonus) spellInfo += 'Spell Attack: ' + (character.spellcasting.attackBonus >= 0 ? '+' : '') + character.spellcasting.attackBonus + '.';
-                document.getElementById('ddbPreviewSpells').innerHTML = '<div style="color:#b8a0d8;">' + spellInfo + '</div>';
-            } else {
-                spellsSection.style.display = 'none';
-            }
-
-            // Show warnings
-            var warningsSection = document.getElementById('ddbWarnings');
-            if (character.warnings && character.warnings.length > 0) {
-                warningsSection.style.display = 'block';
-                document.getElementById('ddbWarningText').textContent = character.warnings.join(' ');
-            } else {
-                warningsSection.style.display = 'none';
-            }
-        }
-
-        function confirmDdbImport() {
-            if (!ddbParsedCharacter) return;
-
-            var combatant = createDefaultCombatant();
-            combatant.name = ddbParsedCharacter.name || 'Imported Character';
-            combatant.type = 'player';
-            combatant.level = ddbParsedCharacter.level || 1;
-            combatant.abilities = JSON.parse(JSON.stringify(ddbParsedCharacter.abilities));
-            combatant.ac = ddbParsedCharacter.ac || 10;
-            combatant.maxHp = ddbParsedCharacter.hp || 10;
-            combatant.currentHp = ddbParsedCharacter.hp || 10;
-            combatant.speed = { walk: ddbParsedCharacter.speed || 30, fly: 0, swim: 0, climb: 0, burrow: 0 };
-            combatant.initiativeBonus = ddbParsedCharacter.initiativeBonus || 0;
-            combatant.proficiencyBonus = ddbParsedCharacter.proficiencyBonus || 2;
-
-            // Add attacks if found
-            if (ddbParsedCharacter.attacks && ddbParsedCharacter.attacks.length > 0) {
-                combatant.actions = ddbParsedCharacter.attacks.map(function(atk) {
-                    return {
-                        name: atk.name,
-                        type: 'attack',
-                        attackBonus: atk.attackBonus,
-                        damage: atk.damage,
-                        damageType: atk.damageType || 'unknown'
-                    };
-                });
-            }
-
-            // Add spellcasting info
-            if (ddbParsedCharacter.spellcasting) {
-                combatant.spellcasting = {
-                    ability: 'wis', // Default to WIS for Ranger/Druid/Cleric
-                    spellSaveDC: ddbParsedCharacter.spellcasting.dc || (8 + combatant.proficiencyBonus + Math.floor((combatant.abilities.wis - 10) / 2)),
-                    spellAttackBonus: ddbParsedCharacter.spellcasting.attackBonus || (combatant.proficiencyBonus + Math.floor((combatant.abilities.wis - 10) / 2)),
-                    slots: {}
-                };
-            }
-
-            // Add resistances if found
-            if (ddbParsedCharacter.resistances && ddbParsedCharacter.resistances.length > 0) {
-                combatant.resistances = ddbParsedCharacter.resistances;
-            }
-
-            // Store class/race info in notes
-            combatant.notes = (ddbParsedCharacter.race || '') + ' ' + (ddbParsedCharacter.classLevel || '');
-
-            // Add to combatants
-            combatants.push(combatant);
-
-            // Also save to character library if checkbox is checked
-            if (document.getElementById('ddbAddToLibrary').checked) {
-                var library = [];
-                try {
-                    library = JSON.parse(localStorage.getItem('oakhartCharacterLibrary') || '[]');
-                } catch (e) { library = []; }
-
-                var libEntry = JSON.parse(JSON.stringify(combatant));
-                libEntry.libraryId = genId();
-                libEntry.addedDate = new Date().toISOString();
-                library.push(libEntry);
-                localStorage.setItem('oakhartCharacterLibrary', JSON.stringify(library));
-            }
-
-            save();
-            render();
-            hideDndBeyondImportModal();
-            showAlert('Imported ' + combatant.name + ' successfully!' +
-                (document.getElementById('ddbAddToLibrary').checked ? ' (Also saved to Character Library)' : ''));
         }
 
         // ============ SPELL CASTING MODAL ============
@@ -11150,26 +11656,78 @@
 
         function renderSpellList() {
             var html = '';
-            var spellKeys = Object.keys(SRD_SPELLS).sort(function(a, b) {
-                var spellA = SRD_SPELLS[a];
-                var spellB = SRD_SPELLS[b];
-                return spellA.level - spellB.level || spellA.name.localeCompare(spellB.name);
+            var allSpells = getAllSpells();
+
+            // Separate custom and SRD spells
+            var srdSpellKeys = [];
+            var customSpellKeys = [];
+
+            Object.keys(allSpells).forEach(function(key) {
+                if (allSpells[key].isCustom) {
+                    customSpellKeys.push(key);
+                } else {
+                    srdSpellKeys.push(key);
+                }
             });
 
-            spellKeys.forEach(function(key) {
-                var spell = SRD_SPELLS[key];
+            // Sort both arrays
+            var sortFn = function(a, b) {
+                var spellA = allSpells[a];
+                var spellB = allSpells[b];
+                return spellA.level - spellB.level || spellA.name.localeCompare(spellB.name);
+            };
+            srdSpellKeys.sort(sortFn);
+            customSpellKeys.sort(sortFn);
+
+            // Helper to escape JS string for onclick
+            function escapeJsString(str) {
+                return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+            }
+
+            // Render custom spells first (if any)
+            var customHtml = '';
+            customSpellKeys.forEach(function(key) {
+                var spell = allSpells[key];
 
                 // Apply level filter
                 if (spellLevelFilter !== 'all' && spell.level !== spellLevelFilter) return;
 
                 var levelStr = spell.level === 0 ? 'Cantrip' : 'Level ' + spell.level;
                 var isSelected = selectedSpell && selectedSpell.id === spell.id;
+                var safeKey = escapeJsString(key);
 
-                html += '<div class="spell-list-item' + (isSelected ? ' selected' : '') + '" onclick="selectSpell(\'' + key + '\')">';
+                customHtml += '<div class="spell-list-item custom-spell' + (isSelected ? ' selected' : '') + '" onclick="selectSpell(\'' + safeKey + '\', true)">';
+                customHtml += '<span class="spell-name">' + escapeHtml(spell.name) + '<span class="custom-badge">Custom</span></span>';
+                customHtml += '<span class="spell-level-badge">' + levelStr + '</span>';
+                customHtml += '<div class="spell-meta">';
+                customHtml += escapeHtml(spell.school) + ' • ' + escapeHtml(spell.castingTime);
+                if (spell.concentration) customHtml += ' • Concentration';
+                customHtml += '</div>';
+                customHtml += '</div>';
+            });
+
+            if (customHtml) {
+                html += '<div class="spell-list-divider"><span>✨ Custom Spells</span><button class="manage-spells-btn" onclick="event.stopPropagation(); showCustomSpellModal();">Manage</button></div>';
+                html += customHtml;
+                html += '<div class="spell-list-divider"><span>📖 SRD Spells</span></div>';
+            }
+
+            // Render SRD spells
+            srdSpellKeys.forEach(function(key) {
+                var spell = allSpells[key];
+
+                // Apply level filter
+                if (spellLevelFilter !== 'all' && spell.level !== spellLevelFilter) return;
+
+                var levelStr = spell.level === 0 ? 'Cantrip' : 'Level ' + spell.level;
+                var isSelected = selectedSpell && selectedSpell.id === spell.id;
+                var safeKey = escapeJsString(key);
+
+                html += '<div class="spell-list-item' + (isSelected ? ' selected' : '') + '" onclick="selectSpell(\'' + safeKey + '\', false)">';
                 html += '<span class="spell-name">' + escapeHtml(spell.name) + '</span>';
                 html += '<span class="spell-level-badge">' + levelStr + '</span>';
                 html += '<div class="spell-meta">';
-                html += spell.school + ' • ' + spell.castingTime;
+                html += escapeHtml(spell.school) + ' • ' + escapeHtml(spell.castingTime);
                 if (spell.concentration) html += ' • Concentration';
                 html += '</div>';
                 html += '</div>';
@@ -11182,9 +11740,19 @@
             document.getElementById('spellListContent').innerHTML = html;
         }
 
-        function selectSpell(spellKey) {
-            selectedSpell = SRD_SPELLS[spellKey];
-            if (!selectedSpell) return;
+        function selectSpell(spellKey, isCustom) {
+            var allSpells = getAllSpells();
+            selectedSpell = allSpells[spellKey];
+            if (!selectedSpell) {
+                console.error('Spell not found:', spellKey);
+                return;
+            }
+
+            // Verify caster exists
+            if (spellCasterIndex < 0 || !combatants[spellCasterIndex]) {
+                console.error('No valid caster at index:', spellCasterIndex);
+                return;
+            }
 
             // Update spell list selection
             renderSpellList();
@@ -11228,8 +11796,8 @@
                 document.getElementById('spellLevelSelect').style.display = 'none';
             }
 
-            // Show target selection for targeted spells
-            if (selectedSpell.attackType !== 'none' || selectedSpell.saveAbility || selectedSpell.healing) {
+            // Show target selection for targeted spells (attacks, saves, healing, or spells that need a target like Hunter's Mark)
+            if (selectedSpell.attackType !== 'none' || selectedSpell.saveAbility || selectedSpell.healing || selectedSpell.needsTarget) {
                 renderSpellTargets();
                 document.getElementById('spellTargetSection').style.display = 'block';
             } else {
@@ -11245,19 +11813,49 @@
         }
 
         function renderSpellTargets() {
-            var html = '';
+            var html = '<div class="spell-target-grid">';
+            var targetCount = 0;
+
             combatants.forEach(function(c, idx) {
                 if (idx === spellCasterIndex && !selectedSpell.healing) return; // Can't target self with damage
 
-                var isChecked = selectedSpellTargets.indexOf(idx) >= 0;
-                html += '<div class="spell-target-item">';
-                html += '<input type="checkbox" id="spellTarget_' + idx + '" ' + (isChecked ? 'checked' : '') + ' onchange="toggleSpellTarget(' + idx + ')">';
+                var isSelected = selectedSpellTargets.indexOf(idx) >= 0;
+                var typeClass = c.type || 'player';
+
+                // Calculate HP status
+                var hpClass = '';
+                if (c.maxHp && c.currentHp !== undefined) {
+                    var hpPercent = (c.currentHp / c.maxHp) * 100;
+                    if (hpPercent <= 25) hpClass = 'critical';
+                    else if (hpPercent <= 50) hpClass = 'bloodied';
+                }
+
+                html += '<div class="spell-target-card ' + typeClass + (isSelected ? ' selected' : '') + '" onclick="toggleSpellTarget(' + idx + ')">';
                 html += '<span class="target-name">' + escapeHtml(c.name) + '</span>';
+                html += '<div class="target-stats">';
                 html += '<span class="target-ac">AC ' + (c.ac || 10) + '</span>';
+                if (c.maxHp) {
+                    html += '<span class="target-hp ' + hpClass + '">' + c.currentHp + '/' + c.maxHp + '</span>';
+                }
                 html += '</div>';
+                html += '</div>';
+                targetCount++;
             });
 
+            html += '</div>';
+
             document.getElementById('spellTargetList').innerHTML = html;
+
+            // Update target count display
+            var countEl = document.getElementById('selectedTargetCount');
+            if (countEl) {
+                if (selectedSpellTargets.length > 0) {
+                    countEl.textContent = '(' + selectedSpellTargets.length + ' selected)';
+                } else {
+                    countEl.textContent = '';
+                }
+            }
+
             updateCastButton();
         }
 
@@ -11268,11 +11866,12 @@
             } else {
                 selectedSpellTargets.push(idx);
             }
-            updateCastButton();
+            // Re-render to show visual selection state
+            renderSpellTargets();
         }
 
         function updateCastButton() {
-            var needsTarget = selectedSpell && (selectedSpell.attackType !== 'none' || selectedSpell.saveAbility || selectedSpell.healing);
+            var needsTarget = selectedSpell && (selectedSpell.attackType !== 'none' || selectedSpell.saveAbility || selectedSpell.healing || selectedSpell.needsTarget);
             var hasTarget = selectedSpellTargets.length > 0;
             document.getElementById('btnConfirmCast').disabled = !selectedSpell || (needsTarget && !hasTarget);
         }
@@ -11314,6 +11913,35 @@
                 selectedSpellTargets.forEach(function(targetIdx) {
                     var target = combatants[targetIdx];
                     resolveSpellHealing(caster, target, targetIdx, selectedSpell, castLevel);
+                });
+            } else if (selectedSpell.targetType === 'mark') {
+                // Mark spell (Hunter's Mark, Hex, etc.)
+                selectedSpellTargets.forEach(function(targetIdx) {
+                    var target = combatants[targetIdx];
+                    // Add a condition to track the mark
+                    if (!target.conditions) target.conditions = [];
+                    // Remove existing mark from this caster first
+                    target.conditions = target.conditions.filter(function(c) {
+                        return c.name !== selectedSpell.name + ' (' + caster.name + ')';
+                    });
+                    // Determine if this mark applies bonus damage on weapon attacks
+                    var hasBonusDamage = selectedSpell.damage && selectedSpell.damage.bonusDamage;
+                    target.conditions.push({
+                        id: genId(),
+                        name: selectedSpell.name + ' (' + caster.name + ')',
+                        source: caster.name,
+                        duration: 'concentration',
+                        effects: selectedSpell.effects || [],
+                        bonusDamage: hasBonusDamage ? selectedSpell.damage.base : null,
+                        damageType: hasBonusDamage ? selectedSpell.damage.type : null
+                    });
+                    addLogEntry(caster.name + ' marks ' + target.name + ' with ' + selectedSpell.name + (hasBonusDamage ? ' (+' + selectedSpell.damage.base + ' ' + (selectedSpell.damage.type || '') + ' damage on weapon hits)' : ''), 'spell');
+                });
+            } else if (selectedSpell.needsTarget) {
+                // Other targeted spells
+                selectedSpellTargets.forEach(function(targetIdx) {
+                    var target = combatants[targetIdx];
+                    addLogEntry(caster.name + ' casts ' + selectedSpell.name + ' on ' + target.name, 'spell');
                 });
             } else {
                 // No target spell (self-buff, utility, etc.)
@@ -11406,16 +12034,53 @@
             var targetEffects = getCombatantConditionEffects(target);
             var autoFail = targetEffects.autoFailSaves.indexOf(saveAbility) >= 0;
 
-            // Roll save
-            var saveRoll = autoFail ? 1 : Math.floor(Math.random() * 20) + 1;
+            var modifierSign = targetSaveBonus >= 0 ? '+' : '';
+
+            // Show dice roll modal for the saving throw
+            showDiceRollModal({
+                type: 'save',
+                formula: 'd20',
+                title: '🎲 ' + saveAbility.toUpperCase() + ' Saving Throw',
+                info: '<strong>' + escapeHtml(target.name) + '</strong> makes a ' + saveAbility.toUpperCase() + ' save vs <strong>DC ' + spellDC + '</strong>' +
+                      (autoFail ? '<br><span style="color:#f87171;">⚠ Auto-fail from condition!</span>' : ''),
+                modifiers: 'Save bonus: ' + modifierSign + targetSaveBonus,
+                callback: handleSpellSaveRollResult,
+                context: {
+                    caster: caster,
+                    target: target,
+                    targetIdx: targetIdx,
+                    spell: spell,
+                    castLevel: castLevel,
+                    spellDC: spellDC,
+                    saveAbility: saveAbility,
+                    targetSaveBonus: targetSaveBonus,
+                    autoFail: autoFail
+                }
+            });
+        }
+
+        function handleSpellSaveRollResult(diceResult, context) {
+            var caster = context.caster;
+            var target = context.target;
+            var spell = context.spell;
+            var castLevel = context.castLevel;
+            var spellDC = context.spellDC;
+            var saveAbility = context.saveAbility;
+            var targetSaveBonus = context.targetSaveBonus;
+            var autoFail = context.autoFail;
+
+            var saveRoll = autoFail ? 1 : diceResult.total;
             var saveTotal = saveRoll + targetSaveBonus;
             var saved = !autoFail && saveTotal >= spellDC;
 
             var damage = 0;
             var damageStr = '';
+            var baseDamage = 0;
+
             if (spell.damage) {
                 var damageFormula = getSpellDamage(spell, castLevel, caster);
                 var damageResult = rollDamageFormula(damageFormula, false);
+                baseDamage = damageResult.total;
                 damage = saved ? Math.floor(damageResult.total / 2) : damageResult.total;
                 damageStr = damageResult.rollStr;
 
@@ -11430,41 +12095,128 @@
                 }
             }
 
-            // Apply damage
-            if (damage > 0) {
-                if (target.tempHp && target.tempHp > 0) {
-                    if (damage <= target.tempHp) {
-                        target.tempHp -= damage;
-                        damage = 0;
-                    } else {
-                        damage -= target.tempHp;
-                        target.tempHp = 0;
+            // Show result modal
+            showSpellSaveResultModal({
+                casterName: caster.name,
+                targetName: target.name,
+                spellName: spell.name,
+                saveAbility: saveAbility,
+                saveRoll: saveRoll,
+                saveBonus: targetSaveBonus,
+                saveTotal: saveTotal,
+                spellDC: spellDC,
+                saved: saved,
+                autoFail: autoFail,
+                baseDamage: baseDamage,
+                finalDamage: damage,
+                damageType: spell.damage ? spell.damage.type : null,
+                damageStr: damageStr,
+                isManualRoll: diceResult.isManual
+            }, function() {
+                // Apply damage after confirmation
+                if (damage > 0) {
+                    if (target.tempHp && target.tempHp > 0) {
+                        if (damage <= target.tempHp) {
+                            target.tempHp -= damage;
+                            damage = 0;
+                        } else {
+                            damage -= target.tempHp;
+                            target.tempHp = 0;
+                        }
+                    }
+                    if (damage > 0) {
+                        target.currentHp = Math.max(0, target.currentHp - damage);
                     }
                 }
-                if (damage > 0) {
-                    target.currentHp = Math.max(0, target.currentHp - damage);
-                }
-            }
 
-            // Apply conditions
-            if (spell.conditions && !saved) {
-                spell.conditions.forEach(function(condName) {
-                    if (!target.conditions) target.conditions = [];
-                    target.conditions.push({
-                        name: condName,
-                        source: caster.name,
-                        saveEnds: spell.saveEnds ? { timing: 'end', ability: saveAbility, dc: spellDC } : null
+                // Apply conditions
+                if (spell.conditions && !saved) {
+                    spell.conditions.forEach(function(condName) {
+                        if (!target.conditions) target.conditions = [];
+                        target.conditions.push({
+                            name: condName,
+                            source: caster.name,
+                            saveEnds: spell.saveEnds ? { timing: 'end', ability: saveAbility, dc: spellDC } : null
+                        });
                     });
-                });
+                }
+
+                // Log result
+                var logMsg = caster.name + ' casts ' + spell.name + ' on ' + target.name + '. ';
+                logMsg += target.name + ' ' + saveAbility.toUpperCase() + ' save: ' + saveRoll + '+' + targetSaveBonus + '=' + saveTotal;
+                if (autoFail) logMsg += ' (auto-fail)';
+                logMsg += ' vs DC ' + spellDC + ' - ' + (saved ? 'SAVED' : 'FAILED') + '!';
+                if (damage > 0) logMsg += ' Takes ' + damage + ' ' + (spell.damage ? spell.damage.type : '') + ' damage.';
+                addLogEntry(logMsg, 'spell');
+
+                save();
+                render();
+            });
+        }
+
+        // Show the spell save result modal
+        function showSpellSaveResultModal(result, onConfirm) {
+            var html = '';
+            html += '<div style="margin-bottom:15px;">';
+            html += '<strong>' + escapeHtml(result.casterName) + '</strong> casts <strong style="color:#c9a8d8;">' + escapeHtml(result.spellName) + '</strong> on <strong>' + escapeHtml(result.targetName) + '</strong>';
+            html += '</div>';
+
+            html += '<div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; margin-bottom:15px;">';
+            html += '<div style="font-size:1.2rem; margin-bottom:8px;">';
+
+            if (result.autoFail) {
+                html += '<span style="color:#f87171; font-weight:bold;">⚠ AUTO-FAIL (condition)</span>';
+            } else if (result.saved) {
+                html += '<span style="color:#4ade80; font-weight:bold;">✓ SAVE SUCCEEDED!</span>';
+            } else {
+                html += '<span style="color:#f87171; font-weight:bold;">✗ SAVE FAILED!</span>';
+            }
+            html += '</div>';
+
+            html += '<div style="color:#a8b88f; font-size:0.9rem;">';
+            html += result.saveAbility.toUpperCase() + ' Save: <strong>' + result.saveRoll + '</strong>';
+            html += (result.saveBonus >= 0 ? ' + ' : ' ') + result.saveBonus;
+            html += ' = <strong>' + result.saveTotal + '</strong>';
+            html += ' vs DC <strong>' + result.spellDC + '</strong>';
+            if (result.isManualRoll) {
+                html += ' <span style="color:#888;">(manual roll)</span>';
+            }
+            html += '</div>';
+            html += '</div>';
+
+            if (result.finalDamage !== undefined && result.finalDamage > 0) {
+                html += '<div style="background:rgba(139,32,32,0.3); padding:12px; border-radius:6px;">';
+                html += '<div style="font-size:1.1rem; color:#f08080; margin-bottom:5px;">';
+                html += '💥 Damage: <strong>' + result.finalDamage + '</strong> ' + (result.damageType || '') + ' damage';
+                html += '</div>';
+                html += '<div style="color:#a8b88f; font-size:0.85rem;">';
+                html += 'Roll: ' + result.damageStr;
+                if (result.saved && result.baseDamage !== result.finalDamage) {
+                    html += '<br><span style="color:#4ade80;">Save succeeded - damage halved!</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+            } else if (result.finalDamage === 0 && result.baseDamage > 0) {
+                html += '<div style="background:rgba(60,100,60,0.3); padding:12px; border-radius:6px;">';
+                html += '<div style="color:#4ade80;">No damage taken (immunity or save negates)</div>';
+                html += '</div>';
             }
 
-            // Log result
-            var logMsg = caster.name + ' casts ' + spell.name + ' on ' + target.name + '. ';
-            logMsg += target.name + ' ' + saveAbility.toUpperCase() + ' save: ' + saveRoll + '+' + targetSaveBonus + '=' + saveTotal;
-            if (autoFail) logMsg += ' (auto-fail)';
-            logMsg += ' vs DC ' + spellDC + ' - ' + (saved ? 'SAVED' : 'FAILED') + '!';
-            if (damage > 0) logMsg += ' Takes ' + damage + ' ' + (spell.damage.type || '') + ' damage.';
-            addLogEntry(logMsg, 'spell');
+            document.getElementById('genericModalTitle').textContent = '✨ Spell Save Result';
+            document.getElementById('genericModalText').innerHTML = html;
+            document.getElementById('genericModalBtns').innerHTML = '<button class="confirm" onclick="confirmSpellSaveResult()">Apply</button>';
+            document.getElementById('genericModal').style.display = 'block';
+
+            // Store callback for confirmation
+            window.pendingSpellSaveConfirm = onConfirm;
+        }
+
+        function confirmSpellSaveResult() {
+            document.getElementById('genericModal').style.display = 'none';
+            if (window.pendingSpellSaveConfirm) {
+                window.pendingSpellSaveConfirm();
+                window.pendingSpellSaveConfirm = null;
+            }
         }
 
         function resolveSpellHealing(caster, target, targetIdx, spell, castLevel) {
