@@ -1102,7 +1102,7 @@
             gap: 8px;
             padding: 10px 15px;
             background: rgba(30, 40, 25, 0.95);
-            border-top: 1px solid #6a7b5f;
+            border-bottom: 1px solid #6a7b5f;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -3695,13 +3695,8 @@
                     <button class="turn-btn" onclick="nextTurn()">Next ▶</button>
                 </div>
             </div>
-            
-            <!-- Combatant List -->
-            <div class="combatant-list" id="combatantList">
-                <div class="empty">No combatants yet. Add one using the form on the left.</div>
-            </div>
 
-            <!-- Quick Action Bar -->
+            <!-- Quick Action Bar (moved above combatant list to avoid dice drawer overlap) -->
             <div class="quick-action-bar" id="quickActionBar">
                 <span class="qa-label">Actions:</span>
                 <button onclick="startTargeting()" id="btnStartTarget">🎯 Target</button>
@@ -3709,6 +3704,11 @@
                 <button onclick="executeAttack()" id="btnAttack" class="attack-btn" disabled>⚔️ Attack</button>
                 <button onclick="showSpellCastModal()" id="btnCastSpell" style="background: linear-gradient(135deg, rgba(100, 60, 140, 0.8), rgba(80, 40, 120, 0.8)); border-color: rgba(140, 100, 180, 0.6);">✨ Cast Spell</button>
                 <span id="targetingStatus" style="color:#a8b88f; font-size:0.85rem; margin-left:10px;"></span>
+            </div>
+
+            <!-- Combatant List -->
+            <div class="combatant-list" id="combatantList">
+                <div class="empty">No combatants yet. Add one using the form on the left.</div>
             </div>
 
             <!-- Stat Block Display -->

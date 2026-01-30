@@ -399,6 +399,7 @@
           <button class="sidebar-item" data-category="social">Social & Skills <span class="count" id="count-social">0</span></button>
           <button class="sidebar-item" data-category="equipment">Equipment <span class="count" id="count-equipment">0</span></button>
           <button class="sidebar-item" data-category="classes">Classes <span class="count" id="count-classes">0</span></button>
+          <button class="sidebar-item" data-category="class-features">Class Features <span class="count" id="count-class-features">0</span></button>
         </div>
       </aside>
 
@@ -1707,6 +1708,581 @@
           </ul>
           <p><strong>Subclasses:</strong> Alchemist <span class="page-ref">TCoE 14</span>, Artillerist <span class="page-ref">TCoE 17</span>, Battle Smith <span class="page-ref">TCoE 18</span>, Armorer <span class="page-ref">TCoE 15</span></p>
         `
+      },
+
+      // =====================================================
+      // CLASS FEATURES (Detailed)
+      // =====================================================
+      {
+        id: 'rage',
+        title: 'Rage (Barbarian)',
+        category: 'class-features',
+        pages: { PHB: '48', PHB24: '52' },
+        content: `
+          <p><strong>Activation:</strong> Bonus action on your turn. Cannot be wearing heavy armor.</p>
+          <p><strong>Duration:</strong> 1 minute. Ends early if:</p>
+          <ul>
+            <li>You are knocked unconscious</li>
+            <li>Your turn ends and you haven't attacked a hostile creature or taken damage since your last turn</li>
+            <li>You use a bonus action to end it</li>
+          </ul>
+          <p><strong>Benefits while raging:</strong></p>
+          <ul>
+            <li><strong>Advantage</strong> on Strength checks and Strength saving throws</li>
+            <li><strong>Rage Damage Bonus</strong> when you hit with a melee weapon attack using Strength</li>
+            <li><strong>Resistance</strong> to bludgeoning, piercing, and slashing damage</li>
+          </ul>
+          <p><strong>Limitations:</strong> Cannot cast spells or concentrate on them while raging.</p>
+          <h4>Rage Damage & Uses by Level</h4>
+          <table class="reference-table">
+            <tr><th>Level</th><th>Rages</th><th>Rage Damage</th></tr>
+            <tr><td>1-2</td><td>2</td><td>+2</td></tr>
+            <tr><td>3-5</td><td>3</td><td>+2</td></tr>
+            <tr><td>6-8</td><td>4</td><td>+2</td></tr>
+            <tr><td>9-11</td><td>4</td><td>+3</td></tr>
+            <tr><td>12-15</td><td>5</td><td>+3</td></tr>
+            <tr><td>16-19</td><td>5</td><td>+4</td></tr>
+            <tr><td>20</td><td>Unlimited</td><td>+4</td></tr>
+          </table>
+          <p><strong>Persistent Rage (15th):</strong> Rage only ends early if you fall unconscious or choose to end it.</p>
+        `
+      },
+      {
+        id: 'reckless-attack',
+        title: 'Reckless Attack (Barbarian)',
+        category: 'class-features',
+        pages: { PHB: '48', PHB24: '52' },
+        content: `
+          <p><strong>When:</strong> When you make your first attack on your turn.</p>
+          <p><strong>Effect:</strong> You can decide to attack recklessly, giving you <strong>advantage on all melee weapon attack rolls using Strength</strong> during this turn.</p>
+          <p><strong>Drawback:</strong> Attack rolls against you have <strong>advantage</strong> until your next turn.</p>
+          <p><strong>Tip:</strong> Combine with Rage for devastating attacks while mitigating the damage you take through resistance.</p>
+        `
+      },
+      {
+        id: 'metamagic',
+        title: 'Metamagic (Sorcerer)',
+        category: 'class-features',
+        pages: { PHB: '101-102', PHB24: '143-144' },
+        content: `
+          <p><strong>Gained:</strong> 3rd level Sorcerer. Choose 2 options (more at higher levels).</p>
+          <p><strong>Resource:</strong> Sorcery Points (equal to sorcerer level). Regain all on long rest.</p>
+          <p><strong>Limit:</strong> Only one Metamagic option can be used on a spell unless otherwise noted.</p>
+
+          <h4>Metamagic Options</h4>
+
+          <p><strong>Careful Spell (1 SP):</strong> Choose up to CHA modifier creatures. They automatically succeed on the spell's saving throw.</p>
+
+          <p><strong>Distant Spell (1 SP):</strong> Double the range of a spell with range 5+ feet. Touch spells become 30 feet range.</p>
+
+          <p><strong>Empowered Spell (1 SP):</strong> Reroll up to CHA modifier damage dice (minimum 1). Must use new rolls. Can combine with other Metamagic.</p>
+
+          <p><strong>Extended Spell (1 SP):</strong> Double the duration of a spell with duration of 1 minute or longer, up to 24 hours.</p>
+
+          <p><strong>Heightened Spell (3 SP):</strong> One target of the spell has disadvantage on their first saving throw against it.</p>
+
+          <p><strong>Quickened Spell (2 SP):</strong> Change casting time from 1 action to 1 bonus action. Remember: You can still only cast cantrips with your action if you cast a bonus action spell.</p>
+
+          <p><strong>Seeking Spell (2 SP, TCoE):</strong> If you miss with a spell attack, reroll the d20 and use the new roll. You can use this even after a failure is declared.</p>
+
+          <p><strong>Subtle Spell (1 SP):</strong> Cast without verbal or somatic components. Perfect for stealth or when restrained/silenced.</p>
+
+          <p><strong>Transmuted Spell (1 SP, TCoE):</strong> Change the damage type to acid, cold, fire, lightning, poison, or thunder.</p>
+
+          <p><strong>Twinned Spell (SP = spell level, min 1):</strong> Target a second creature with a spell that targets only one creature and doesn't have self range. Cantrips cost 1 SP.</p>
+
+          <h4>Sorcery Point Conversion</h4>
+          <p><strong>Creating Spell Slots (Bonus Action):</strong></p>
+          <table class="reference-table">
+            <tr><th>Spell Slot Level</th><th>Sorcery Point Cost</th></tr>
+            <tr><td>1st</td><td>2</td></tr>
+            <tr><td>2nd</td><td>3</td></tr>
+            <tr><td>3rd</td><td>5</td></tr>
+            <tr><td>4th</td><td>6</td></tr>
+            <tr><td>5th</td><td>7</td></tr>
+          </table>
+          <p><strong>Converting Slots to Points:</strong> Bonus action, gain SP equal to slot level.</p>
+        `
+      },
+      {
+        id: 'wild-shape',
+        title: 'Wild Shape (Druid)',
+        category: 'class-features',
+        pages: { PHB: '66-67', PHB24: '82-83' },
+        content: `
+          <p><strong>Activation:</strong> Action (bonus action at 2nd level per PHB'24)</p>
+          <p><strong>Uses:</strong> 2 per short or long rest (more with Circle features)</p>
+          <p><strong>Duration:</strong> Hours equal to half your druid level (rounded down). Minimum 1 hour.</p>
+
+          <h4>Beast Limitations by Level</h4>
+          <table class="reference-table">
+            <tr><th>Level</th><th>Max CR</th><th>Limitations</th><th>Example Beasts</th></tr>
+            <tr><td>2</td><td>1/4</td><td>No flying or swimming speed</td><td>Wolf, Cat, Badger</td></tr>
+            <tr><td>4</td><td>1/2</td><td>No flying speed</td><td>Crocodile, Giant Wasp</td></tr>
+            <tr><td>8</td><td>1</td><td>None</td><td>Giant Eagle, Dire Wolf</td></tr>
+          </table>
+
+          <h4>What Changes</h4>
+          <ul>
+            <li><strong>Replaced:</strong> Strength, Dexterity, Constitution, AC, HP, speed, senses</li>
+            <li><strong>Kept:</strong> Intelligence, Wisdom, Charisma, skills, saving throw proficiencies, personality, alignment</li>
+            <li><strong>Gained:</strong> Beast's proficiencies (if higher than yours)</li>
+          </ul>
+
+          <h4>Rules While Transformed</h4>
+          <ul>
+            <li>Can't cast spells, but concentration can be maintained</li>
+            <li>Can't speak or use equipment (equipment melds into form or falls)</li>
+            <li>Damage carries over when you revert if beast HP drops to 0</li>
+            <li>Can use features that don't require speech/hands</li>
+          </ul>
+
+          <h4>Circle of the Moon (Enhanced Wild Shape)</h4>
+          <ul>
+            <li><strong>Combat Wild Shape:</strong> Transform as bonus action. Spend spell slot to heal 1d8 per slot level while in beast form.</li>
+            <li><strong>Circle Forms:</strong> Transform into beasts with CR = druid level ÷ 3 (rounded down)</li>
+            <li><strong>CR 1 at 2nd level</strong> (immediately)</li>
+            <li><strong>Elemental Wild Shape (10th):</strong> Spend 2 uses to become an elemental</li>
+          </ul>
+
+          <h4>Popular Beast Forms</h4>
+          <p><strong>CR 1/4:</strong> Wolf (Pack Tactics), Giant Badger (Multiattack), Panther (Pounce)</p>
+          <p><strong>CR 1/2:</strong> Giant Wasp (Fly + Poison), Black Bear (Multiattack)</p>
+          <p><strong>CR 1:</strong> Dire Wolf (Pack Tactics, Knockdown), Giant Spider (Web, Climb), Brown Bear (Multiattack)</p>
+          <p><strong>CR 2:</strong> Giant Constrictor Snake (Grapple), Polar Bear (Multiattack)</p>
+        `
+      },
+      {
+        id: 'sneak-attack',
+        title: 'Sneak Attack (Rogue)',
+        category: 'class-features',
+        pages: { PHB: '96', PHB24: '131' },
+        content: `
+          <p><strong>Frequency:</strong> Once per turn (not once per round - can trigger on opportunity attacks!)</p>
+          <p><strong>Weapon Requirement:</strong> Finesse or ranged weapon</p>
+
+          <h4>Triggering Conditions (need one)</h4>
+          <ul>
+            <li><strong>Advantage</strong> on the attack roll, OR</li>
+            <li><strong>Ally within 5 feet</strong> of the target, that ally isn't incapacitated, and you don't have disadvantage</li>
+          </ul>
+
+          <h4>Damage Progression</h4>
+          <table class="reference-table">
+            <tr><th>Rogue Level</th><th>Sneak Attack Damage</th></tr>
+            <tr><td>1-2</td><td>1d6</td></tr>
+            <tr><td>3-4</td><td>2d6</td></tr>
+            <tr><td>5-6</td><td>3d6</td></tr>
+            <tr><td>7-8</td><td>4d6</td></tr>
+            <tr><td>9-10</td><td>5d6</td></tr>
+            <tr><td>11-12</td><td>6d6</td></tr>
+            <tr><td>13-14</td><td>7d6</td></tr>
+            <tr><td>15-16</td><td>8d6</td></tr>
+            <tr><td>17-18</td><td>9d6</td></tr>
+            <tr><td>19-20</td><td>10d6</td></tr>
+          </table>
+
+          <p><strong>Common Sources of Advantage:</strong></p>
+          <ul>
+            <li>Attacking while hidden (Cunning Action: Hide)</li>
+            <li>Target is prone and you're within 5 feet</li>
+            <li>Target is restrained, stunned, paralyzed, or unconscious</li>
+            <li>Attacking with advantage from spells (Faerie Fire, Hold Person)</li>
+            <li>Flanking (optional rule)</li>
+          </ul>
+        `
+      },
+      {
+        id: 'ki',
+        title: 'Ki (Monk)',
+        category: 'class-features',
+        pages: { PHB: '78-79', PHB24: '104-105' },
+        content: `
+          <p><strong>Resource:</strong> Ki Points equal to monk level. Regain all on short or long rest.</p>
+          <p><strong>Save DC:</strong> 8 + proficiency bonus + Wisdom modifier</p>
+
+          <h4>Core Ki Abilities (2nd Level)</h4>
+
+          <p><strong>Flurry of Blows (1 Ki):</strong> Immediately after taking the Attack action, make 2 unarmed strikes as a bonus action (instead of 1 from Martial Arts).</p>
+
+          <p><strong>Patient Defense (1 Ki):</strong> Take the Dodge action as a bonus action.</p>
+
+          <p><strong>Step of the Wind (1 Ki):</strong> Take Disengage or Dash as a bonus action, and your jump distance is doubled for the turn.</p>
+
+          <h4>Additional Ki Abilities</h4>
+
+          <p><strong>Stunning Strike (5th, 1 Ki):</strong> When you hit with a melee weapon attack, the target must make a Con save or be stunned until the end of your next turn.</p>
+
+          <p><strong>Focused Aim (5th, 1-3 Ki, TCoE):</strong> When you miss an attack, spend 1-3 ki to increase the roll by +2 per ki spent.</p>
+
+          <p><strong>Quickened Healing (4th, 2 Ki, TCoE):</strong> As an action, regain HP equal to one roll of your Martial Arts die + proficiency bonus.</p>
+
+          <h4>Martial Arts Die Progression</h4>
+          <table class="reference-table">
+            <tr><th>Monk Level</th><th>Martial Arts Die</th></tr>
+            <tr><td>1-4</td><td>1d4</td></tr>
+            <tr><td>5-10</td><td>1d6</td></tr>
+            <tr><td>11-16</td><td>1d8</td></tr>
+            <tr><td>17-20</td><td>1d10</td></tr>
+          </table>
+
+          <p><strong>Note (PHB'24):</strong> "Ki" is renamed to "Discipline" and "Ki Points" to "Focus Points" in the 2024 rules.</p>
+        `
+      },
+      {
+        id: 'divine-smite',
+        title: 'Divine Smite (Paladin)',
+        category: 'class-features',
+        pages: { PHB: '85', PHB24: '112' },
+        content: `
+          <p><strong>Activation:</strong> When you hit a creature with a melee weapon attack, you can expend one spell slot to deal extra radiant damage.</p>
+          <p><strong>No Action Required:</strong> You can choose to smite after you know the attack hits!</p>
+
+          <h4>Damage Calculation</h4>
+          <p><strong>Base:</strong> 2d8 radiant damage for a 1st-level slot</p>
+          <p><strong>Higher Slots:</strong> +1d8 per slot level above 1st (max 5d8 from slot)</p>
+          <p><strong>Undead/Fiend Bonus:</strong> +1d8 extra damage</p>
+
+          <table class="reference-table">
+            <tr><th>Spell Slot</th><th>Base Damage</th><th>vs Undead/Fiend</th></tr>
+            <tr><td>1st</td><td>2d8</td><td>3d8</td></tr>
+            <tr><td>2nd</td><td>3d8</td><td>4d8</td></tr>
+            <tr><td>3rd</td><td>4d8</td><td>5d8</td></tr>
+            <tr><td>4th</td><td>5d8</td><td>6d8</td></tr>
+            <tr><td>5th</td><td>5d8 (capped)</td><td>6d8</td></tr>
+          </table>
+
+          <p><strong>Critical Hits:</strong> All smite dice are doubled on a crit! A 2nd-level smite becomes 6d8 (doubled from 3d8).</p>
+
+          <p><strong>Improved Divine Smite (11th):</strong> All melee weapon hits deal an extra 1d8 radiant damage automatically (no slot required).</p>
+
+          <h4>PHB 2024 Changes</h4>
+          <p>In the 2024 rules, Divine Smite is a spell that requires a bonus action, not a free addition to attacks. This means:</p>
+          <ul>
+            <li>Can only smite once per turn (bonus action required)</li>
+            <li>Must declare before the attack, not after hitting</li>
+            <li>Can be counterspelled</li>
+          </ul>
+        `
+      },
+      {
+        id: 'lay-on-hands',
+        title: 'Lay on Hands (Paladin)',
+        category: 'class-features',
+        pages: { PHB: '84', PHB24: '110' },
+        content: `
+          <p><strong>Pool:</strong> HP equal to paladin level × 5. Regains fully on long rest.</p>
+          <p><strong>Action:</strong> Touch a creature to restore HP from your pool (any amount up to remaining).</p>
+
+          <h4>Uses</h4>
+          <ul>
+            <li><strong>Healing:</strong> Restore any number of HP from your pool</li>
+            <li><strong>Cure Disease:</strong> Spend 5 HP from pool to cure one disease</li>
+            <li><strong>Neutralize Poison:</strong> Spend 5 HP from pool to neutralize one poison</li>
+          </ul>
+
+          <p><strong>No effect</strong> on undead or constructs.</p>
+
+          <h4>Pool by Level</h4>
+          <table class="reference-table">
+            <tr><th>Paladin Level</th><th>Lay on Hands Pool</th></tr>
+            <tr><td>1</td><td>5 HP</td></tr>
+            <tr><td>5</td><td>25 HP</td></tr>
+            <tr><td>10</td><td>50 HP</td></tr>
+            <tr><td>15</td><td>75 HP</td></tr>
+            <tr><td>20</td><td>100 HP</td></tr>
+          </table>
+
+          <p><strong>Tip:</strong> Use 1 HP to stabilize a dying ally at 0 HP, or bring them back with just enough to act.</p>
+        `
+      },
+      {
+        id: 'bardic-inspiration',
+        title: 'Bardic Inspiration (Bard)',
+        category: 'class-features',
+        pages: { PHB: '53-54', PHB24: '60-61' },
+        content: `
+          <p><strong>Action:</strong> Bonus action</p>
+          <p><strong>Range:</strong> 60 feet (creature must hear you)</p>
+          <p><strong>Uses:</strong> Charisma modifier times per long rest (minimum 1). At 5th level, regain on short rest too.</p>
+
+          <h4>How It Works</h4>
+          <ol>
+            <li>Give one Bardic Inspiration die to a creature within 60 feet</li>
+            <li>They can add the die to ONE of the following within the next 10 minutes:
+              <ul>
+                <li>Ability check</li>
+                <li>Attack roll</li>
+                <li>Saving throw</li>
+              </ul>
+            </li>
+            <li>They can wait until after rolling the d20, but must decide before knowing if it succeeds</li>
+          </ol>
+
+          <h4>Die Progression</h4>
+          <table class="reference-table">
+            <tr><th>Bard Level</th><th>Inspiration Die</th></tr>
+            <tr><td>1-4</td><td>d6</td></tr>
+            <tr><td>5-9</td><td>d8</td></tr>
+            <tr><td>10-14</td><td>d10</td></tr>
+            <tr><td>15-20</td><td>d12</td></tr>
+          </table>
+
+          <h4>College Features Using Inspiration</h4>
+          <p><strong>College of Lore - Cutting Words (3rd):</strong> Use reaction to subtract your Bardic Inspiration die from enemy's attack, ability check, or damage roll.</p>
+          <p><strong>College of Valor - Combat Inspiration (3rd):</strong> Recipients can also add die to weapon damage or AC against one attack.</p>
+          <p><strong>College of Swords - Blade Flourish (3rd):</strong> Use on your own attacks for extra damage + effects.</p>
+        `
+      },
+      {
+        id: 'channel-divinity',
+        title: 'Channel Divinity (Cleric/Paladin)',
+        category: 'class-features',
+        pages: { PHB: '58-59, 85-86', PHB24: '68-69, 112-113' },
+        content: `
+          <p><strong>Uses:</strong> 1 per short or long rest (2 at 6th Cleric, 3 at 18th Cleric)</p>
+          <p><strong>When you use:</strong> Choose which Channel Divinity effect to create</p>
+
+          <h4>Universal Cleric Option</h4>
+          <p><strong>Turn Undead:</strong> Action. Each undead within 30 feet that can see/hear you must make a Wisdom save. On failure, it is turned for 1 minute (must Dash away from you, can't willingly move closer or take reactions). Ends if it takes damage.</p>
+          <p><strong>Destroy Undead (5th+):</strong> Undead of CR 1/2 or lower are instantly destroyed instead of turned. CR threshold increases with level.</p>
+
+          <table class="reference-table">
+            <tr><th>Cleric Level</th><th>Destroys Undead of CR...</th></tr>
+            <tr><td>5</td><td>1/2 or lower</td></tr>
+            <tr><td>8</td><td>1 or lower</td></tr>
+            <tr><td>11</td><td>2 or lower</td></tr>
+            <tr><td>14</td><td>3 or lower</td></tr>
+            <tr><td>17</td><td>4 or lower</td></tr>
+          </table>
+
+          <h4>Popular Domain Channel Divinities</h4>
+          <p><strong>Life - Preserve Life:</strong> Heal up to 5 × cleric level HP, distributed among creatures within 30 feet (can't exceed half their max HP).</p>
+          <p><strong>Light - Radiance of the Dawn:</strong> 30-foot radius, dispel magical darkness, enemies take 2d10 + cleric level radiant (Con save for half).</p>
+          <p><strong>War - Guided Strike:</strong> +10 to an attack roll you make (after rolling but before knowing result).</p>
+          <p><strong>Tempest - Destructive Wrath:</strong> When you roll lightning or thunder damage, deal maximum damage instead.</p>
+
+          <h4>Paladin Channel Divinity (3rd level)</h4>
+          <p>Each Sacred Oath grants a unique Channel Divinity option. Uses: 1 per short or long rest.</p>
+          <p><strong>Devotion - Sacred Weapon:</strong> Weapon gains +CHA to hit, emits light. 1 minute.</p>
+          <p><strong>Vengeance - Vow of Enmity:</strong> Advantage on attacks against one creature. 1 minute.</p>
+          <p><strong>Ancients - Nature's Wrath:</strong> Restrain a creature with spectral vines (Str/Dex save).</p>
+        `
+      },
+      {
+        id: 'action-surge',
+        title: 'Action Surge (Fighter)',
+        category: 'class-features',
+        pages: { PHB: '72', PHB24: '93' },
+        content: `
+          <p><strong>Gained:</strong> 2nd level Fighter</p>
+          <p><strong>Uses:</strong> Once per short or long rest (twice at 17th level)</p>
+
+          <h4>What You Get</h4>
+          <p>On your turn, you can take <strong>one additional action</strong>.</p>
+
+          <h4>Important Notes</h4>
+          <ul>
+            <li>You still only get one bonus action per turn</li>
+            <li>You still only get one reaction per round</li>
+            <li>Extra Attack applies to BOTH actions</li>
+            <li>Can cast two leveled spells if you have the slots (normal bonus action spell rules don't apply to Action Surge)</li>
+          </ul>
+
+          <h4>Example Uses</h4>
+          <ul>
+            <li><strong>11th level Fighter:</strong> Attack (3 attacks) + Action Surge + Attack (3 attacks) = 6 attacks in one turn</li>
+            <li><strong>20th level Fighter:</strong> 4 + 4 = 8 attacks in one turn</li>
+            <li><strong>Fighter/Spellcaster:</strong> Cast Fireball, Action Surge, cast another Fireball</li>
+          </ul>
+        `
+      },
+      {
+        id: 'cunning-action',
+        title: 'Cunning Action (Rogue)',
+        category: 'class-features',
+        pages: { PHB: '96', PHB24: '131' },
+        content: `
+          <p><strong>Gained:</strong> 2nd level Rogue</p>
+          <p><strong>Resource:</strong> None - use every turn!</p>
+
+          <h4>Options (Bonus Action)</h4>
+          <p><strong>Dash:</strong> Double your speed for the turn. Great for repositioning or escaping.</p>
+          <p><strong>Disengage:</strong> Your movement doesn't provoke opportunity attacks. Get out of melee safely.</p>
+          <p><strong>Hide:</strong> Make a Stealth check to hide. If successful, gain advantage on your next attack (and thus Sneak Attack).</p>
+
+          <h4>Subclass Additions</h4>
+          <p><strong>Thief (3rd) - Fast Hands:</strong> Also use bonus action to make Sleight of Hand check, use thieves' tools, or Use an Object.</p>
+          <p><strong>Scout (3rd, XGE):</strong> Use reaction to move half speed when enemy ends turn within 5 feet (no opportunity attack).</p>
+          <p><strong>Soulknife (9th, TCoE):</strong> Also teleport up to 30 feet to unoccupied space you can see.</p>
+
+          <h4>Typical Rogue Turn</h4>
+          <ol>
+            <li>Bonus Action: Hide (roll Stealth)</li>
+            <li>Action: Attack with advantage from being hidden</li>
+            <li>Apply Sneak Attack damage</li>
+            <li>Movement: Reposition for next turn</li>
+          </ol>
+        `
+      },
+      {
+        id: 'eldritch-invocations',
+        title: 'Eldritch Invocations (Warlock)',
+        category: 'class-features',
+        pages: { PHB: '107-111', PHB24: '149-153' },
+        content: `
+          <p><strong>Gained:</strong> 2nd level Warlock. Learn 2, gain more as you level.</p>
+          <p><strong>Swapping:</strong> Can replace one invocation when you gain a warlock level.</p>
+
+          <h4>Popular Invocations</h4>
+
+          <p><strong>Agonizing Blast (requires Eldritch Blast):</strong> Add CHA modifier to Eldritch Blast damage. Essential for damage output.</p>
+
+          <p><strong>Repelling Blast (requires Eldritch Blast):</strong> Push creature 10 feet away on hit. Great for control.</p>
+
+          <p><strong>Devil's Sight:</strong> See normally in magical and nonmagical darkness to 120 feet. Combo with Darkness spell for advantage.</p>
+
+          <p><strong>Mask of Many Faces:</strong> Cast Disguise Self at will without spell slot.</p>
+
+          <p><strong>Misty Visions:</strong> Cast Silent Image at will without spell slot.</p>
+
+          <p><strong>Book of Ancient Secrets (requires Pact of the Tome):</strong> Copy ritual spells from any class into your Book of Shadows.</p>
+
+          <p><strong>Thirsting Blade (5th, requires Pact of the Blade):</strong> Attack twice with your pact weapon (Extra Attack).</p>
+
+          <p><strong>Lifedrinker (12th, requires Pact of the Blade):</strong> Add CHA modifier necrotic damage to pact weapon attacks.</p>
+
+          <p><strong>Eldritch Smite (5th, requires Pact of the Blade):</strong> Expend warlock slot to deal 1d8 + 1d8/slot level force damage and knock prone.</p>
+
+          <p><strong>Armor of Shadows:</strong> Cast Mage Armor on yourself at will without spell slot.</p>
+
+          <h4>Invocations Known</h4>
+          <table class="reference-table">
+            <tr><th>Warlock Level</th><th>Invocations Known</th></tr>
+            <tr><td>2</td><td>2</td></tr>
+            <tr><td>5</td><td>3</td></tr>
+            <tr><td>7</td><td>4</td></tr>
+            <tr><td>9</td><td>5</td></tr>
+            <tr><td>12</td><td>6</td></tr>
+            <tr><td>15</td><td>7</td></tr>
+            <tr><td>18</td><td>8</td></tr>
+          </table>
+        `
+      },
+      {
+        id: 'arcane-recovery',
+        title: 'Arcane Recovery (Wizard)',
+        category: 'class-features',
+        pages: { PHB: '115', PHB24: '163' },
+        content: `
+          <p><strong>Gained:</strong> 1st level Wizard</p>
+          <p><strong>Frequency:</strong> Once per day, after a short rest</p>
+
+          <h4>How It Works</h4>
+          <p>Recover expended spell slots with a combined level equal to or less than <strong>half your wizard level (rounded up)</strong>.</p>
+          <p><strong>Limitation:</strong> None of the slots can be 6th level or higher.</p>
+
+          <h4>Recovery by Level</h4>
+          <table class="reference-table">
+            <tr><th>Wizard Level</th><th>Max Slot Levels Recovered</th><th>Examples</th></tr>
+            <tr><td>1</td><td>1</td><td>One 1st</td></tr>
+            <tr><td>2</td><td>1</td><td>One 1st</td></tr>
+            <tr><td>3</td><td>2</td><td>Two 1st OR one 2nd</td></tr>
+            <tr><td>4</td><td>2</td><td>Two 1st OR one 2nd</td></tr>
+            <tr><td>5</td><td>3</td><td>One 1st + one 2nd OR one 3rd</td></tr>
+            <tr><td>6</td><td>3</td><td>Three 1st OR one 3rd</td></tr>
+            <tr><td>7</td><td>4</td><td>One 1st + one 3rd OR one 4th</td></tr>
+            <tr><td>10</td><td>5</td><td>One 2nd + one 3rd OR one 5th</td></tr>
+            <tr><td>20</td><td>10</td><td>Two 5th slots (6th+ not allowed)</td></tr>
+          </table>
+
+          <p><strong>Tip:</strong> Best used to recover your most-used utility slots. A short rest mid-dungeon can give you back crucial spell slots.</p>
+        `
+      },
+      {
+        id: 'fighting-style',
+        title: 'Fighting Style',
+        category: 'class-features',
+        pages: { PHB: '72, 84, 91', PHB24: '93, 110, 122' },
+        content: `
+          <p><strong>Classes:</strong> Fighter (1st), Paladin (2nd), Ranger (2nd). Each class has access to different styles.</p>
+          <p><strong>Rule:</strong> Can't take the same style twice, even from different classes.</p>
+
+          <h4>Fighting Styles</h4>
+
+          <p><strong>Archery:</strong> +2 bonus to attack rolls with ranged weapons. (Fighter, Ranger)</p>
+
+          <p><strong>Defense:</strong> +1 AC while wearing armor. (Fighter, Paladin, Ranger)</p>
+
+          <p><strong>Dueling:</strong> +2 damage when wielding a melee weapon in one hand and no other weapons. (Fighter, Paladin, Ranger)</p>
+
+          <p><strong>Great Weapon Fighting:</strong> Reroll 1s and 2s on damage dice with two-handed/versatile weapons. Must use new roll. (Fighter, Paladin)</p>
+
+          <p><strong>Protection:</strong> When a creature you can see attacks a target other than you within 5 feet, use reaction to impose disadvantage on attack. Requires shield. (Fighter, Paladin)</p>
+
+          <p><strong>Two-Weapon Fighting:</strong> Add ability modifier to damage of off-hand attack. (Fighter, Ranger)</p>
+
+          <h4>Tasha's/2024 Additional Styles</h4>
+
+          <p><strong>Blind Fighting:</strong> 10 feet blindsight. (Fighter, Paladin, Ranger)</p>
+
+          <p><strong>Interception:</strong> Reaction to reduce damage to creature within 5 feet by 1d10 + proficiency. Requires shield or weapon. (Fighter, Paladin)</p>
+
+          <p><strong>Thrown Weapon Fighting:</strong> +2 damage with thrown weapons, draw as part of attack. (Fighter, Ranger)</p>
+
+          <p><strong>Unarmed Fighting:</strong> Unarmed strikes deal 1d6+STR (1d8 if both hands free). Deal 1d4 to grappled creatures at start of your turn. (Fighter)</p>
+
+          <p><strong>Druidic Warrior:</strong> Learn two druid cantrips. (Ranger)</p>
+
+          <p><strong>Blessed Warrior:</strong> Learn two cleric cantrips. (Paladin)</p>
+        `
+      },
+      {
+        id: 'battle-master-maneuvers',
+        title: 'Battle Master Maneuvers (Fighter)',
+        category: 'class-features',
+        pages: { PHB: '73-74', PHB24: '96-97' },
+        content: `
+          <p><strong>Gained:</strong> 3rd level Battle Master Fighter</p>
+          <p><strong>Superiority Dice:</strong> 4d8 (5d8 at 7th, 6d8 at 15th). Become d10 at 10th, d12 at 18th.</p>
+          <p><strong>Regain:</strong> All dice on short or long rest.</p>
+          <p><strong>Maneuvers Known:</strong> 3 (+ more at 7th, 10th, 15th levels)</p>
+          <p><strong>Save DC:</strong> 8 + proficiency + STR or DEX modifier</p>
+
+          <h4>Combat Maneuvers</h4>
+
+          <p><strong>Trip Attack:</strong> Add die to damage. Target makes STR save or falls prone. (Large or smaller)</p>
+
+          <p><strong>Precision Attack:</strong> Add die to attack roll. Can use after rolling but before knowing result.</p>
+
+          <p><strong>Riposte:</strong> Reaction when creature misses you. Make attack, add die to damage.</p>
+
+          <p><strong>Menacing Attack:</strong> Add die to damage. Target makes WIS save or is frightened until end of your next turn.</p>
+
+          <p><strong>Goading Attack:</strong> Add die to damage. Target makes WIS save or has disadvantage on attacks against anyone but you.</p>
+
+          <p><strong>Pushing Attack:</strong> Add die to damage. Target makes STR save or is pushed 15 feet away. (Large or smaller)</p>
+
+          <p><strong>Disarming Attack:</strong> Add die to damage. Target makes STR save or drops one held item.</p>
+
+          <p><strong>Feinting Attack:</strong> Bonus action, advantage on next attack vs adjacent creature. Add die to damage.</p>
+
+          <p><strong>Parry:</strong> Reaction when hit. Reduce damage by die + DEX modifier.</p>
+
+          <p><strong>Rally:</strong> Bonus action, give ally temp HP = die + CHA modifier.</p>
+
+          <p><strong>Commander's Strike:</strong> Forgo one attack. Ally uses reaction to attack, adding die to damage.</p>
+
+          <p><strong>Maneuvering Attack:</strong> Add die to damage. Ally can use reaction to move half speed without opportunity attacks.</p>
+
+          <p><strong>Distracting Strike:</strong> Add die to damage. Next attack against target by ally has advantage (before your next turn).</p>
+
+          <p><strong>Evasive Footwork:</strong> When moving, add die to AC until you stop.</p>
+
+          <p><strong>Lunging Attack:</strong> Increase reach by 5 feet for this attack. Add die to damage.</p>
+
+          <p><strong>Sweeping Attack:</strong> When you hit, deal die damage to another adjacent creature (if original attack roll would hit).</p>
+        `
       }
     ];
 
@@ -1809,7 +2385,7 @@
     }
 
     function updateCounts() {
-      const categories = ['all', 'combat', 'conditions', 'spellcasting', 'exploration', 'social', 'equipment', 'classes'];
+      const categories = ['all', 'combat', 'conditions', 'spellcasting', 'exploration', 'social', 'equipment', 'classes', 'class-features'];
       categories.forEach(cat => {
         const count = cat === 'all' ? RULES_DATA.length : RULES_DATA.filter(r => r.category === cat).length;
         const el = document.getElementById(`count-${cat}`);
@@ -1827,7 +2403,8 @@
         exploration: 'Exploration & Travel',
         social: 'Social & Skills',
         equipment: 'Equipment',
-        classes: 'Character Classes'
+        classes: 'Character Classes',
+        'class-features': 'Class Features'
       };
       header.textContent = searchQuery ? `Search Results` : names[currentCategory] || 'Rules';
     }
