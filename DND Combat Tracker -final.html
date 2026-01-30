@@ -3475,6 +3475,14 @@
         }
 
     </style>
+    <!-- PDF.js library for D&D Beyond character sheet import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Set the worker source for PDF.js
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
 </head>
 <body>
     <!-- Targeting Mode Indicator -->
@@ -3679,6 +3687,7 @@
             <button class="add-btn" onclick="addCombatant()">✚ Quick Add</button>
             <button class="add-btn" onclick="showCharacterSheetModal(-1)" style="background: linear-gradient(135deg, rgba(100, 80, 130, 0.8), rgba(80, 60, 110, 0.8)); border-color: #8878a8;">📋 Full Character Sheet</button>
             <button class="add-btn" onclick="showMonsterTemplates()" style="background: linear-gradient(135deg, rgba(130, 80, 80, 0.8), rgba(110, 60, 60, 0.8)); border-color: #a87878;">🐉 Monster Templates</button>
+            <button class="add-btn" onclick="showDndBeyondImport()" style="background: linear-gradient(135deg, rgba(200, 50, 50, 0.8), rgba(160, 30, 30, 0.8)); border-color: #c85050;">📄 Import D&D Beyond PDF</button>
         </div>
         </div>
 
@@ -5682,6 +5691,133 @@
             </div>
         </div>
     </div>
+
+    <!-- D&D Beyond PDF Import Modal -->
+    <div class="modal-bg" id="dndBeyondImportModal" onclick="closeDndBeyondImportModal(event)" style="display: none;">
+        <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 700px; max-height: 90vh;">
+            <h3>📄 Import D&D Beyond Character</h3>
+
+            <!-- Step 1: File Selection -->
+            <div id="ddbImportStep1">
+                <p style="color: #a8b88f; margin-bottom: 15px;">
+                    Select a character sheet PDF exported from D&D Beyond to import the character's stats.
+                </p>
+                <div style="border: 2px dashed #6a7b5f; border-radius: 8px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.2s;"
+                     id="ddbDropZone"
+                     onclick="document.getElementById('ddbFileInput').click()"
+                     ondragover="event.preventDefault(); this.style.borderColor='#9bb87f'; this.style.background='rgba(155,184,127,0.1)';"
+                     ondragleave="this.style.borderColor='#6a7b5f'; this.style.background='transparent';"
+                     ondrop="handleDdbFileDrop(event)">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">📁</div>
+                    <div style="color: #c9d8a8; font-size: 1.1rem;">Drop PDF here or click to browse</div>
+                    <div style="color: #6a7b5f; font-size: 0.85rem; margin-top: 8px;">Supports D&D Beyond character sheet PDFs</div>
+                </div>
+                <input type="file" id="ddbFileInput" accept=".pdf" style="display: none;" onchange="handleDdbFileSelect(event)">
+
+                <div id="ddbFileStatus" style="margin-top: 15px; color: #a8b88f; display: none;">
+                    <span id="ddbFileName"></span>
+                    <span id="ddbParseStatus" style="margin-left: 10px;"></span>
+                </div>
+            </div>
+
+            <!-- Step 2: Preview & Edit -->
+            <div id="ddbImportStep2" style="display: none;">
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 style="color: #c9d8a8; margin-bottom: 12px;" id="ddbPreviewName">Character Name</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">CLASS & LEVEL</div>
+                            <div id="ddbPreviewClass" style="color: #e8f0d8;">-</div>
+                        </div>
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">RACE</div>
+                            <div id="ddbPreviewRace" style="color: #e8f0d8;">-</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">ABILITY SCORES</div>
+                        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; text-align: center;">
+                            <div class="ddb-ability-box"><div class="label">STR</div><div id="ddbPreviewStr" class="value">10</div></div>
+                            <div class="ddb-ability-box"><div class="label">DEX</div><div id="ddbPreviewDex" class="value">10</div></div>
+                            <div class="ddb-ability-box"><div class="label">CON</div><div id="ddbPreviewCon" class="value">10</div></div>
+                            <div class="ddb-ability-box"><div class="label">INT</div><div id="ddbPreviewInt" class="value">10</div></div>
+                            <div class="ddb-ability-box"><div class="label">WIS</div><div id="ddbPreviewWis" class="value">10</div></div>
+                            <div class="ddb-ability-box"><div class="label">CHA</div><div id="ddbPreviewCha" class="value">10</div></div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">AC</div>
+                            <div id="ddbPreviewAC" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">10</div>
+                        </div>
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">HP</div>
+                            <div id="ddbPreviewHP" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">10</div>
+                        </div>
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">SPEED</div>
+                            <div id="ddbPreviewSpeed" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">30</div>
+                        </div>
+                        <div>
+                            <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 4px;">INIT</div>
+                            <div id="ddbPreviewInit" style="color: #e8f0d8; font-size: 1.3rem; font-weight: bold;">+0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attacks found -->
+                <div id="ddbAttacksSection" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
+                    <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">ATTACKS FOUND</div>
+                    <div id="ddbPreviewAttacks" style="font-size: 0.9rem;"></div>
+                </div>
+
+                <!-- Spellcasting found -->
+                <div id="ddbSpellsSection" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
+                    <div style="color: #6a7b5f; font-size: 0.8rem; margin-bottom: 8px;">SPELLCASTING</div>
+                    <div id="ddbPreviewSpells" style="font-size: 0.9rem;"></div>
+                </div>
+
+                <!-- Parse warnings -->
+                <div id="ddbWarnings" style="background: rgba(200, 150, 50, 0.2); border: 1px solid #c8963a; padding: 12px; border-radius: 6px; margin-bottom: 15px; display: none;">
+                    <div style="color: #d4a24a; font-size: 0.9rem;"><strong>Note:</strong> <span id="ddbWarningText"></span></div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label style="color: #a8b88f; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="ddbAddToLibrary" checked>
+                        Also save to Character Library
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-btns">
+                <button class="cancel" onclick="hideDndBeyondImportModal()">Cancel</button>
+                <button class="secondary-btn" id="ddbBackBtn" onclick="ddbGoBackToStep1()" style="display: none;">Back</button>
+                <button class="confirm" id="ddbImportBtn" onclick="confirmDdbImport()" disabled>Import Character</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .ddb-ability-box {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 4px;
+            border-radius: 4px;
+            border: 1px solid #4a5b3f;
+        }
+        .ddb-ability-box .label {
+            color: #6a7b5f;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .ddb-ability-box .value {
+            color: #e8f0d8;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
 
     <!-- Generic Alert/Confirm Modal -->
     <div class="modal-bg" id="genericModal" onclick="closeGenericModal(event)" style="display: none;">
@@ -10483,6 +10619,474 @@
             render();
             hideMonsterTemplatesModal();
             showAlert('Added ' + quantity + 'x ' + template.name + ' to combat!');
+        }
+
+        // ============ D&D BEYOND PDF IMPORT ============
+        var ddbParsedCharacter = null;
+
+        function showDndBeyondImport() {
+            ddbParsedCharacter = null;
+            document.getElementById('ddbImportStep1').style.display = 'block';
+            document.getElementById('ddbImportStep2').style.display = 'none';
+            document.getElementById('ddbFileInput').value = '';
+            document.getElementById('ddbFileStatus').style.display = 'none';
+            document.getElementById('ddbImportBtn').disabled = true;
+            document.getElementById('ddbBackBtn').style.display = 'none';
+            document.getElementById('ddbDropZone').style.borderColor = '#6a7b5f';
+            document.getElementById('ddbDropZone').style.background = 'transparent';
+            document.getElementById('dndBeyondImportModal').style.display = 'block';
+        }
+
+        function hideDndBeyondImportModal() {
+            document.getElementById('dndBeyondImportModal').style.display = 'none';
+            ddbParsedCharacter = null;
+        }
+
+        function closeDndBeyondImportModal(e) {
+            if (e.target.id === 'dndBeyondImportModal') hideDndBeyondImportModal();
+        }
+
+        function ddbGoBackToStep1() {
+            document.getElementById('ddbImportStep1').style.display = 'block';
+            document.getElementById('ddbImportStep2').style.display = 'none';
+            document.getElementById('ddbBackBtn').style.display = 'none';
+            document.getElementById('ddbImportBtn').disabled = true;
+        }
+
+        function handleDdbFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.style.borderColor = '#6a7b5f';
+            e.currentTarget.style.background = 'transparent';
+
+            var files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                processDdbPdfFile(files[0]);
+            } else {
+                showAlert('Please drop a PDF file.');
+            }
+        }
+
+        function handleDdbFileSelect(e) {
+            var file = e.target.files[0];
+            if (file) {
+                processDdbPdfFile(file);
+            }
+        }
+
+        async function processDdbPdfFile(file) {
+            document.getElementById('ddbFileStatus').style.display = 'block';
+            document.getElementById('ddbFileName').textContent = file.name;
+            document.getElementById('ddbParseStatus').textContent = '(parsing...)';
+            document.getElementById('ddbParseStatus').style.color = '#d4a24a';
+
+            try {
+                var text = await extractTextFromPdf(file);
+                var character = parseDndBeyondCharacterSheet(text);
+
+                if (character && character.name) {
+                    ddbParsedCharacter = character;
+                    document.getElementById('ddbParseStatus').textContent = '(parsed successfully!)';
+                    document.getElementById('ddbParseStatus').style.color = '#9bb87f';
+                    showDdbPreview(character);
+                } else {
+                    document.getElementById('ddbParseStatus').textContent = '(could not parse character data)';
+                    document.getElementById('ddbParseStatus').style.color = '#d85050';
+                    showAlert('Could not extract character data from this PDF. Make sure it\'s a D&D Beyond character sheet export.');
+                }
+            } catch (err) {
+                console.error('PDF parsing error:', err);
+                document.getElementById('ddbParseStatus').textContent = '(error reading PDF)';
+                document.getElementById('ddbParseStatus').style.color = '#d85050';
+                showAlert('Error reading PDF: ' + err.message);
+            }
+        }
+
+        async function extractTextFromPdf(file) {
+            return new Promise(function(resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        var typedArray = new Uint8Array(e.target.result);
+                        var pdf = await pdfjsLib.getDocument(typedArray).promise;
+                        var allText = [];
+
+                        for (var i = 1; i <= pdf.numPages; i++) {
+                            var page = await pdf.getPage(i);
+                            var textContent = await page.getTextContent();
+                            var pageText = textContent.items.map(function(item) {
+                                return item.str;
+                            }).join(' ');
+                            allText.push(pageText);
+                        }
+
+                        resolve(allText.join('\n'));
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = function() {
+                    reject(new Error('Failed to read file'));
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function parseDndBeyondCharacterSheet(text) {
+            // D&D Beyond PDF parser - designed for the actual DDB export format
+            // The PDF has specific labeled sections we can identify
+
+            var character = {
+                name: '',
+                race: '',
+                classLevel: '',
+                level: 1,
+                abilities: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
+                ac: 10,
+                hp: 10,
+                speed: 30,
+                initiativeBonus: 0,
+                proficiencyBonus: 2,
+                attacks: [],
+                spellcasting: null,
+                resistances: [],
+                warnings: []
+            };
+
+            // Keep original text for debugging
+            var originalText = text;
+
+            // D&D Beyond PDF structure (from actual export):
+            // Character name appears before "CHARACTER NAME" label
+            // Class appears before "CLASS & LEVEL" label
+            // Species/Race appears before "SPECIES" label
+
+            // Extract character name - look for text before CHARACTER NAME label
+            var nameMatch = text.match(/([A-Za-z][A-Za-z\s'-]{1,40}?)\s*CHARACTER NAME/i);
+            if (nameMatch) {
+                character.name = nameMatch[1].trim();
+            }
+
+            // Extract class and level - format like "Ranger 4 / Druid 3" before "CLASS & LEVEL"
+            var classLevelMatch = text.match(/([A-Za-z]+\s*\d+(?:\s*\/\s*[A-Za-z]+\s*\d+)*)\s*CLASS\s*&?\s*LEVEL/i);
+            if (classLevelMatch) {
+                character.classLevel = classLevelMatch[1].trim();
+                // Calculate total level from multiclass
+                var levelMatches = character.classLevel.match(/\d+/g);
+                if (levelMatches) {
+                    character.level = levelMatches.reduce(function(sum, num) { return sum + parseInt(num); }, 0);
+                }
+            }
+
+            // Extract species/race - appears before "SPECIES" label
+            var raceMatch = text.match(/([A-Za-z-]+)\s*SPECIES/i);
+            if (raceMatch) {
+                character.race = raceMatch[1].trim();
+            }
+
+            // Extract ability scores - D&D Beyond format has "STRENGTH" label with score below
+            // The pattern is: ABILITY_NAME followed by score (number) and modifier (+X or -X)
+            var abilityNames = [
+                { key: 'str', pattern: /STRENGTH\s+(\d+)\s*[+\-]\d+/i },
+                { key: 'dex', pattern: /DEXTERITY\s+(\d+)\s*[+\-]\d+/i },
+                { key: 'con', pattern: /CONSTITUTION\s+(\d+)\s*[+\-]\d+/i },
+                { key: 'int', pattern: /INTELLIGENCE\s+(\d+)\s*[+\-]\d+/i },
+                { key: 'wis', pattern: /WISDOM\s+(\d+)\s*[+\-]\d+/i },
+                { key: 'cha', pattern: /CHARISMA\s+(\d+)\s*[+\-]\d+/i }
+            ];
+
+            abilityNames.forEach(function(ability) {
+                var match = text.match(ability.pattern);
+                if (match) {
+                    character.abilities[ability.key] = parseInt(match[1]);
+                }
+            });
+
+            // Alternative ability score extraction - look for the score/modifier pattern
+            // Format in PDF often renders as "16 +3" near ability name
+            if (character.abilities.str === 10) {
+                // Try to find ability blocks - score followed by modifier
+                var strMatch = text.match(/STRENGTH[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+                var dexMatch = text.match(/DEXTERITY[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+                var conMatch = text.match(/CONSTITUTION[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+                var intMatch = text.match(/INTELLIGENCE[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+                var wisMatch = text.match(/WISDOM[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+                var chaMatch = text.match(/CHARISMA[\s\S]{0,20}?(\d{1,2})\s*([+\-]\d+)/i);
+
+                if (strMatch) character.abilities.str = parseInt(strMatch[1]);
+                if (dexMatch) character.abilities.dex = parseInt(dexMatch[1]);
+                if (conMatch) character.abilities.con = parseInt(conMatch[1]);
+                if (intMatch) character.abilities.int = parseInt(intMatch[1]);
+                if (wisMatch) character.abilities.wis = parseInt(wisMatch[1]);
+                if (chaMatch) character.abilities.cha = parseInt(chaMatch[1]);
+            }
+
+            // Extract AC - appears near "ARMOR" and "CLASS" labels in the stat block
+            // The number before "ARMOR" or "CLASS" in the combat section
+            var acMatch = text.match(/(\d+)\s*(?:ARMOR|CLASS)\s/i);
+            if (!acMatch) {
+                acMatch = text.match(/ARMOR\s*(?:CLASS)?\s*(\d+)/i);
+            }
+            if (acMatch) {
+                var acVal = parseInt(acMatch[1]);
+                if (acVal >= 5 && acVal <= 30) {
+                    character.ac = acVal;
+                }
+            }
+
+            // Extract Initiative - appears near "INITIATIVE" label
+            var initMatch = text.match(/([+\-]?\d+)\s*INITIATIVE/i);
+            if (initMatch) {
+                character.initiativeBonus = parseInt(initMatch[1]);
+            }
+
+            // Extract Max HP - appears near "Max HP" label
+            var hpMatch = text.match(/Max HP\s*(?:Current HP\s*(?:Temp HP\s*)?)?\s*(\d+)/i);
+            if (!hpMatch) {
+                hpMatch = text.match(/(\d+)\s*(?:\d+|--)\s*(?:--|\d+)?\s*HIT POINTS/i);
+            }
+            if (!hpMatch) {
+                // Try finding HP near HIT POINTS label
+                hpMatch = text.match(/HIT POINTS[\s\S]{0,30}?(\d+)/i);
+            }
+            if (hpMatch) {
+                character.hp = parseInt(hpMatch[1]);
+            }
+
+            // Extract Speed - appears near "SPEED" label, format like "30 ft. (Walking)"
+            var speedMatch = text.match(/(\d+)\s*ft\.?\s*\(?(?:Walking|walking)?\)?\s*SPEED/i);
+            if (!speedMatch) {
+                speedMatch = text.match(/SPEED\s*(\d+)\s*ft/i);
+            }
+            if (speedMatch) {
+                character.speed = parseInt(speedMatch[1]);
+            }
+
+            // Extract Proficiency Bonus - appears near "PROFICIENCY BONUS" label
+            var profMatch = text.match(/([+\-]?\d+)\s*PROFICIENCY BONUS/i);
+            if (profMatch) {
+                character.proficiencyBonus = parseInt(profMatch[1].replace('+', ''));
+            } else {
+                // Calculate from level
+                character.proficiencyBonus = Math.floor((character.level - 1) / 4) + 2;
+            }
+
+            // Extract Resistances - appears in DEFENSES section
+            var resistMatch = text.match(/Resistances?\s*[-–]\s*([A-Za-z,\s]+?)(?:\s*DEFENSES|\s*HEROIC)/i);
+            if (resistMatch) {
+                character.resistances = resistMatch[1].split(/[,\s]+/).filter(function(r) {
+                    return r.length > 0 && r.toLowerCase() !== 'cold' ? true : r.toLowerCase() === 'cold';
+                });
+            }
+
+            // Extract attacks from WEAPON ATTACKS & CANTRIPS table
+            // Format: NAME | HIT | DAMAGE/TYPE
+            // Example: "Hollowfang +8 1d8+3 Piercing"
+            var attackSection = text.match(/WEAPON ATTACKS[\s\S]*?(?=FEATURES|SPELLS|$)/i);
+            if (attackSection) {
+                var attackText = attackSection[0];
+                // Look for weapon entries: Name followed by +X hit, then damage
+                var weaponPattern = /([A-Za-z][A-Za-z\s]{2,20}?)\s+([+\-]\d+)\s+(\d+d\d+(?:[+\-]\d+)?)\s+(Piercing|Slashing|Bludgeoning|Fire|Cold|Lightning|Thunder|Poison|Acid|Necrotic|Radiant|Force|Psychic)/gi;
+                var match;
+                while ((match = weaponPattern.exec(attackText)) !== null) {
+                    character.attacks.push({
+                        name: match[1].trim(),
+                        attackBonus: parseInt(match[2]),
+                        damage: match[3],
+                        damageType: match[4]
+                    });
+                }
+            }
+
+            // If no attacks found via section, try general pattern
+            if (character.attacks.length === 0) {
+                var generalAttackPattern = /(Longsword|Shortsword|Greataxe|Greatsword|Rapier|Dagger|Handaxe|Javelin|Light Crossbow|Heavy Crossbow|Longbow|Shortbow|Quarterstaff|Mace|Warhammer|Battleaxe|Scimitar|Hollowfang|Unarmed Strike)\s+([+\-]\d+)\s+(\d+d?\d*(?:[+\-]\d+)?)\s*(Piercing|Slashing|Bludgeoning|Necrotic|Radiant)?/gi;
+                var match;
+                while ((match = generalAttackPattern.exec(text)) !== null) {
+                    character.attacks.push({
+                        name: match[1].trim(),
+                        attackBonus: parseInt(match[2]),
+                        damage: match[3],
+                        damageType: match[4] || 'unknown'
+                    });
+                }
+            }
+
+            // Extract spellcasting info from SPELLCASTING section
+            var spellSection = text.match(/SPELLCASTING[\s\S]*?SPELL SAVE DC\s*(\d+)[\s\S]*?SPELL ATTACK[\s\S]*?([+\-]?\d+)/i);
+            if (spellSection) {
+                character.spellcasting = {
+                    detected: true,
+                    dc: parseInt(spellSection[1]),
+                    attackBonus: parseInt(spellSection[2])
+                };
+            } else {
+                // Try alternative patterns
+                var dcMatch = text.match(/SPELL SAVE DC\s*(\d+)/i);
+                var atkMatch = text.match(/SPELL ATTACK\s*(?:BONUS)?\s*([+\-]?\d+)/i);
+                if (dcMatch || atkMatch) {
+                    character.spellcasting = { detected: true };
+                    if (dcMatch) character.spellcasting.dc = parseInt(dcMatch[1]);
+                    if (atkMatch) character.spellcasting.attackBonus = parseInt(atkMatch[1]);
+                }
+            }
+
+            // Also check for "15 / 15" pattern for spell save DC (multiclass format)
+            var multiDcMatch = text.match(/(\d+)\s*\/\s*\d+\s*SPELL SAVE DC/i);
+            if (multiDcMatch && character.spellcasting) {
+                character.spellcasting.dc = parseInt(multiDcMatch[1]);
+            }
+            var multiAtkMatch = text.match(/([+\-]?\d+)\s*\/\s*[+\-]?\d+\s*SPELL ATTACK/i);
+            if (multiAtkMatch && character.spellcasting) {
+                character.spellcasting.attackBonus = parseInt(multiAtkMatch[1]);
+            }
+
+            // Add warnings for potentially missing data
+            if (character.abilities.str === 10 && character.abilities.dex === 10 &&
+                character.abilities.con === 10 && character.abilities.int === 10) {
+                character.warnings.push('Ability scores may not have been detected correctly. Please verify.');
+            }
+            if (!character.name) {
+                character.warnings.push('Character name was not detected.');
+            }
+            if (!character.classLevel) {
+                character.warnings.push('Class/level was not detected.');
+            }
+
+            // Debug: log extracted text for troubleshooting
+            console.log('DDB PDF Text (first 2000 chars):', text.substring(0, 2000));
+            console.log('Parsed character:', character);
+
+            return character;
+        }
+
+        function showDdbPreview(character) {
+            document.getElementById('ddbImportStep1').style.display = 'none';
+            document.getElementById('ddbImportStep2').style.display = 'block';
+            document.getElementById('ddbBackBtn').style.display = 'inline-block';
+            document.getElementById('ddbImportBtn').disabled = false;
+
+            // Populate preview
+            document.getElementById('ddbPreviewName').textContent = character.name || 'Unknown Character';
+            document.getElementById('ddbPreviewClass').textContent = character.classLevel || 'Unknown';
+            document.getElementById('ddbPreviewRace').textContent = character.race || 'Unknown';
+
+            document.getElementById('ddbPreviewStr').textContent = character.abilities.str;
+            document.getElementById('ddbPreviewDex').textContent = character.abilities.dex;
+            document.getElementById('ddbPreviewCon').textContent = character.abilities.con;
+            document.getElementById('ddbPreviewInt').textContent = character.abilities.int;
+            document.getElementById('ddbPreviewWis').textContent = character.abilities.wis;
+            document.getElementById('ddbPreviewCha').textContent = character.abilities.cha;
+
+            document.getElementById('ddbPreviewAC').textContent = character.ac;
+            document.getElementById('ddbPreviewHP').textContent = character.hp;
+            document.getElementById('ddbPreviewSpeed').textContent = character.speed + ' ft';
+            document.getElementById('ddbPreviewInit').textContent = (character.initiativeBonus >= 0 ? '+' : '') + character.initiativeBonus;
+
+            // Show attacks if found
+            var attacksSection = document.getElementById('ddbAttacksSection');
+            if (character.attacks && character.attacks.length > 0) {
+                attacksSection.style.display = 'block';
+                var attacksHtml = character.attacks.map(function(atk) {
+                    return '<div style="color:#e8f0d8; margin-bottom:4px;">' +
+                        '<strong>' + escapeHtml(atk.name) + '</strong>: ' +
+                        (atk.attackBonus >= 0 ? '+' : '') + atk.attackBonus + ' to hit, ' +
+                        atk.damage + ' ' + (atk.damageType || '') + ' damage</div>';
+                }).join('');
+                document.getElementById('ddbPreviewAttacks').innerHTML = attacksHtml;
+            } else {
+                attacksSection.style.display = 'none';
+            }
+
+            // Show spellcasting if detected
+            var spellsSection = document.getElementById('ddbSpellsSection');
+            if (character.spellcasting && character.spellcasting.detected) {
+                spellsSection.style.display = 'block';
+                var spellInfo = 'Spellcaster detected. ';
+                if (character.spellcasting.dc) spellInfo += 'Spell Save DC: ' + character.spellcasting.dc + '. ';
+                if (character.spellcasting.attackBonus) spellInfo += 'Spell Attack: ' + (character.spellcasting.attackBonus >= 0 ? '+' : '') + character.spellcasting.attackBonus + '.';
+                document.getElementById('ddbPreviewSpells').innerHTML = '<div style="color:#b8a0d8;">' + spellInfo + '</div>';
+            } else {
+                spellsSection.style.display = 'none';
+            }
+
+            // Show warnings
+            var warningsSection = document.getElementById('ddbWarnings');
+            if (character.warnings && character.warnings.length > 0) {
+                warningsSection.style.display = 'block';
+                document.getElementById('ddbWarningText').textContent = character.warnings.join(' ');
+            } else {
+                warningsSection.style.display = 'none';
+            }
+        }
+
+        function confirmDdbImport() {
+            if (!ddbParsedCharacter) return;
+
+            var combatant = createDefaultCombatant();
+            combatant.name = ddbParsedCharacter.name || 'Imported Character';
+            combatant.type = 'player';
+            combatant.level = ddbParsedCharacter.level || 1;
+            combatant.abilities = JSON.parse(JSON.stringify(ddbParsedCharacter.abilities));
+            combatant.ac = ddbParsedCharacter.ac || 10;
+            combatant.maxHp = ddbParsedCharacter.hp || 10;
+            combatant.currentHp = ddbParsedCharacter.hp || 10;
+            combatant.speed = { walk: ddbParsedCharacter.speed || 30, fly: 0, swim: 0, climb: 0, burrow: 0 };
+            combatant.initiativeBonus = ddbParsedCharacter.initiativeBonus || 0;
+            combatant.proficiencyBonus = ddbParsedCharacter.proficiencyBonus || 2;
+
+            // Add attacks if found
+            if (ddbParsedCharacter.attacks && ddbParsedCharacter.attacks.length > 0) {
+                combatant.actions = ddbParsedCharacter.attacks.map(function(atk) {
+                    return {
+                        name: atk.name,
+                        type: 'attack',
+                        attackBonus: atk.attackBonus,
+                        damage: atk.damage,
+                        damageType: atk.damageType || 'unknown'
+                    };
+                });
+            }
+
+            // Add spellcasting info
+            if (ddbParsedCharacter.spellcasting) {
+                combatant.spellcasting = {
+                    ability: 'wis', // Default to WIS for Ranger/Druid/Cleric
+                    spellSaveDC: ddbParsedCharacter.spellcasting.dc || (8 + combatant.proficiencyBonus + Math.floor((combatant.abilities.wis - 10) / 2)),
+                    spellAttackBonus: ddbParsedCharacter.spellcasting.attackBonus || (combatant.proficiencyBonus + Math.floor((combatant.abilities.wis - 10) / 2)),
+                    slots: {}
+                };
+            }
+
+            // Add resistances if found
+            if (ddbParsedCharacter.resistances && ddbParsedCharacter.resistances.length > 0) {
+                combatant.resistances = ddbParsedCharacter.resistances;
+            }
+
+            // Store class/race info in notes
+            combatant.notes = (ddbParsedCharacter.race || '') + ' ' + (ddbParsedCharacter.classLevel || '');
+
+            // Add to combatants
+            combatants.push(combatant);
+
+            // Also save to character library if checkbox is checked
+            if (document.getElementById('ddbAddToLibrary').checked) {
+                var library = [];
+                try {
+                    library = JSON.parse(localStorage.getItem('oakhartCharacterLibrary') || '[]');
+                } catch (e) { library = []; }
+
+                var libEntry = JSON.parse(JSON.stringify(combatant));
+                libEntry.libraryId = genId();
+                libEntry.addedDate = new Date().toISOString();
+                library.push(libEntry);
+                localStorage.setItem('oakhartCharacterLibrary', JSON.stringify(library));
+            }
+
+            save();
+            render();
+            hideDndBeyondImportModal();
+            showAlert('Imported ' + combatant.name + ' successfully!' +
+                (document.getElementById('ddbAddToLibrary').checked ? ' (Also saved to Character Library)' : ''));
         }
 
         // ============ SPELL CASTING MODAL ============
