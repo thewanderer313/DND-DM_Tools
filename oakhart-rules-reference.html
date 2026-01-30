@@ -19,8 +19,25 @@
       --accent-hover: #5a9469;
       --accent-glow: rgba(74, 124, 89, 0.25);
       --danger: #8b3a3a;
+      --danger-hover: #a04545;
       --warning: #8b7355;
       --success: #4a7c59;
+    }
+
+    /* Background image support */
+    body.has-bg-image::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: -1;
     }
 
     * {
@@ -369,6 +386,229 @@
         max-height: 200px;
       }
     }
+
+    /* Settings Button */
+    .settings-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+    }
+
+    .settings-btn:hover {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      max-height: 60vh;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.375rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Buttons */
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background 0.15s;
+    }
+
+    button.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    button.small {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Theme Preview */
+    .theme-preview {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .theme-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid var(--border-strong);
+    }
+
+    /* Background Preview */
+    .bg-preview {
+      width: 100%;
+      height: 120px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    .bg-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bg-preview-placeholder {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .image-upload-area {
+      padding: 1.5rem;
+      border: 2px dashed var(--border-color);
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .image-upload-area:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .image-upload-text {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -380,6 +620,12 @@
         </svg>
         <span id="app-title-text">Rules Reference</span>
       </h1>
+      <button class="settings-btn" id="btn-settings" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66z"/>
+        </svg>
+        Settings
+      </button>
     </header>
 
     <div class="search-container">
@@ -399,6 +645,8 @@
           <button class="sidebar-item" data-category="social">Social & Skills <span class="count" id="count-social">0</span></button>
           <button class="sidebar-item" data-category="equipment">Equipment <span class="count" id="count-equipment">0</span></button>
           <button class="sidebar-item" data-category="classes">Classes <span class="count" id="count-classes">0</span></button>
+          <div class="sidebar-title" style="margin-top: 1rem;">Custom</div>
+          <button class="sidebar-item" data-category="houserules">House Rules <span class="count" id="count-houserules">0</span></button>
         </div>
       </aside>
 
@@ -409,7 +657,218 @@
     </main>
   </div>
 
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3 style="margin-bottom: 1rem; font-size: 1rem;">App Title</h3>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Title displayed in the header</label>
+          <input type="text" class="form-input" id="app-title-input" placeholder="Rules Reference" maxlength="50">
+          <button class="primary small" id="btn-save-title" style="margin-top: 0.5rem;">Save Title</button>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; font-size: 1rem;">Theme</h3>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Color preset</label>
+          <select class="form-select" id="theme-select">
+            <option value="forest">Forest (Default)</option>
+            <option value="ocean">Ocean</option>
+            <option value="desert">Desert</option>
+            <option value="winter">Winter</option>
+            <option value="volcanic">Volcanic</option>
+            <option value="amethyst">Amethyst</option>
+          </select>
+          <div class="theme-preview" id="theme-preview" style="margin-top: 0.75rem;">
+            <div class="theme-swatch" id="swatch-bg"></div>
+            <div class="theme-swatch" id="swatch-accent"></div>
+            <div class="theme-swatch" id="swatch-text"></div>
+            <span id="theme-name" style="color: var(--text-secondary); font-size: 0.875rem; margin-left: 0.5rem;">Forest</span>
+          </div>
+          <button class="primary small" id="btn-apply-theme" style="margin-top: 0.75rem;">Apply Theme</button>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; font-size: 1rem;">Background Image</h3>
+        <div class="bg-preview" id="bg-preview">
+          <span class="bg-preview-placeholder">No background image set</span>
+        </div>
+        <div class="image-upload-area" id="bg-image-upload">
+          <span class="image-upload-text">Click or drag to upload background image</span>
+        </div>
+        <input type="file" id="bg-image-file" accept="image/*" class="hidden">
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+          <button class="primary small" id="btn-save-background">Save Background</button>
+          <button class="small" id="btn-clear-background" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.375rem 0.75rem; border-radius: 4px; cursor: pointer;">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- House Rule Modal -->
+  <div class="modal-overlay" id="houserule-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="houserule-modal-title">Add House Rule</h2>
+        <button class="modal-close" id="btn-close-houserule">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Rule Name *</label>
+          <input type="text" class="form-input" id="houserule-title" placeholder="e.g., Critical Hits, Flanking Bonus, etc." maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-input" id="houserule-content" rows="8" placeholder="Describe how this house rule works in your campaign..." style="resize: vertical; min-height: 150px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Keywords (optional, comma-separated)</label>
+          <input type="text" class="form-input" id="houserule-keywords" placeholder="e.g., combat, damage, critical">
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+          <button class="primary" id="btn-save-houserule">Save House Rule</button>
+          <button id="btn-cancel-houserule" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // =====================================================
+    // THEME PRESETS
+    // =====================================================
+    const THEME_PRESETS = {
+      forest: {
+        name: 'Forest',
+        vars: {
+          '--bg-primary': '#111816',
+          '--bg-secondary': '#161f1b',
+          '--bg-tertiary': '#1c2723',
+          '--bg-card': '#212d28',
+          '--border-color': '#2a3832',
+          '--border-strong': '#3a4a42',
+          '--text-primary': '#e4ebe4',
+          '--text-secondary': '#9aaa9a',
+          '--text-muted': '#5a6a5a',
+          '--accent': '#4a7c59',
+          '--accent-hover': '#5a9469',
+          '--accent-glow': 'rgba(74, 124, 89, 0.25)',
+          '--danger': '#8b3a3a',
+          '--danger-hover': '#a04545',
+          '--warning': '#8b7355',
+          '--success': '#4a7c59'
+        }
+      },
+      ocean: {
+        name: 'Ocean',
+        vars: {
+          '--bg-primary': '#0a1520',
+          '--bg-secondary': '#0f1c28',
+          '--bg-tertiary': '#142430',
+          '--bg-card': '#1a2d3a',
+          '--border-color': '#2a4050',
+          '--border-strong': '#3a5565',
+          '--text-primary': '#e4eef5',
+          '--text-secondary': '#8ab0c8',
+          '--text-muted': '#5a7a90',
+          '--accent': '#3a8cb5',
+          '--accent-hover': '#4a9cc8',
+          '--accent-glow': 'rgba(58, 140, 181, 0.25)',
+          '--danger': '#8b4a4a',
+          '--danger-hover': '#a05555',
+          '--warning': '#8b8055',
+          '--success': '#3a8c7c'
+        }
+      },
+      desert: {
+        name: 'Desert',
+        vars: {
+          '--bg-primary': '#1a1510',
+          '--bg-secondary': '#221c15',
+          '--bg-tertiary': '#2a241c',
+          '--bg-card': '#352d22',
+          '--border-color': '#4a4030',
+          '--border-strong': '#5a5040',
+          '--text-primary': '#f0e8dc',
+          '--text-secondary': '#c8b898',
+          '--text-muted': '#8a7860',
+          '--accent': '#c89040',
+          '--accent-hover': '#d8a050',
+          '--accent-glow': 'rgba(200, 144, 64, 0.25)',
+          '--danger': '#a04040',
+          '--danger-hover': '#b05050',
+          '--warning': '#c89040',
+          '--success': '#6a9050'
+        }
+      },
+      winter: {
+        name: 'Winter',
+        vars: {
+          '--bg-primary': '#0c1015',
+          '--bg-secondary': '#10151c',
+          '--bg-tertiary': '#151c25',
+          '--bg-card': '#1c2530',
+          '--border-color': '#2a3545',
+          '--border-strong': '#3a4a5a',
+          '--text-primary': '#e8f0f8',
+          '--text-secondary': '#a0b8d0',
+          '--text-muted': '#6080a0',
+          '--accent': '#5090c0',
+          '--accent-hover': '#60a0d0',
+          '--accent-glow': 'rgba(80, 144, 192, 0.25)',
+          '--danger': '#904050',
+          '--danger-hover': '#a05060',
+          '--warning': '#907050',
+          '--success': '#408080'
+        }
+      },
+      volcanic: {
+        name: 'Volcanic',
+        vars: {
+          '--bg-primary': '#151010',
+          '--bg-secondary': '#1c1515',
+          '--bg-tertiary': '#241c1c',
+          '--bg-card': '#2d2222',
+          '--border-color': '#3a2828',
+          '--border-strong': '#4a3535',
+          '--text-primary': '#f5e8e4',
+          '--text-secondary': '#c8a8a0',
+          '--text-muted': '#8a6860',
+          '--accent': '#c05040',
+          '--accent-hover': '#d06050',
+          '--accent-glow': 'rgba(192, 80, 64, 0.25)',
+          '--danger': '#a04040',
+          '--danger-hover': '#b05050',
+          '--warning': '#c08040',
+          '--success': '#608050'
+        }
+      },
+      amethyst: {
+        name: 'Amethyst',
+        vars: {
+          '--bg-primary': '#12101a',
+          '--bg-secondary': '#181520',
+          '--bg-tertiary': '#1e1a28',
+          '--bg-card': '#262030',
+          '--border-color': '#352d45',
+          '--border-strong': '#453d55',
+          '--text-primary': '#ece8f5',
+          '--text-secondary': '#b8a8d0',
+          '--text-muted': '#7868a0',
+          '--accent': '#8060b0',
+          '--accent-hover': '#9070c0',
+          '--accent-glow': 'rgba(128, 96, 176, 0.25)',
+          '--danger': '#904050',
+          '--danger-hover': '#a05060',
+          '--warning': '#907050',
+          '--success': '#508070'
+        }
+      }
+    };
+
     // =====================================================
     // RULES DATABASE
     // Page references: PHB = Player's Handbook (2014)
@@ -454,6 +913,76 @@
             <li><strong>Ready:</strong> Prepare to act later with a trigger condition</li>
             <li><strong>Search:</strong> Make a Wisdom (Perception) or Intelligence (Investigation) check</li>
             <li><strong>Use an Object:</strong> Interact with a second object (first is free)</li>
+          </ul>
+        `
+      },
+      {
+        id: 'action-economy',
+        title: 'Action Economy: What You Can Do on Your Turn',
+        category: 'combat',
+        pages: { PHB: 189, PHB24: 361, DMG: 246 },
+        keywords: ['action economy', 'turn', 'free action', 'object interaction', 'standing up', 'prone', 'can I', 'multiple actions', 'what can I do'],
+        content: `
+          <p>On <strong>each of your turns</strong>, you can do ALL of the following:</p>
+          <div class="quick-ref">
+            <div class="quick-ref-title">Your Turn Budget</div>
+            <ul>
+              <li><strong>1 Action</strong> (Attack, Cast a Spell, Dash, Dodge, etc.)</li>
+              <li><strong>1 Bonus Action</strong> (only if you have a feature/spell that grants one)</li>
+              <li><strong>Movement</strong> (up to your speed, can split before/after/during actions)</li>
+              <li><strong>1 Free Object Interaction</strong> (draw weapon, open door, pick up item)</li>
+              <li><strong>Communication</strong> (brief speech, gestures - no action required)</li>
+              <li><strong>1 Reaction</strong> (on your turn OR another creature's turn)</li>
+            </ul>
+          </div>
+
+          <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Common Questions</h4>
+
+          <p><strong>Can I attack AND cast a spell on the same turn?</strong></p>
+          <p>Only if one is a bonus action. You get <strong>one action</strong>, so you must choose: Attack action OR Cast a Spell action. However, you CAN:</p>
+          <ul>
+            <li>Cast a <em>bonus action</em> spell (like Misty Step) + make an Attack action</li>
+            <li>Make an Attack action + cast a <em>bonus action</em> spell (like Healing Word)</li>
+            <li><strong>BUT:</strong> If you cast ANY spell as a bonus action, your action can only be a <em>cantrip</em> (not a leveled spell)</li>
+          </ul>
+
+          <p><strong>Does standing up from prone cost my action?</strong></p>
+          <p><strong>No!</strong> Standing up costs <strong>half your movement speed</strong>, not an action. You can stand up, then still take your full action and bonus action.</p>
+
+          <p><strong>What counts as a "free" object interaction?</strong></p>
+          <ul>
+            <li>Draw or sheathe ONE weapon</li>
+            <li>Open or close a door</li>
+            <li>Pick up a dropped item</li>
+            <li>Hand an item to another creature</li>
+            <li>Retrieve an item from a pouch/pack</li>
+          </ul>
+          <p><em>You only get ONE free object interaction per turn. A second requires your action (Use an Object).</em></p>
+
+          <p><strong>Can I move, attack, then move again?</strong></p>
+          <p><strong>Yes!</strong> You can split your movement however you like around your actions.</p>
+
+          <div class="quick-ref">
+            <div class="quick-ref-title">Example Turn</div>
+            <p>A Fighter with 30 ft speed, Extra Attack, and Action Surge could:</p>
+            <ol style="margin: 0.5rem 0 0 1rem;">
+              <li>Move 10 ft toward enemy</li>
+              <li>Draw sword (free interaction)</li>
+              <li>Attack action (2 attacks from Extra Attack)</li>
+              <li>Move 10 ft to another enemy</li>
+              <li>Action Surge for another action: Attack again (2 more attacks)</li>
+              <li>Move remaining 10 ft</li>
+              <li>Bonus action: Second Wind to heal</li>
+            </ol>
+          </div>
+
+          <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">Things That DON'T Cost an Action</h4>
+          <ul>
+            <li><strong>Standing from prone</strong> = half movement</li>
+            <li><strong>Dropping prone</strong> = 0 ft movement (free)</li>
+            <li><strong>Dropping an item</strong> = free (not the same as stowing it)</li>
+            <li><strong>Talking briefly</strong> = free</li>
+            <li><strong>Perceiving surroundings</strong> = free (but Search action for thorough check)</li>
           </ul>
         `
       },
@@ -1739,7 +2268,7 @@
       let filtered = RULES_DATA;
 
       // Filter by category
-      if (currentCategory !== 'all') {
+      if (currentCategory !== 'all' && currentCategory !== 'houserules') {
         filtered = filtered.filter(r => r.category === currentCategory);
       }
 
@@ -1752,6 +2281,14 @@
                  r.content.toLowerCase().includes(query) ||
                  Object.values(r.pages).some(p => String(p).includes(query));
         });
+
+        // Also search house rules
+        const matchingHouseRules = houseRules.filter(r => {
+          return r.title.toLowerCase().includes(query) ||
+                 r.content.toLowerCase().includes(query) ||
+                 (r.keywords && r.keywords.some(k => k.toLowerCase().includes(query)));
+        });
+        filtered = [...filtered, ...matchingHouseRules];
       }
 
       return filtered;
@@ -1759,6 +2296,32 @@
 
     function renderRules() {
       const container = document.getElementById('rules-container');
+
+      // Special handling for house rules category (not searching)
+      if (currentCategory === 'houserules' && !searchQuery) {
+        container.innerHTML = renderHouseRulesContent();
+
+        // Add click handlers for house rule cards
+        container.querySelectorAll('.rule-header').forEach(header => {
+          header.addEventListener('click', () => {
+            const card = header.parentElement;
+            const id = card.dataset.id;
+            if (expandedRules.has(id)) {
+              expandedRules.delete(id);
+              card.classList.remove('expanded');
+              card.querySelector('.rule-content').style.display = 'none';
+              card.querySelector('.rule-toggle').textContent = '▶';
+            } else {
+              expandedRules.add(id);
+              card.classList.add('expanded');
+              card.querySelector('.rule-content').style.display = 'block';
+              card.querySelector('.rule-toggle').textContent = '▼';
+            }
+          });
+        });
+        return;
+      }
+
       const rules = filterRules();
 
       if (rules.length === 0) {
@@ -1779,15 +2342,16 @@
 
       rules.forEach(rule => {
         const isExpanded = expandedRules.has(rule.id) || (searchQuery && rules.length <= 5);
+        const isHouseRule = rule.id && rule.id.startsWith('hr-');
         const card = document.createElement('div');
         card.className = 'rule-card' + (isExpanded ? ' expanded' : '');
         card.innerHTML = `
           <div class="rule-header" data-id="${rule.id}">
             <span class="rule-title">${highlightMatches(rule.title, searchQuery)}</span>
-            <span class="rule-pages">${formatPages(rule.pages)}</span>
+            <span class="rule-pages" ${isHouseRule ? 'style="color: var(--warning);"' : ''}>${isHouseRule ? 'House Rule' : formatPages(rule.pages)}</span>
             <span class="rule-toggle">▼</span>
           </div>
-          <div class="rule-content">${searchQuery ? highlightMatches(rule.content, searchQuery) : rule.content}</div>
+          <div class="rule-content">${isHouseRule ? `<div style="white-space: pre-wrap;">${escapeHtml(rule.content)}</div>` : (searchQuery ? highlightMatches(rule.content, searchQuery) : rule.content)}</div>
         `;
         container.appendChild(card);
       });
@@ -1811,10 +2375,13 @@
     function updateCounts() {
       const categories = ['all', 'combat', 'conditions', 'spellcasting', 'exploration', 'social', 'equipment', 'classes'];
       categories.forEach(cat => {
-        const count = cat === 'all' ? RULES_DATA.length : RULES_DATA.filter(r => r.category === cat).length;
+        const count = cat === 'all' ? (RULES_DATA.length + houseRules.length) : RULES_DATA.filter(r => r.category === cat).length;
         const el = document.getElementById(`count-${cat}`);
         if (el) el.textContent = count;
       });
+      // House rules count
+      const hrEl = document.getElementById('count-houserules');
+      if (hrEl) hrEl.textContent = houseRules.length;
     }
 
     function updateCategoryHeader() {
@@ -1827,9 +2394,364 @@
         exploration: 'Exploration & Travel',
         social: 'Social & Skills',
         equipment: 'Equipment',
-        classes: 'Character Classes'
+        classes: 'Character Classes',
+        houserules: 'House Rules'
       };
       header.textContent = searchQuery ? `Search Results` : names[currentCategory] || 'Rules';
+    }
+
+    // =====================================================
+    // SETTINGS & THEME MANAGEMENT
+    // =====================================================
+    const STORAGE_KEY = 'oakhart-rules-settings';
+    let pendingBgImage = null;
+
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : { theme: 'forest', title: 'Rules Reference' };
+      } catch (e) {
+        return { theme: 'forest', title: 'Rules Reference' };
+      }
+    }
+
+    function saveSettings(settings) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+      } catch (e) {
+        console.error('Failed to save settings:', e);
+      }
+    }
+
+    function applyTheme(themeId) {
+      const theme = THEME_PRESETS[themeId] || THEME_PRESETS.forest;
+      Object.entries(theme.vars).forEach(([prop, value]) => {
+        document.documentElement.style.setProperty(prop, value);
+      });
+    }
+
+    function applyBackgroundImage(dataUrl) {
+      if (dataUrl) {
+        document.body.style.setProperty('--bg-image', `url(${dataUrl})`);
+        document.body.classList.add('has-bg-image');
+        document.body.style.setProperty('background-image', 'none');
+        const style = document.createElement('style');
+        style.id = 'bg-image-style';
+        style.textContent = `body.has-bg-image::before { background-image: url(${dataUrl}); }`;
+        const existing = document.getElementById('bg-image-style');
+        if (existing) existing.remove();
+        document.head.appendChild(style);
+      } else {
+        document.body.classList.remove('has-bg-image');
+        const existing = document.getElementById('bg-image-style');
+        if (existing) existing.remove();
+      }
+    }
+
+    function updateThemePreview(themeId) {
+      const theme = THEME_PRESETS[themeId] || THEME_PRESETS.forest;
+      document.getElementById('swatch-bg').style.background = theme.vars['--bg-primary'];
+      document.getElementById('swatch-accent').style.background = theme.vars['--accent'];
+      document.getElementById('swatch-text').style.background = theme.vars['--text-primary'];
+      document.getElementById('theme-name').textContent = theme.name;
+    }
+
+    function updateBgPreview(dataUrl) {
+      const preview = document.getElementById('bg-preview');
+      if (dataUrl) {
+        preview.innerHTML = `<img src="${dataUrl}" alt="Background preview">`;
+      } else {
+        preview.innerHTML = '<span class="bg-preview-placeholder">No background image set</span>';
+      }
+    }
+
+    function openSettingsModal() {
+      const settings = loadSettings();
+      document.getElementById('app-title-input').value = settings.title || 'Rules Reference';
+      document.getElementById('theme-select').value = settings.theme || 'forest';
+      updateThemePreview(settings.theme || 'forest');
+      updateBgPreview(settings.bgImage);
+      pendingBgImage = settings.bgImage || null;
+      document.getElementById('settings-modal').classList.add('active');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('active');
+      pendingBgImage = null;
+    }
+
+    function initSettings() {
+      // Settings button
+      document.getElementById('btn-settings').addEventListener('click', openSettingsModal);
+
+      // Close modal
+      document.getElementById('btn-close-settings').addEventListener('click', closeSettingsModal);
+      document.getElementById('settings-modal').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) closeSettingsModal();
+      });
+
+      // Save title
+      document.getElementById('btn-save-title').addEventListener('click', () => {
+        const settings = loadSettings();
+        const newTitle = document.getElementById('app-title-input').value.trim() || 'Rules Reference';
+        settings.title = newTitle;
+        saveSettings(settings);
+        document.getElementById('app-title-text').textContent = newTitle;
+      });
+
+      // Theme select preview
+      document.getElementById('theme-select').addEventListener('change', (e) => {
+        updateThemePreview(e.target.value);
+      });
+
+      // Apply theme
+      document.getElementById('btn-apply-theme').addEventListener('click', () => {
+        const settings = loadSettings();
+        const themeId = document.getElementById('theme-select').value;
+        settings.theme = themeId;
+        saveSettings(settings);
+        applyTheme(themeId);
+      });
+
+      // Background image upload
+      const bgUpload = document.getElementById('bg-image-upload');
+      const bgFileInput = document.getElementById('bg-image-file');
+
+      bgUpload.addEventListener('click', () => bgFileInput.click());
+      bgUpload.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        bgUpload.style.borderColor = 'var(--accent)';
+      });
+      bgUpload.addEventListener('dragleave', () => {
+        bgUpload.style.borderColor = 'var(--border-color)';
+      });
+      bgUpload.addEventListener('drop', (e) => {
+        e.preventDefault();
+        bgUpload.style.borderColor = 'var(--border-color)';
+        if (e.dataTransfer.files.length > 0) {
+          handleBgImageFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      bgFileInput.addEventListener('change', () => {
+        if (bgFileInput.files.length > 0) {
+          handleBgImageFile(bgFileInput.files[0]);
+        }
+      });
+
+      // Save background
+      document.getElementById('btn-save-background').addEventListener('click', () => {
+        const settings = loadSettings();
+        settings.bgImage = pendingBgImage;
+        saveSettings(settings);
+        applyBackgroundImage(pendingBgImage);
+      });
+
+      // Clear background
+      document.getElementById('btn-clear-background').addEventListener('click', () => {
+        pendingBgImage = null;
+        updateBgPreview(null);
+        const settings = loadSettings();
+        settings.bgImage = null;
+        saveSettings(settings);
+        applyBackgroundImage(null);
+      });
+
+      // Load initial settings
+      const settings = loadSettings();
+      document.getElementById('app-title-text').textContent = settings.title || 'Rules Reference';
+      applyTheme(settings.theme || 'forest');
+      if (settings.bgImage) {
+        applyBackgroundImage(settings.bgImage);
+      }
+    }
+
+    function handleBgImageFile(file) {
+      if (!file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        pendingBgImage = e.target.result;
+        updateBgPreview(pendingBgImage);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // =====================================================
+    // HOUSE RULES MANAGEMENT
+    // =====================================================
+    const HOUSERULES_KEY = 'oakhart-house-rules';
+    let houseRules = [];
+    let editingHouseRuleId = null;
+
+    function loadHouseRules() {
+      try {
+        const saved = localStorage.getItem(HOUSERULES_KEY);
+        houseRules = saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        houseRules = [];
+      }
+    }
+
+    function saveHouseRules() {
+      try {
+        localStorage.setItem(HOUSERULES_KEY, JSON.stringify(houseRules));
+      } catch (e) {
+        console.error('Failed to save house rules:', e);
+      }
+    }
+
+    function generateHouseRuleId() {
+      return 'hr-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function openHouseRuleModal(rule = null) {
+      editingHouseRuleId = rule ? rule.id : null;
+      document.getElementById('houserule-modal-title').textContent = rule ? 'Edit House Rule' : 'Add House Rule';
+      document.getElementById('houserule-title').value = rule ? rule.title : '';
+      document.getElementById('houserule-content').value = rule ? rule.content : '';
+      document.getElementById('houserule-keywords').value = rule ? (rule.keywords || []).join(', ') : '';
+      document.getElementById('houserule-modal').classList.add('active');
+      document.getElementById('houserule-title').focus();
+    }
+
+    function closeHouseRuleModal() {
+      document.getElementById('houserule-modal').classList.remove('active');
+      editingHouseRuleId = null;
+    }
+
+    function saveHouseRule() {
+      const title = document.getElementById('houserule-title').value.trim();
+      const content = document.getElementById('houserule-content').value.trim();
+      const keywordsStr = document.getElementById('houserule-keywords').value.trim();
+
+      if (!title || !content) {
+        alert('Please enter both a rule name and description.');
+        return;
+      }
+
+      const keywords = keywordsStr ? keywordsStr.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [];
+
+      if (editingHouseRuleId) {
+        // Update existing
+        const idx = houseRules.findIndex(r => r.id === editingHouseRuleId);
+        if (idx !== -1) {
+          houseRules[idx] = { ...houseRules[idx], title, content, keywords };
+        }
+      } else {
+        // Create new
+        houseRules.push({
+          id: generateHouseRuleId(),
+          title,
+          content,
+          keywords,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      saveHouseRules();
+      closeHouseRuleModal();
+      updateCounts();
+      if (currentCategory === 'houserules' || currentCategory === 'all') {
+        renderRules();
+      }
+    }
+
+    function deleteHouseRule(id) {
+      if (!confirm('Are you sure you want to delete this house rule?')) return;
+      houseRules = houseRules.filter(r => r.id !== id);
+      saveHouseRules();
+      updateCounts();
+      renderRules();
+    }
+
+    function renderHouseRulesContent() {
+      // Add "Add House Rule" button at the top
+      let html = `
+        <div style="margin-bottom: 1rem;">
+          <button class="primary" id="btn-add-houserule-inline" style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Add House Rule
+          </button>
+        </div>
+      `;
+
+      if (houseRules.length === 0) {
+        html += `
+          <div class="no-results">
+            <div class="no-results-icon">📜</div>
+            <p>No house rules yet.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.875rem;">Click the button above to add your campaign's custom rules.</p>
+          </div>
+        `;
+      } else {
+        houseRules.forEach(rule => {
+          const isExpanded = expandedRules.has(rule.id);
+          html += `
+            <div class="rule-card ${isExpanded ? 'expanded' : ''}" data-id="${rule.id}">
+              <div class="rule-header">
+                <span class="rule-toggle">${isExpanded ? '▼' : '▶'}</span>
+                <span class="rule-title">${escapeHtml(rule.title)}</span>
+                <span class="rule-pages" style="color: var(--warning);">House Rule</span>
+              </div>
+              <div class="rule-content" ${isExpanded ? '' : 'style="display:none"'}>
+                <div style="white-space: pre-wrap;">${escapeHtml(rule.content)}</div>
+                ${rule.keywords && rule.keywords.length ? `<p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);">Keywords: ${rule.keywords.join(', ')}</p>` : ''}
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                  <button class="primary small btn-edit-houserule" data-id="${rule.id}">Edit</button>
+                  <button class="small btn-delete-houserule" data-id="${rule.id}" style="background: var(--danger); color: white; border: none; padding: 0.375rem 0.75rem; border-radius: 4px; cursor: pointer;">Delete</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      return html;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function initHouseRules() {
+      loadHouseRules();
+
+      // Close modal
+      document.getElementById('btn-close-houserule').addEventListener('click', closeHouseRuleModal);
+      document.getElementById('btn-cancel-houserule').addEventListener('click', closeHouseRuleModal);
+      document.getElementById('houserule-modal').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) closeHouseRuleModal();
+      });
+
+      // Save house rule
+      document.getElementById('btn-save-houserule').addEventListener('click', saveHouseRule);
+
+      // Handle clicks on house rule cards (edit/delete buttons, expand/collapse)
+      document.getElementById('rules-container').addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.btn-edit-houserule');
+        if (editBtn) {
+          const id = editBtn.dataset.id;
+          const rule = houseRules.find(r => r.id === id);
+          if (rule) openHouseRuleModal(rule);
+          return;
+        }
+
+        const deleteBtn = e.target.closest('.btn-delete-houserule');
+        if (deleteBtn) {
+          deleteHouseRule(deleteBtn.dataset.id);
+          return;
+        }
+      });
+
+      // Handle inline add button (delegated because it's rendered dynamically)
+      document.getElementById('content-area').addEventListener('click', (e) => {
+        if (e.target.closest('#btn-add-houserule-inline')) {
+          openHouseRuleModal();
+        }
+      });
     }
 
     // =====================================================
@@ -1887,6 +2809,12 @@
       updateCounts();
       updateCategoryHeader();
       renderRules();
+
+      // Initialize settings
+      initSettings();
+
+      // Initialize house rules
+      initHouseRules();
     }
 
     document.addEventListener('DOMContentLoaded', init);
