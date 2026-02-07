@@ -312,7 +312,8 @@
     }
 
     /* Highlight search matches */
-    .search-match {
+    .search-match,
+    .search-highlight {
       background: var(--warning);
       color: var(--bg-primary);
       padding: 0 0.125rem;
@@ -383,8 +384,8 @@
     </header>
 
     <div class="search-container">
-      <input type="text" class="search-input" id="search-input" placeholder="Search rules... (e.g., 'opportunity attack', 'concentration', 'rest')" autofocus>
-      <div class="search-hint">Search by keyword, rule name, or page number. Press Enter or just start typing.</div>
+      <input type="text" class="search-input" id="searchBox" placeholder="Search rules by title or content..." onkeyup="window.doSearch && window.doSearch()">
+      <button onclick="window.doSearch && window.doSearch()" style="margin-left: 8px; padding: 0.75rem 1rem; background: var(--accent); border: none; border-radius: 6px; color: white; cursor: pointer;">Search</button>
     </div>
 
     <main class="main-content">
@@ -400,6 +401,7 @@
           <button class="sidebar-item" data-category="equipment">Equipment <span class="count" id="count-equipment">0</span></button>
           <button class="sidebar-item" data-category="classes">Classes <span class="count" id="count-classes">0</span></button>
           <button class="sidebar-item" data-category="class-features">Class Features <span class="count" id="count-class-features">0</span></button>
+          <button class="sidebar-item" data-category="house-rules">House Rules <span class="count" id="count-house-rules">0</span></button>
         </div>
       </aside>
 
@@ -2283,182 +2285,329 @@
 
           <p><strong>Sweeping Attack:</strong> When you hit, deal die damage to another adjacent creature (if original attack roll would hit).</p>
         `
+      },
+      // ========== HOUSE RULES ==========
+      {
+        id: 'house-rules-intro',
+        title: 'House Rules Overview',
+        category: 'house-rules',
+        pages: {},
+        keywords: ['house rules', 'custom', 'homebrew', 'campaign rules'],
+        content: `
+          <p>This section contains custom house rules for your campaign. These rules modify or supplement the standard 5e rules.</p>
+          <p><strong>Note:</strong> House rules should be discussed with your group before implementing them. What works for one table may not work for another.</p>
+          <div class="quick-ref">
+            <div class="quick-ref-title">Adding House Rules</div>
+            You can add your own house rules to this section by editing the rules database in the application files.
+          </div>
+        `
+      },
+      {
+        id: 'crit-injuries',
+        title: 'Critical Hit Injuries (Optional)',
+        category: 'house-rules',
+        pages: {},
+        keywords: ['critical', 'injury', 'lingering', 'wounds', 'house rules'],
+        content: `
+          <p>When a creature takes a critical hit, they may suffer a lingering injury. Roll on this table:</p>
+          <ul>
+            <li><strong>1-5:</strong> No lasting injury</li>
+            <li><strong>6-8:</strong> Minor scar (cosmetic only)</li>
+            <li><strong>9-10:</strong> Painful wound - disadvantage on ability checks for 1 hour</li>
+            <li><strong>11-12:</strong> Bleeding wound - 1d4 damage at start of each turn until healed</li>
+            <li><strong>13-14:</strong> Concussion - disadvantage on INT, WIS, CHA saves for 24 hours</li>
+            <li><strong>15-16:</strong> Broken rib - movement speed reduced by 10 feet until healed</li>
+            <li><strong>17-18:</strong> Internal bleeding - max HP reduced by 1d10 until long rest</li>
+            <li><strong>19-20:</strong> Severe injury - DM determines lasting effect</li>
+          </ul>
+        `
+      },
+      {
+        id: 'flanking-rules',
+        title: 'Flanking Rules',
+        category: 'house-rules',
+        pages: {},
+        keywords: ['flanking', 'advantage', 'positioning', 'tactical', 'house rules'],
+        content: `
+          <p><strong>Standard Flanking:</strong> When two allies are on opposite sides of an enemy, melee attacks against that enemy have advantage.</p>
+          <p><strong>Alternative - Flanking Bonus:</strong> Instead of advantage, flanking provides a +2 bonus to attack rolls. This is less powerful but still rewards tactical positioning.</p>
+          <div class="quick-ref">
+            <div class="quick-ref-title">Flanking Requirements</div>
+            <ul>
+              <li>Two allies must be on opposite sides/corners of the enemy</li>
+              <li>Both allies must be able to see the enemy</li>
+              <li>Neither ally can be incapacitated</li>
+            </ul>
+          </div>
+        `
+      },
+      {
+        id: 'potion-action',
+        title: 'Potions as Bonus Action',
+        category: 'house-rules',
+        pages: {},
+        keywords: ['potion', 'bonus action', 'healing', 'action economy', 'house rules'],
+        content: `
+          <p><strong>Drinking a Potion:</strong> You can drink a potion as a bonus action instead of an action.</p>
+          <p><strong>Administering a Potion:</strong> Giving a potion to another creature still requires an action.</p>
+          <div class="quick-ref">
+            <div class="quick-ref-title">Why This Rule?</div>
+            This makes healing potions more viable in combat, as spending your entire action to heal often feels inefficient compared to attacking or casting spells.
+          </div>
+        `
       }
     ];
 
     // =====================================================
-    // APPLICATION STATE
+    // APPLICATION STATE (using window for global access)
     // =====================================================
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let expandedRules = new Set();
+    window.currentCategory = 'all';
+    window.searchQuery = '';
+    window.expandedRules = new Set();
 
     // =====================================================
     // RENDER FUNCTIONS
     // =====================================================
     function formatPages(pages) {
-      const parts = [];
-      if (pages.PHB) parts.push(`PHB ${pages.PHB}`);
-      if (pages.PHB24) parts.push(`PHB'24 ${pages.PHB24}`);
-      if (pages.DMG) parts.push(`DMG ${pages.DMG}`);
-      if (pages.DMG24) parts.push(`DMG'24 ${pages.DMG24}`);
+      var parts = [];
+      if (pages.PHB) parts.push('PHB ' + pages.PHB);
+      if (pages.PHB24) parts.push("PHB'24 " + pages.PHB24);
+      if (pages.DMG) parts.push('DMG ' + pages.DMG);
+      if (pages.DMG24) parts.push("DMG'24 " + pages.DMG24);
       return parts.join(' | ');
     }
 
     function highlightMatches(text, query) {
       if (!query) return text;
-      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      return text.replace(regex, '<span class="search-match">$1</span>');
+      var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      var regex = new RegExp('(' + escaped + ')', 'gi');
+      return text.replace(regex, '<mark class="search-highlight">$1</mark>');
     }
 
     function filterRules() {
-      let filtered = RULES_DATA;
+      var filtered = [];
+      var i, r, q, titleMatch, contentMatch, keywordMatch, j;
+
+      // Start with all rules
+      for (i = 0; i < RULES_DATA.length; i++) {
+        filtered.push(RULES_DATA[i]);
+      }
 
       // Filter by category
-      if (currentCategory !== 'all') {
-        filtered = filtered.filter(r => r.category === currentCategory);
+      if (window.currentCategory !== 'all') {
+        var catFiltered = [];
+        for (i = 0; i < filtered.length; i++) {
+          if (filtered[i].category === window.currentCategory) {
+            catFiltered.push(filtered[i]);
+          }
+        }
+        filtered = catFiltered;
       }
 
       // Filter by search query
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(r => {
-          return r.title.toLowerCase().includes(query) ||
-                 r.keywords.some(k => k.toLowerCase().includes(query)) ||
-                 r.content.toLowerCase().includes(query) ||
-                 Object.values(r.pages).some(p => String(p).includes(query));
-        });
+      if (window.searchQuery && window.searchQuery.length > 0) {
+        q = window.searchQuery.toLowerCase();
+        var searchFiltered = [];
+        for (i = 0; i < filtered.length; i++) {
+          r = filtered[i];
+          titleMatch = r.title && r.title.toLowerCase().indexOf(q) !== -1;
+          contentMatch = r.content && r.content.toLowerCase().indexOf(q) !== -1;
+          keywordMatch = false;
+          if (r.keywords && r.keywords.length > 0) {
+            for (j = 0; j < r.keywords.length; j++) {
+              if (r.keywords[j].toLowerCase().indexOf(q) !== -1) {
+                keywordMatch = true;
+                break;
+              }
+            }
+          }
+          if (titleMatch || contentMatch || keywordMatch) {
+            searchFiltered.push(r);
+          }
+        }
+        filtered = searchFiltered;
       }
 
       return filtered;
     }
 
     function renderRules() {
-      const container = document.getElementById('rules-container');
-      const rules = filterRules();
-
-      if (rules.length === 0) {
-        container.innerHTML = `
-          <div class="no-results">
-            <div class="no-results-icon">📖</div>
-            <div>No rules found matching your search.</div>
-          </div>
-        `;
+      var container = document.getElementById('rules-container');
+      if (!container) {
+        console.error('rules-container not found!');
         return;
       }
 
-      if (searchQuery) {
-        container.innerHTML = `<div class="search-results-count">${rules.length} result${rules.length !== 1 ? 's' : ''} found</div>`;
-      } else {
-        container.innerHTML = '';
+      // Get the search query value directly
+      var sq = window.searchQuery || '';
+      var cat = window.currentCategory || 'all';
+
+      // Build filtered rules array inline
+      var rules = [];
+      var i, r, q, titleMatch, contentMatch, keywordMatch, j;
+
+      for (i = 0; i < RULES_DATA.length; i++) {
+        r = RULES_DATA[i];
+
+        // Category filter
+        if (cat !== 'all' && r.category !== cat) {
+          continue;
+        }
+
+        // Search filter
+        if (sq.length > 0) {
+          q = sq.toLowerCase();
+          titleMatch = r.title && r.title.toLowerCase().indexOf(q) !== -1;
+          contentMatch = r.content && r.content.toLowerCase().indexOf(q) !== -1;
+          keywordMatch = false;
+          if (r.keywords && r.keywords.length > 0) {
+            for (j = 0; j < r.keywords.length; j++) {
+              if (r.keywords[j].toLowerCase().indexOf(q) !== -1) {
+                keywordMatch = true;
+                break;
+              }
+            }
+          }
+          if (!titleMatch && !contentMatch && !keywordMatch) {
+            continue;
+          }
+        }
+
+        rules.push(r);
       }
 
-      rules.forEach(rule => {
-        const isExpanded = expandedRules.has(rule.id) || (searchQuery && rules.length <= 5);
-        const card = document.createElement('div');
-        card.className = 'rule-card' + (isExpanded ? ' expanded' : '');
-        card.innerHTML = `
-          <div class="rule-header" data-id="${rule.id}">
-            <span class="rule-title">${highlightMatches(rule.title, searchQuery)}</span>
-            <span class="rule-pages">${formatPages(rule.pages)}</span>
-            <span class="rule-toggle">▼</span>
-          </div>
-          <div class="rule-content">${searchQuery ? highlightMatches(rule.content, searchQuery) : rule.content}</div>
-        `;
-        container.appendChild(card);
-      });
+      if (rules.length === 0) {
+        container.innerHTML = '<div class="no-results"><div class="no-results-icon">📖</div><div>No rules found.</div></div>';
+        return;
+      }
 
-      // Add click handlers
-      container.querySelectorAll('.rule-header').forEach(header => {
-        header.addEventListener('click', () => {
-          const id = header.dataset.id;
-          const card = header.parentElement;
-          if (expandedRules.has(id)) {
-            expandedRules.delete(id);
+      // Show result count when searching
+      var html = '';
+      if (sq.length > 0) {
+        html = '<div class="search-results-count">' + rules.length + ' result' + (rules.length !== 1 ? 's' : '') + ' found for "' + sq + '"</div>';
+      }
+
+      for (i = 0; i < rules.length; i++) {
+        var rule = rules[i];
+        var isExpanded = window.expandedRules.has(rule.id) || (sq.length > 0 && rules.length <= 5);
+        var expandedClass = isExpanded ? ' expanded' : '';
+        var titleText = sq.length > 0 ? highlightMatches(rule.title, sq) : rule.title;
+        var contentText = sq.length > 0 ? highlightMatches(rule.content, sq) : rule.content;
+
+        html += '<div class="rule-card' + expandedClass + '">';
+        html += '<div class="rule-header" data-id="' + rule.id + '">';
+        html += '<span class="rule-title">' + titleText + '</span>';
+        html += '<span class="rule-pages">' + formatPages(rule.pages) + '</span>';
+        html += '<span class="rule-toggle">▼</span>';
+        html += '</div>';
+        html += '<div class="rule-content">' + contentText + '</div>';
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+
+      // Add click handlers for expanding/collapsing
+      var headers = container.querySelectorAll('.rule-header');
+      for (j = 0; j < headers.length; j++) {
+        headers[j].onclick = function() {
+          var id = this.getAttribute('data-id');
+          var card = this.parentElement;
+          if (window.expandedRules.has(id)) {
+            window.expandedRules.delete(id);
             card.classList.remove('expanded');
           } else {
-            expandedRules.add(id);
+            window.expandedRules.add(id);
             card.classList.add('expanded');
           }
-        });
-      });
+        };
+      }
     }
 
     function updateCounts() {
-      const categories = ['all', 'combat', 'conditions', 'spellcasting', 'exploration', 'social', 'equipment', 'classes', 'class-features'];
-      categories.forEach(cat => {
-        const count = cat === 'all' ? RULES_DATA.length : RULES_DATA.filter(r => r.category === cat).length;
-        const el = document.getElementById(`count-${cat}`);
+      var categories = ['all', 'combat', 'conditions', 'spellcasting', 'exploration', 'social', 'equipment', 'classes', 'class-features', 'house-rules'];
+      for (var i = 0; i < categories.length; i++) {
+        var cat = categories[i];
+        var count = cat === 'all' ? RULES_DATA.length : RULES_DATA.filter(function(r) { return r.category === cat; }).length;
+        var el = document.getElementById('count-' + cat);
         if (el) el.textContent = count;
-      });
+      }
     }
 
     function updateCategoryHeader() {
-      const header = document.getElementById('category-header');
-      const names = {
-        all: 'All Rules',
-        combat: 'Combat Rules',
-        conditions: 'Conditions',
-        spellcasting: 'Spellcasting',
-        exploration: 'Exploration & Travel',
-        social: 'Social & Skills',
-        equipment: 'Equipment',
-        classes: 'Character Classes',
-        'class-features': 'Class Features'
+      var header = document.getElementById('category-header');
+      if (window.searchQuery && window.searchQuery.length > 0) {
+        header.textContent = 'Search Results for: "' + window.searchQuery + '"';
+        return;
+      }
+      var names = {
+        'all': 'All Rules',
+        'combat': 'Combat Rules',
+        'conditions': 'Conditions',
+        'spellcasting': 'Spellcasting',
+        'exploration': 'Exploration & Travel',
+        'social': 'Social & Skills',
+        'equipment': 'Equipment',
+        'classes': 'Character Classes',
+        'class-features': 'Class Features',
+        'house-rules': 'House Rules'
       };
-      header.textContent = searchQuery ? `Search Results` : names[currentCategory] || 'Rules';
+      header.textContent = names[window.currentCategory] || 'Rules';
     }
+
+    function doSearch() {
+      var box = document.getElementById('searchBox');
+      if (box) {
+        window.searchQuery = box.value.trim();
+        if (window.searchQuery.length > 0) {
+          // When searching, switch to all categories
+          window.currentCategory = 'all';
+          var items = document.querySelectorAll('.sidebar-item');
+          for (var i = 0; i < items.length; i++) {
+            items[i].classList.remove('active');
+          }
+          var allBtn = document.querySelector('[data-category="all"]');
+          if (allBtn) allBtn.classList.add('active');
+        }
+        updateCategoryHeader();
+        renderRules();
+      }
+    }
+    // Make doSearch globally accessible
+    window.doSearch = doSearch;
 
     // =====================================================
     // EVENT HANDLERS
     // =====================================================
     function init() {
       // Sidebar category clicks
-      document.querySelectorAll('.sidebar-item').forEach(item => {
-        item.addEventListener('click', () => {
-          document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          currentCategory = item.dataset.category;
-          searchQuery = '';
-          document.getElementById('search-input').value = '';
-          updateCategoryHeader();
-          renderRules();
+      var sidebarItems = document.querySelectorAll('.sidebar-item');
+      for (var i = 0; i < sidebarItems.length; i++) {
+        (function(item) {
+          item.onclick = function() {
+            var allItems = document.querySelectorAll('.sidebar-item');
+            for (var j = 0; j < allItems.length; j++) {
+              allItems[j].classList.remove('active');
+            }
+            item.classList.add('active');
+            window.currentCategory = item.getAttribute('data-category');
+            // Clear search when switching categories
+            window.searchQuery = '';
+            var box = document.getElementById('searchBox');
+            if (box) box.value = '';
+            updateCategoryHeader();
+            renderRules();
+          };
+        })(sidebarItems[i]);
+      }
+
+      // Search input handler - use addEventListener to not overwrite inline handlers
+      var searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', doSearch);
+        searchBox.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter' || e.keyCode === 13) doSearch();
         });
-      });
-
-      // Search input
-      const searchInput = document.getElementById('search-input');
-      let searchTimeout;
-      searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          searchQuery = e.target.value.trim();
-          if (searchQuery) {
-            // When searching, search all categories
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            document.querySelector('[data-category="all"]').classList.add('active');
-            currentCategory = 'all';
-          }
-          updateCategoryHeader();
-          renderRules();
-        }, 200);
-      });
-
-      // Keyboard shortcut to focus search
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-          e.preventDefault();
-          searchInput.focus();
-          searchInput.select();
-        }
-        if (e.key === 'Escape' && document.activeElement === searchInput) {
-          searchInput.value = '';
-          searchQuery = '';
-          updateCategoryHeader();
-          renderRules();
-          searchInput.blur();
-        }
-      });
+      }
 
       // Initial render
       updateCounts();
