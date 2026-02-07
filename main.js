@@ -68,7 +68,9 @@ function createWindow() {
   });
 
   // Load the main HTML file
-  mainWindow.loadFile('oakhart-dm-tools-electron.html');
+  mainWindow.loadFile('oakhart-dm-tools-electron.html').catch(err => {
+    console.error('Failed to load main HTML file:', err);
+  });
 
   // Open DevTools in development
   // mainWindow.webContents.openDevTools();
@@ -186,6 +188,9 @@ ipcMain.handle('open-images-folder', async () => {
 // Choose images folder location
 ipcMain.handle('choose-images-folder', async () => {
   try {
+    if (!mainWindow) {
+      return { success: false, error: 'Window not available' };
+    }
     const result = await dialog.showOpenDialog(mainWindow, {
       title: 'Choose Images Folder',
       defaultPath: getImagesDir(),
@@ -209,6 +214,9 @@ ipcMain.handle('choose-images-folder', async () => {
 // Save data to file (for backup/export)
 ipcMain.handle('save-data-file', async (event, { defaultName, data }) => {
   try {
+    if (!mainWindow) {
+      return { success: false, error: 'Window not available' };
+    }
     const result = await dialog.showSaveDialog(mainWindow, {
       defaultPath: defaultName,
       filters: [{ name: 'JSON', extensions: ['json'] }]
@@ -228,6 +236,9 @@ ipcMain.handle('save-data-file', async (event, { defaultName, data }) => {
 // Load data from file (for import)
 ipcMain.handle('load-data-file', async () => {
   try {
+    if (!mainWindow) {
+      return { success: false, error: 'Window not available' };
+    }
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ['openFile'],
       filters: [{ name: 'JSON', extensions: ['json'] }]

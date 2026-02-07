@@ -236,7 +236,7 @@
 
             // Pass electronAPI to iframe
             const iframe = document.getElementById('iframe-rolltables');
-            if (window.electronAPI && iframe.contentWindow) {
+            if (window.electronAPI && iframe && iframe.contentWindow) {
                 iframe.contentWindow.electronAPI = window.electronAPI;
                 iframe.contentWindow.dispatchEvent(new Event('electron-ready'));
             }
@@ -246,7 +246,7 @@
             document.getElementById('loading-combat').classList.add('hidden');
 
             const iframe = document.getElementById('iframe-combat');
-            if (window.electronAPI && iframe.contentWindow) {
+            if (window.electronAPI && iframe && iframe.contentWindow) {
                 iframe.contentWindow.electronAPI = window.electronAPI;
                 iframe.contentWindow.dispatchEvent(new Event('electron-ready'));
             }

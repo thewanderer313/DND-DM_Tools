@@ -11,7 +11,8 @@
       --bg-tertiary: #1c2723;
       --bg-card: #212d28;
       --border-color: #2a3832;
-      --border-strong: #3a4a42;
+      --border-light: #3a4a42;
+      --border-strong: #4a5a52;
       --text-primary: #e4ebe4;
       --text-secondary: #9aaa9a;
       --text-muted: #5a6a5a;
@@ -3400,9 +3401,12 @@
 
       // Event listeners
       if (hasImage) {
-        document.getElementById('result-card-clickable').addEventListener('click', () => {
-          openCardModal(entry);
-        });
+        const clickableCard = document.getElementById('result-card-clickable');
+        if (clickableCard) {
+          clickableCard.addEventListener('click', () => {
+            openCardModal(entry);
+          });
+        }
       }
 
       container.querySelectorAll('.follow-up-chip').forEach(chip => {
@@ -3619,6 +3623,7 @@
       }
 
       const input = document.getElementById('manual-roll-input');
+      if (!input) return;
       const value = parseInt(input.value);
 
       if (isNaN(value) || value < 1 || value > table.entries.length) {
@@ -4606,8 +4611,10 @@
     function switchSettingsTab(tab) {
       document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
-      document.querySelector(`.settings-tab[data-tab="${tab}"]`).classList.add('active');
-      document.getElementById('panel-' + tab).classList.add('active');
+      const tabEl = document.querySelector(`.settings-tab[data-tab="${tab}"]`);
+      const panelEl = document.getElementById('panel-' + tab);
+      if (tabEl) tabEl.classList.add('active');
+      if (panelEl) panelEl.classList.add('active');
 
       if (tab === 'tables') {
         renderSettingsCategorySelect();
@@ -5197,13 +5204,20 @@
       document.getElementById('btn-help').addEventListener('click', openHelpModal);
 
       // Global search modal
-      document.getElementById('global-search-modal').querySelector('.modal-close').addEventListener('click', closeGlobalSearch);
-      document.getElementById('global-search-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'global-search-modal') closeGlobalSearch();
-      });
-      document.getElementById('global-search-input').addEventListener('input', (e) => {
-        renderSearchResults(e.target.value);
-      });
+      const globalSearchModal = document.getElementById('global-search-modal');
+      if (globalSearchModal) {
+        const closeBtn = globalSearchModal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.addEventListener('click', closeGlobalSearch);
+        globalSearchModal.addEventListener('click', (e) => {
+          if (e.target.id === 'global-search-modal') closeGlobalSearch();
+        });
+      }
+      const globalSearchInput = document.getElementById('global-search-input');
+      if (globalSearchInput) {
+        globalSearchInput.addEventListener('input', (e) => {
+          renderSearchResults(e.target.value);
+        });
+      }
 
       // Keyboard shortcut for global search (Ctrl+K or Cmd+K)
       document.addEventListener('keydown', (e) => {
@@ -5212,37 +5226,62 @@
           openGlobalSearch();
         }
         // Close search on Escape
-        if (e.key === 'Escape' && document.getElementById('global-search-modal').classList.contains('active')) {
+        const searchModal = document.getElementById('global-search-modal');
+        if (e.key === 'Escape' && searchModal && searchModal.classList.contains('active')) {
           closeGlobalSearch();
         }
       });
 
       // Welcome modal
-      document.getElementById('welcome-modal').querySelector('.modal-close').addEventListener('click', closeWelcomeModal);
-      document.getElementById('btn-welcome-start').addEventListener('click', closeWelcomeModal);
+      const welcomeModal = document.getElementById('welcome-modal');
+      if (welcomeModal) {
+        const closeBtn = welcomeModal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.addEventListener('click', closeWelcomeModal);
+      }
+      const btnWelcomeStart = document.getElementById('btn-welcome-start');
+      if (btnWelcomeStart) btnWelcomeStart.addEventListener('click', closeWelcomeModal);
 
       // Category search
-      document.getElementById('category-search').addEventListener('input', renderCategories);
+      const categorySearch = document.getElementById('category-search');
+      if (categorySearch) categorySearch.addEventListener('input', renderCategories);
 
       // Table search
-      document.getElementById('table-search').addEventListener('input', renderTables);
+      const tableSearch = document.getElementById('table-search');
+      if (tableSearch) tableSearch.addEventListener('input', renderTables);
 
       // Quick add buttons
-      document.getElementById('btn-add-category-quick').addEventListener('click', quickAddCategory);
-      document.getElementById('btn-add-table-quick').addEventListener('click', quickAddTable);
-      document.getElementById('btn-add-entry-quick').addEventListener('click', quickAddEntry);
+      const btnAddCategoryQuick = document.getElementById('btn-add-category-quick');
+      const btnAddTableQuick = document.getElementById('btn-add-table-quick');
+      const btnAddEntryQuick = document.getElementById('btn-add-entry-quick');
+      if (btnAddCategoryQuick) btnAddCategoryQuick.addEventListener('click', quickAddCategory);
+      if (btnAddTableQuick) btnAddTableQuick.addEventListener('click', quickAddTable);
+      if (btnAddEntryQuick) btnAddEntryQuick.addEventListener('click', quickAddEntry);
 
       // Card modal
-      document.getElementById('card-modal').querySelector('.modal-close').addEventListener('click', closeCardModal);
-      document.getElementById('btn-close-card').addEventListener('click', closeCardModal);
-      document.getElementById('btn-copy-text').addEventListener('click', copyCardText);
-      document.getElementById('btn-copy-image').addEventListener('click', copyCardImage);
-      document.getElementById('btn-download-card').addEventListener('click', downloadCardPng);
-      document.getElementById('btn-add-to-combat').addEventListener('click', addToCombat);
+      const cardModal = document.getElementById('card-modal');
+      if (cardModal) {
+        const closeBtn = cardModal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.addEventListener('click', closeCardModal);
+      }
+      const btnCloseCard = document.getElementById('btn-close-card');
+      const btnCopyText = document.getElementById('btn-copy-text');
+      const btnCopyImage = document.getElementById('btn-copy-image');
+      const btnDownloadCard = document.getElementById('btn-download-card');
+      const btnAddToCombat = document.getElementById('btn-add-to-combat');
+      if (btnCloseCard) btnCloseCard.addEventListener('click', closeCardModal);
+      if (btnCopyText) btnCopyText.addEventListener('click', copyCardText);
+      if (btnCopyImage) btnCopyImage.addEventListener('click', copyCardImage);
+      if (btnDownloadCard) btnDownloadCard.addEventListener('click', downloadCardPng);
+      if (btnAddToCombat) btnAddToCombat.addEventListener('click', addToCombat);
 
       // Settings modal
-      document.getElementById('settings-modal').querySelector('.modal-close').addEventListener('click', closeSettings);
-      document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
+      const settingsModal = document.getElementById('settings-modal');
+      if (settingsModal) {
+        const closeBtn = settingsModal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+      }
+      const btnCloseSettings = document.getElementById('btn-close-settings');
+      if (btnCloseSettings) btnCloseSettings.addEventListener('click', closeSettings);
 
       // Settings tabs
       document.querySelectorAll('.settings-tab').forEach(tab => {
@@ -5277,7 +5316,9 @@
       entryImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
       entryImageUpload.addEventListener('drop', (e) => {
         e.preventDefault();
-        handleEntryImageUpload(e.dataTransfer.files[0]);
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleEntryImageUpload(e.dataTransfer.files[0]);
+        }
       });
       entryImageFile.addEventListener('change', () => {
         handleEntryImageUpload(entryImageFile.files[0]);
@@ -5311,7 +5352,9 @@
       bgImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
       bgImageUpload.addEventListener('drop', (e) => {
         e.preventDefault();
-        handleBackgroundUpload(e.dataTransfer.files[0]);
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleBackgroundUpload(e.dataTransfer.files[0]);
+        }
       });
       bgImageFile.addEventListener('change', () => {
         handleBackgroundUpload(bgImageFile.files[0]);
@@ -5350,9 +5393,14 @@
       // Open images folder button (Electron only)
       document.getElementById('btn-open-images-folder').addEventListener('click', async () => {
         if (window.electronAPI && window.electronAPI.openImagesFolder) {
-          const result = await window.electronAPI.openImagesFolder();
-          if (result.success) {
-            showToast('Opened images folder', 'success');
+          try {
+            const result = await window.electronAPI.openImagesFolder();
+            if (result && result.success) {
+              showToast('Opened images folder', 'success');
+            }
+          } catch (e) {
+            console.error('Failed to open images folder:', e);
+            showToast('Failed to open folder', 'error');
           }
         }
       });
@@ -5360,11 +5408,16 @@
       // Choose images folder button (Electron only)
       document.getElementById('btn-choose-images-folder').addEventListener('click', async () => {
         if (window.electronAPI && window.electronAPI.chooseImagesFolder) {
-          const result = await window.electronAPI.chooseImagesFolder();
-          if (result.success) {
-            showToast('Images folder updated', 'success');
-            updateImagesFolderStatus();
-          } else if (!result.canceled) {
+          try {
+            const result = await window.electronAPI.chooseImagesFolder();
+            if (result && result.success) {
+              showToast('Images folder updated', 'success');
+              updateImagesFolderStatus();
+            } else if (result && !result.canceled) {
+              showToast('Failed to set folder', 'error');
+            }
+          } catch (e) {
+            console.error('Failed to choose images folder:', e);
             showToast('Failed to set folder', 'error');
           }
         }
@@ -5410,7 +5463,9 @@
       inlineImageUpload.addEventListener('dragover', (e) => { e.preventDefault(); });
       inlineImageUpload.addEventListener('drop', (e) => {
         e.preventDefault();
-        handleInlineImageUpload(e.dataTransfer.files[0]);
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleInlineImageUpload(e.dataTransfer.files[0]);
+        }
       });
       inlineImageFile.addEventListener('change', () => {
         handleInlineImageUpload(inlineImageFile.files[0]);
