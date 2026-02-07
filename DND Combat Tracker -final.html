@@ -179,23 +179,26 @@
 
         .quick-add-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 10px;
         }
 
         .quick-input {
             flex: 1;
-            padding: 8px 10px;
+            min-width: 140px;
+            padding: 10px 12px;
             background: rgba(30, 40, 35, 0.8);
             border: 1px solid rgba(100, 130, 100, 0.4);
             border-radius: 4px;
             color: #e4ebe4;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .quick-input-small {
-            width: 60px;
-            padding: 8px 10px;
+            width: 55px;
+            flex-shrink: 0;
+            padding: 10px 8px;
             background: rgba(30, 40, 35, 0.8);
             border: 1px solid rgba(100, 130, 100, 0.4);
             border-radius: 4px;
@@ -4435,12 +4438,20 @@
                     <button class="quick-add-btn" onclick="quickAddCombatant()" data-tooltip="Add combatant with random init if blank" data-tooltip-pos="bottom">+</button>
                 </div>
                 <div class="quick-presets">
-                    <span class="preset-label">Presets:</span>
+                    <span class="preset-label">Standard:</span>
                     <button onclick="addPresetMonster('goblin')" title="AC 15, HP 7, +2 Init">Goblin</button>
                     <button onclick="addPresetMonster('bandit')" title="AC 12, HP 11, +1 Init">Bandit</button>
                     <button onclick="addPresetMonster('skeleton')" title="AC 13, HP 13, +2 Init">Skeleton</button>
                     <button onclick="addPresetMonster('zombie')" title="AC 8, HP 22, -2 Init">Zombie</button>
                     <button onclick="addPresetMonster('wolf')" title="AC 13, HP 11, +2 Init">Wolf</button>
+                </div>
+                <div class="quick-presets" style="margin-top: 6px;">
+                    <span class="preset-label">Folklore:</span>
+                    <button onclick="addPresetMonster('tailypo')" title="AC 14, HP 9, +3 Init - Vengeful creature seeking its tail">Tailypo</button>
+                    <button onclick="addPresetMonster('wampuscat')" title="AC 14, HP 26, +2 Init - Six-legged panther spirit">Wampus Cat</button>
+                    <button onclick="addPresetMonster('spearfinger')" title="AC 17, HP 45, +1 Init - Stone-skinned witch">Spearfinger</button>
+                    <button onclick="addPresetMonster('ravenmocker')" title="AC 13, HP 18, +3 Init - Spirit that preys on dying">Raven Mocker</button>
+                    <button onclick="addPresetMonster('bellwitch')" title="AC 12, HP 27, +2 Init - Poltergeist spirit">Bell Witch</button>
                 </div>
             </div>
 
@@ -7388,6 +7399,7 @@
         // QUICK ADD FUNCTIONS
         // ============================================
         var QUICK_PRESETS = {
+            // Standard D&D
             goblin: { name: 'Goblin', ac: 15, hp: 7, init: 2, type: 'monster' },
             bandit: { name: 'Bandit', ac: 12, hp: 11, init: 1, type: 'monster' },
             skeleton: { name: 'Skeleton', ac: 13, hp: 13, init: 2, type: 'monster' },
@@ -7395,7 +7407,16 @@
             wolf: { name: 'Wolf', ac: 13, hp: 11, init: 2, type: 'monster' },
             orc: { name: 'Orc', ac: 13, hp: 15, init: 1, type: 'monster' },
             kobold: { name: 'Kobold', ac: 12, hp: 5, init: 2, type: 'monster' },
-            guard: { name: 'Guard', ac: 16, hp: 11, init: 1, type: 'npc' }
+            guard: { name: 'Guard', ac: 16, hp: 11, init: 1, type: 'npc' },
+            // Appalachian Folklore
+            tailypo: { name: 'Tailypo', ac: 14, hp: 9, init: 3, type: 'monster' },
+            wampuscat: { name: 'Wampus Cat', ac: 14, hp: 26, init: 2, type: 'monster' },
+            spearfinger: { name: 'Spearfinger', ac: 17, hp: 45, init: 1, type: 'monster' },
+            ravenmocker: { name: 'Raven Mocker', ac: 13, hp: 18, init: 3, type: 'monster' },
+            flatwoods: { name: 'Flatwoods Monster', ac: 15, hp: 33, init: 0, type: 'monster' },
+            bellwitch: { name: 'Bell Witch', ac: 12, hp: 27, init: 2, type: 'monster' },
+            booger: { name: 'Booger', ac: 11, hp: 14, init: 1, type: 'monster' },
+            mooneyed: { name: 'Moon-Eyed One', ac: 13, hp: 16, init: 0, type: 'monster' }
         };
 
         function quickAddCombatant() {
