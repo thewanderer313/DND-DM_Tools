@@ -370,6 +370,70 @@
         max-height: 200px;
       }
     }
+
+    /* ============ TOOLTIPS ============ */
+    [data-tooltip] {
+      position: relative;
+    }
+
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: rgba(20, 30, 25, 0.98);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: normal;
+      white-space: nowrap;
+      z-index: 10000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    [data-tooltip]::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(20, 30, 25, 0.98);
+      z-index: 10001;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    [data-tooltip]:hover::after,
+    [data-tooltip]:hover::before {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    [data-tooltip]:hover::before {
+      transform: translateX(-50%);
+    }
+
+    /* Bottom tooltips for elements near top */
+    [data-tooltip-pos="bottom"]::after {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    [data-tooltip-pos="bottom"]::before {
+      bottom: auto;
+      top: calc(100% + 2px);
+      border-top-color: transparent;
+      border-bottom-color: rgba(20, 30, 25, 0.98);
+    }
   </style>
 </head>
 <body>
@@ -384,8 +448,8 @@
     </header>
 
     <div class="search-container">
-      <input type="text" class="search-input" id="searchBox" placeholder="Search rules by title or content..." onkeyup="window.doSearch && window.doSearch()">
-      <button onclick="window.doSearch && window.doSearch()" style="margin-left: 8px; padding: 0.75rem 1rem; background: var(--accent); border: none; border-radius: 6px; color: white; cursor: pointer;">Search</button>
+      <input type="text" class="search-input" id="searchBox" placeholder="Search rules by title or content..." onkeyup="window.doSearch && window.doSearch()" title="Type to search rules by title, content, or keywords">
+      <button onclick="window.doSearch && window.doSearch()" style="margin-left: 8px; padding: 0.75rem 1rem; background: var(--accent); border: none; border-radius: 6px; color: white; cursor: pointer;" data-tooltip="Search rules" data-tooltip-pos="bottom">Search</button>
     </div>
 
     <main class="main-content">

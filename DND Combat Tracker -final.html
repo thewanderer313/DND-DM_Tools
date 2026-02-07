@@ -3890,9 +3890,390 @@
             background: linear-gradient(135deg, rgba(120, 80, 160, 0.7), rgba(100, 60, 140, 0.7)) !important;
         }
 
+        /* ============ TOOLTIPS ============ */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(20, 30, 20, 0.98);
+            color: #e8f0d8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: normal;
+            white-space: nowrap;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            border: 1px solid rgba(139, 159, 111, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        [data-tooltip]::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(20, 30, 20, 0.98);
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        [data-tooltip]:hover::after,
+        [data-tooltip]:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        [data-tooltip]:hover::before {
+            transform: translateX(-50%);
+        }
+
+        /* Tooltip with keyboard shortcut highlight */
+        [data-tooltip] .shortcut-key {
+            display: inline-block;
+            background: rgba(139, 159, 111, 0.4);
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        /* Bottom tooltips for elements near top */
+        [data-tooltip-pos="bottom"]::after {
+            bottom: auto;
+            top: calc(100% + 8px);
+        }
+
+        [data-tooltip-pos="bottom"]::before {
+            bottom: auto;
+            top: calc(100% + 2px);
+            border-top-color: transparent;
+            border-bottom-color: rgba(20, 30, 20, 0.98);
+        }
+
+        /* Keyboard Help Button */
+        .keyboard-help-btn {
+            background: rgba(60, 80, 65, 0.8) !important;
+            border-color: rgba(139, 159, 111, 0.5) !important;
+            font-size: 1rem !important;
+            padding: 4px 10px !important;
+        }
+
+        .keyboard-help-btn:hover {
+            background: rgba(80, 100, 85, 0.9) !important;
+            border-color: rgba(139, 159, 111, 0.8) !important;
+        }
+
+        /* Keyboard Shortcuts Panel */
+        .shortcuts-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            background: rgba(25, 35, 22, 0.98);
+            border: 2px solid rgba(139, 159, 111, 0.6);
+            border-radius: 12px;
+            padding: 20px 28px;
+            z-index: 10001;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .shortcuts-panel.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .shortcuts-panel h3 {
+            color: #c9d8a8;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(139, 159, 111, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shortcuts-panel .close-btn {
+            background: none;
+            border: none;
+            color: #8b9f6f;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .shortcuts-panel .close-btn:hover {
+            color: #c9d8a8;
+        }
+
+        .shortcut-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(139, 159, 111, 0.15);
+        }
+
+        .shortcut-row:last-child {
+            border-bottom: none;
+        }
+
+        .shortcut-action {
+            color: #e8f0d8;
+            font-size: 0.9rem;
+        }
+
+        .shortcut-keys {
+            display: flex;
+            gap: 4px;
+        }
+
+        .shortcut-key-tag {
+            background: rgba(139, 159, 111, 0.3);
+            color: #c9d8a8;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            border: 1px solid rgba(139, 159, 111, 0.4);
+        }
+
+        .shortcuts-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s;
+        }
+
+        .shortcuts-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* First-time tutorial styles */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: none;
+        }
+
+        .tutorial-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tutorial-card {
+            background: rgba(25, 35, 22, 0.98);
+            border: 2px solid rgba(139, 159, 111, 0.6);
+            border-radius: 16px;
+            padding: 28px 36px;
+            max-width: 520px;
+            text-align: center;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+        }
+
+        .tutorial-card h2 {
+            color: #c9d8a8;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .tutorial-card p {
+            color: #e8f0d8;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-tips {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .tutorial-tips h4 {
+            color: #9bb87f;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-tips ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tutorial-tips li {
+            color: #c9d8a8;
+            font-size: 0.9rem;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tutorial-tips li::before {
+            content: '→';
+            color: #8b9f6f;
+        }
+
+        .tutorial-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .tutorial-btns button {
+            padding: 10px 24px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tutorial-btns .primary-btn {
+            background: linear-gradient(135deg, rgba(74, 124, 89, 0.9), rgba(54, 104, 69, 0.9));
+            border: 1px solid rgba(139, 159, 111, 0.6);
+            color: #fff;
+        }
+
+        .tutorial-btns .primary-btn:hover {
+            background: linear-gradient(135deg, rgba(84, 134, 99, 0.95), rgba(64, 114, 79, 0.95));
+        }
+
+        .tutorial-btns .secondary-btn {
+            background: rgba(60, 80, 65, 0.6);
+            border: 1px solid rgba(100, 130, 100, 0.4);
+            color: #c9d8a8;
+        }
+
+        .tutorial-btns .secondary-btn:hover {
+            background: rgba(70, 90, 75, 0.7);
+        }
+
     </style>
 </head>
 <body>
+    <!-- Keyboard Shortcuts Panel -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay" onclick="toggleShortcutsPanel()"></div>
+    <div class="shortcuts-panel" id="shortcutsPanel">
+        <h3>
+            ⌨️ Keyboard Shortcuts
+            <button class="close-btn" onclick="toggleShortcutsPanel()">×</button>
+        </h3>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Next Turn</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">Space</span>
+                <span class="shortcut-key-tag">N</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Previous Turn</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">P</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Select Combatant</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">1</span>-<span class="shortcut-key-tag">9</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Attack / Execute</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">A</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Damage Active</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">D</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Heal Active</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">H</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Target Self</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">T</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Clear Targets</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">C</span>
+            </div>
+        </div>
+        <div class="shortcut-row">
+            <span class="shortcut-action">Cancel / Close</span>
+            <div class="shortcut-keys">
+                <span class="shortcut-key-tag">Esc</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- First-Time Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-card">
+            <h2>⚔️ Welcome to Combat Tracker!</h2>
+            <p>Track initiative, manage HP, and run smooth D&D combat encounters.</p>
+            <div class="tutorial-tips">
+                <h4>Quick Start Tips:</h4>
+                <ul>
+                    <li>Use the <strong>+ Add</strong> drawer on the left to add combatants</li>
+                    <li>Press <strong>Space</strong> or <strong>N</strong> to advance turns</li>
+                    <li>Click the <strong>⌨️</strong> button for all keyboard shortcuts</li>
+                    <li>Hover over buttons to see what they do</li>
+                    <li>Use preset buttons for quick monster entry</li>
+                </ul>
+            </div>
+            <div class="tutorial-btns">
+                <button class="primary-btn" onclick="closeTutorial()">Got it!</button>
+                <button class="secondary-btn" onclick="closeTutorialDontShow()">Don't show again</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Targeting Mode Indicator -->
     <div class="targeting-mode-indicator" id="targetingIndicator">
         🎯 TARGETING MODE - Click combatants to select targets (Shift+Click for multiple)
@@ -3905,14 +4286,15 @@
             <div class="round">Round <span id="roundNum">1</span></div>
         </div>
         <div class="header-controls">
-            <button onclick="toggleCombatLog()">📜 Combat Log</button>
-            <button onclick="toggleCoverRules()">🛡️ Cover Rules</button>
-            <button onclick="toggleExhaustionRules()">😫 Exhaustion</button>
-            <button onclick="rollAllInitiative()">🎲 Roll Initiative</button>
-            <button onclick="sortByInit()">Sort by Init</button>
-            <button onclick="showImportExportModal()">📁 Import/Export</button>
-            <button onclick="openSettingsModal()">⚙️ Settings</button>
-            <button onclick="newCombat()">New Combat</button>
+            <button onclick="toggleCombatLog()" data-tooltip="View turn-by-turn combat history">📜 Combat Log</button>
+            <button onclick="toggleCoverRules()" data-tooltip="Quick reference for cover bonuses">🛡️ Cover Rules</button>
+            <button onclick="toggleExhaustionRules()" data-tooltip="Exhaustion level effects reference">😫 Exhaustion</button>
+            <button onclick="rollAllInitiative()" data-tooltip="Roll initiative for all combatants at once">🎲 Roll Initiative</button>
+            <button onclick="sortByInit()" data-tooltip="Sort combatants by initiative (highest first)">Sort by Init</button>
+            <button onclick="showImportExportModal()" data-tooltip="Save or load combat encounters">📁 Import/Export</button>
+            <button onclick="openSettingsModal()" data-tooltip="Customize themes, title, and more">⚙️ Settings</button>
+            <button onclick="newCombat()" data-tooltip="Clear all combatants and start fresh">New Combat</button>
+            <button onclick="toggleShortcutsPanel()" class="keyboard-help-btn" data-tooltip="View all keyboard shortcuts">⌨️</button>
         </div>
     </header>
     
@@ -4048,17 +4430,17 @@
             <!-- Quick Add Section -->
             <div class="quick-add-section">
                 <div class="quick-add-row">
-                    <input type="text" id="quickAddName" placeholder="Name" class="quick-input">
-                    <input type="number" id="quickAddInit" placeholder="Init" class="quick-input-small">
-                    <button class="quick-add-btn" onclick="quickAddCombatant()">+</button>
+                    <input type="text" id="quickAddName" placeholder="Name" class="quick-input" title="Enter combatant name (press Enter to add)">
+                    <input type="number" id="quickAddInit" placeholder="Init" class="quick-input-small" title="Initiative roll (leave blank for random)">
+                    <button class="quick-add-btn" onclick="quickAddCombatant()" data-tooltip="Add combatant with random init if blank" data-tooltip-pos="bottom">+</button>
                 </div>
                 <div class="quick-presets">
                     <span class="preset-label">Presets:</span>
-                    <button onclick="addPresetMonster('goblin')">Goblin</button>
-                    <button onclick="addPresetMonster('bandit')">Bandit</button>
-                    <button onclick="addPresetMonster('skeleton')">Skeleton</button>
-                    <button onclick="addPresetMonster('zombie')">Zombie</button>
-                    <button onclick="addPresetMonster('wolf')">Wolf</button>
+                    <button onclick="addPresetMonster('goblin')" title="AC 15, HP 7, +2 Init">Goblin</button>
+                    <button onclick="addPresetMonster('bandit')" title="AC 12, HP 11, +1 Init">Bandit</button>
+                    <button onclick="addPresetMonster('skeleton')" title="AC 13, HP 13, +2 Init">Skeleton</button>
+                    <button onclick="addPresetMonster('zombie')" title="AC 8, HP 22, -2 Init">Zombie</button>
+                    <button onclick="addPresetMonster('wolf')" title="AC 13, HP 11, +2 Init">Wolf</button>
                 </div>
             </div>
 
@@ -4129,18 +4511,18 @@
                     <div class="active-stats" id="activeStats"></div>
                 </div>
                 <div class="turn-buttons">
-                    <button class="turn-btn prev" onclick="prevTurn()">◀ Prev</button>
-                    <button class="turn-btn" onclick="nextTurn()">Next ▶</button>
+                    <button class="turn-btn prev" onclick="prevTurn()" data-tooltip="Previous turn [P]" data-tooltip-pos="bottom">◀ Prev</button>
+                    <button class="turn-btn" onclick="nextTurn()" data-tooltip="Next turn [Space/N]" data-tooltip-pos="bottom">Next ▶</button>
                 </div>
             </div>
 
             <!-- Quick Action Bar (moved above combatant list to avoid dice drawer overlap) -->
             <div class="quick-action-bar" id="quickActionBar">
                 <span class="qa-label">Actions:</span>
-                <button onclick="startTargeting()" id="btnStartTarget">🎯 Target</button>
-                <button onclick="clearTargets()" id="btnClearTargets" disabled>Clear Targets</button>
-                <button onclick="executeAttack()" id="btnAttack" class="attack-btn" disabled>⚔️ Attack</button>
-                <button onclick="showSpellCastModal()" id="btnCastSpell" style="background: linear-gradient(135deg, rgba(100, 60, 140, 0.8), rgba(80, 40, 120, 0.8)); border-color: rgba(140, 100, 180, 0.6);">✨ Cast Spell</button>
+                <button onclick="startTargeting()" id="btnStartTarget" data-tooltip="Select targets for attacks [A]" data-tooltip-pos="bottom">🎯 Target</button>
+                <button onclick="clearTargets()" id="btnClearTargets" disabled data-tooltip="Clear all selected targets [C]" data-tooltip-pos="bottom">Clear Targets</button>
+                <button onclick="executeAttack()" id="btnAttack" class="attack-btn" disabled data-tooltip="Roll attack vs selected targets [A]" data-tooltip-pos="bottom">⚔️ Attack</button>
+                <button onclick="showSpellCastModal()" id="btnCastSpell" style="background: linear-gradient(135deg, rgba(100, 60, 140, 0.8), rgba(80, 40, 120, 0.8)); border-color: rgba(140, 100, 180, 0.6);" data-tooltip="Cast a spell on targets" data-tooltip-pos="bottom">✨ Cast Spell</button>
                 <span id="targetingStatus" style="color:#a8b88f; font-size:0.85rem; margin-left:10px;"></span>
             </div>
 
@@ -14780,6 +15162,52 @@ function hydrateSettingsControlsFromCurrent() {
 
         // Initialize keyboard shortcuts
         initKeyboardShortcuts();
+
+        // ============================================
+        // SHORTCUTS PANEL & TUTORIAL
+        // ============================================
+
+        function toggleShortcutsPanel() {
+            var panel = document.getElementById('shortcutsPanel');
+            var overlay = document.getElementById('shortcutsOverlay');
+            if (panel && overlay) {
+                var isVisible = panel.classList.contains('visible');
+                panel.classList.toggle('visible');
+                overlay.classList.toggle('visible');
+                if (!isVisible) {
+                    showShortcutFeedback('Shortcuts');
+                }
+            }
+        }
+
+        function closeTutorial() {
+            var overlay = document.getElementById('tutorialOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function closeTutorialDontShow() {
+            closeTutorial();
+            try {
+                localStorage.setItem('combatTrackerTutorialSeen', 'true');
+            } catch(e) {}
+        }
+
+        function checkShowTutorial() {
+            try {
+                var seen = localStorage.getItem('combatTrackerTutorialSeen');
+                if (!seen) {
+                    var overlay = document.getElementById('tutorialOverlay');
+                    if (overlay) {
+                        overlay.classList.add('active');
+                    }
+                }
+            } catch(e) {}
+        }
+
+        // Show tutorial on first visit
+        checkShowTutorial();
 
 </script>
 </body>

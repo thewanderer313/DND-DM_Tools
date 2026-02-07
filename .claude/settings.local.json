@@ -7,7 +7,8 @@
       "Bash(node:*)",
       "Bash(dir:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix 16 bugs: null checks, error handling, and CSS variable\n\n- Add missing --border-light CSS variable\n- Add null checks for querySelector/getElementById chains\n- Add null checks for modal initializers and dynamic elements\n- Add file validation for drag-drop handlers\n- Add try-catch for Electron API calls\n- Add mainWindow null checks in IPC dialog handlers\n- Add error handling for loadFile in main process\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix 16 bugs: null checks, error handling, and CSS variable\n\n- Add missing --border-light CSS variable\n- Add null checks for querySelector/getElementById chains\n- Add null checks for modal initializers and dynamic elements\n- Add file validation for drag-drop handlers\n- Add try-catch for Electron API calls\n- Add mainWindow null checks in IPC dialog handlers\n- Add error handling for loadFile in main process\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd 4 UX improvements for faster data entry\n\nRoll Tables:\n- Bulk paste: Add multiple entries at once \\(pipe/CSV/simple formats\\)\n- Favorites: Pin tables with star icon for 1-click access\n\nCombat Tracker:\n- Quick add: Name + Init row with preset monster buttons\n- Keyboard shortcuts: Space/N=next, P=prev, 1-9=select, A/D/H=actions\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

@@ -1817,121 +1817,6 @@
       margin-top: 0.5rem;
     }
 
-    /* Welcome/Help Modal */
-    .welcome-modal {
-      width: 520px;
-    }
-
-    .welcome-header {
-      text-align: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 1.25rem;
-    }
-
-    .welcome-icon {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .welcome-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .welcome-subtitle {
-      color: var(--text-secondary);
-      font-size: 0.9375rem;
-    }
-
-    .welcome-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .welcome-step {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-
-    .welcome-step-number {
-      background: var(--accent);
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .welcome-step-content {
-      flex: 1;
-    }
-
-    .welcome-step-title {
-      font-weight: 600;
-      margin-bottom: 0.125rem;
-    }
-
-    .welcome-step-desc {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    .welcome-tips {
-      background: var(--bg-tertiary);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-tips-title {
-      font-weight: 600;
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-    }
-
-    .welcome-tips ul {
-      margin: 0;
-      padding-left: 1.25rem;
-      font-size: 0.8125rem;
-      color: var(--text-secondary);
-    }
-
-    .welcome-tips li {
-      margin-bottom: 0.25rem;
-    }
-
-    .welcome-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .welcome-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    .welcome-checkbox input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--accent);
-    }
-
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -2012,10 +1897,205 @@
         font-size: 0.875rem;
       }
     }
+
+    /* ============ TOOLTIPS ============ */
+    [data-tooltip] {
+      position: relative;
+    }
+
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: rgba(20, 30, 25, 0.98);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: normal;
+      white-space: nowrap;
+      z-index: 10000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    [data-tooltip]::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(20, 30, 25, 0.98);
+      z-index: 10001;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    [data-tooltip]:hover::after,
+    [data-tooltip]:hover::before {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    [data-tooltip]:hover::before {
+      transform: translateX(-50%);
+    }
+
+    /* Bottom tooltips for elements near top */
+    [data-tooltip-pos="bottom"]::after {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    [data-tooltip-pos="bottom"]::before {
+      bottom: auto;
+      top: calc(100% + 2px);
+      border-top-color: transparent;
+      border-bottom-color: rgba(20, 30, 25, 0.98);
+    }
+
+    /* First-time tutorial styles */
+    .tutorial-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+      display: none;
+    }
+
+    .tutorial-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tutorial-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 28px 36px;
+      max-width: 520px;
+      text-align: center;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+    }
+
+    .tutorial-card h2 {
+      color: var(--accent);
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+
+    .tutorial-card p {
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tutorial-tips {
+      text-align: left;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .tutorial-tips h4 {
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .tutorial-tips ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .tutorial-tips li {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tutorial-tips li::before {
+      content: '→';
+      color: var(--accent);
+    }
+
+    .tutorial-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .tutorial-btns button {
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tutorial-btns .primary-btn {
+      background: var(--accent);
+      border: 1px solid var(--accent-hover);
+      color: #fff;
+    }
+
+    .tutorial-btns .primary-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .tutorial-btns .secondary-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .tutorial-btns .secondary-btn:hover {
+      background: var(--bg-card);
+    }
   </style>
 </head>
 <body>
   <div id="app-background"></div>
+
+  <!-- First-Time Tutorial Overlay -->
+  <div class="tutorial-overlay" id="tutorialOverlay">
+    <div class="tutorial-card">
+      <h2>🎲 Welcome to Roll Tables!</h2>
+      <p>Create and roll on custom random tables for your D&D games.</p>
+      <div class="tutorial-tips">
+        <h4>Quick Start Tips:</h4>
+        <ul>
+          <li><strong>Step 1:</strong> Select a category from the left column</li>
+          <li><strong>Step 2:</strong> Choose a table from the middle column</li>
+          <li><strong>Step 3:</strong> Click Roll to get a random result!</li>
+          <li>Click the <strong>⭐</strong> star to pin favorite tables</li>
+          <li>Use <strong>Bulk Paste</strong> in Settings to add many entries at once</li>
+          <li>Hover over buttons to see what they do</li>
+        </ul>
+      </div>
+      <div class="tutorial-btns">
+        <button class="primary-btn" onclick="closeTutorial()">Got it!</button>
+        <button class="secondary-btn" onclick="closeTutorialDontShow()">Don't show again</button>
+      </div>
+    </div>
+  </div>
 
   <div class="app-container">
     <header class="app-header">
@@ -2026,9 +2106,9 @@
         <span id="app-title-text">Oakhart Roll Tables</span>
       </h1>
       <div class="header-actions">
-        <button id="btn-global-search" aria-label="Search all entries" title="Search all entries (Ctrl+K)">🔍 Search</button>
-        <button id="btn-settings" aria-label="Open Settings">⚙️ Settings</button>
-        <button class="help-btn" id="btn-help" aria-label="Help" title="How to use this app">?</button>
+        <button id="btn-global-search" aria-label="Search all entries" data-tooltip="Search all entries (Ctrl+K)" data-tooltip-pos="bottom">🔍 Search</button>
+        <button id="btn-settings" aria-label="Open Settings" data-tooltip="Manage tables, import/export, and themes" data-tooltip-pos="bottom">⚙️ Settings</button>
+        <button class="help-btn" id="btn-help" aria-label="Help" data-tooltip="How to use this app" data-tooltip-pos="bottom">?</button>
       </div>
     </header>
 
@@ -2043,10 +2123,10 @@
       <div class="column" id="categories-column">
         <div class="column-header">
           <span class="step-badge">1</span> Categories
-          <button class="column-add-btn" id="btn-add-category-quick" title="Add category">+</button>
+          <button class="column-add-btn" id="btn-add-category-quick" data-tooltip="Add new category" data-tooltip-pos="bottom">+</button>
         </div>
         <div class="search-box">
-          <input type="text" id="category-search" placeholder="Search..." aria-label="Search categories">
+          <input type="text" id="category-search" placeholder="Search..." aria-label="Search categories" title="Filter categories by name">
         </div>
         <div class="column-content" id="categories-list"></div>
       </div>
@@ -2055,10 +2135,10 @@
       <div class="column" id="tables-column">
         <div class="column-header">
           <span class="step-badge waiting" id="step-2-badge">2</span> Tables
-          <button class="column-add-btn" id="btn-add-table-quick" title="Add table">+</button>
+          <button class="column-add-btn" id="btn-add-table-quick" data-tooltip="Add new table to category" data-tooltip-pos="bottom">+</button>
         </div>
         <div class="search-box">
-          <input type="text" id="table-search" placeholder="Search..." aria-label="Search tables">
+          <input type="text" id="table-search" placeholder="Search..." aria-label="Search tables" title="Filter tables by name">
         </div>
         <!-- Favorites Section -->
         <div class="favorites-section hidden" id="favorites-section">
@@ -2230,8 +2310,8 @@
             <div class="editor-list-header">
               <span class="editor-list-title">Entries <span id="entry-count">(0/100)</span></span>
               <div style="display: flex; gap: 0.5rem;">
-                <button class="small primary" id="btn-add-entry">+ Add</button>
-                <button class="small" id="btn-bulk-paste" title="Paste multiple entries at once">Bulk Paste</button>
+                <button class="small primary" id="btn-add-entry" data-tooltip="Add a single new entry" data-tooltip-pos="bottom">+ Add</button>
+                <button class="small" id="btn-bulk-paste" data-tooltip="Paste multiple entries at once (pipe or CSV format)" data-tooltip-pos="bottom">Bulk Paste</button>
               </div>
             </div>
             <div class="editor-list-items" id="settings-entries-list"></div>
@@ -2440,65 +2520,6 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
       <div class="modal-footer">
         <button id="btn-input-cancel">Cancel</button>
         <button class="primary" id="btn-input-ok">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Welcome/Help Modal -->
-  <div class="modal-overlay" id="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title">
-    <div class="modal welcome-modal">
-      <div class="modal-header">
-        <h2 class="modal-title" id="welcome-modal-title">Welcome</h2>
-        <button class="modal-close" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="welcome-header">
-          <div class="welcome-icon">🎲</div>
-          <div class="welcome-title">Oakhart Roll Tables</div>
-          <div class="welcome-subtitle">Your DM companion for random encounters, loot, NPCs, and more</div>
-        </div>
-
-        <div class="welcome-steps">
-          <div class="welcome-step">
-            <div class="welcome-step-number">1</div>
-            <div class="welcome-step-content">
-              <div class="welcome-step-title">Choose a Category</div>
-              <div class="welcome-step-desc">Select from Loot, NPC, Encounter, Complication, or your own custom categories</div>
-            </div>
-          </div>
-          <div class="welcome-step">
-            <div class="welcome-step-number">2</div>
-            <div class="welcome-step-content">
-              <div class="welcome-step-title">Select a Table</div>
-              <div class="welcome-step-desc">Pick a specific table within that category to roll on</div>
-            </div>
-          </div>
-          <div class="welcome-step">
-            <div class="welcome-step-number">3</div>
-            <div class="welcome-step-content">
-              <div class="welcome-step-title">Roll!</div>
-              <div class="welcome-step-desc">Click the Roll button or enter a specific number to get your result</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="welcome-tips">
-          <div class="welcome-tips-title">💡 Tips</div>
-          <ul>
-            <li><strong>Edit tables:</strong> Click "Edit Table Entries" when viewing a table to add, remove, or modify entries</li>
-            <li><strong>Card entries:</strong> Add images and detailed descriptions to create rich result cards</li>
-            <li><strong>Quick dice:</strong> Use the dice roller at the bottom right for quick rolls</li>
-            <li><strong>Settings:</strong> Create new categories, import/export tables, or set a custom background</li>
-          </ul>
-        </div>
-
-        <div class="welcome-footer">
-          <label class="welcome-checkbox">
-            <input type="checkbox" id="dont-show-again">
-            Don't show this again
-          </label>
-          <button class="primary" id="btn-welcome-start">Get Started</button>
-        </div>
       </div>
     </div>
   </div>
@@ -4413,22 +4434,14 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
     }
 
     // ============================================
-    // WELCOME MODAL & UI HELPERS
+    // UI HELPERS
     // ============================================
-    function showWelcomeModal() {
-      if (localStorage.getItem(WELCOME_DISMISSED_KEY) === 'true') return;
-      document.getElementById('welcome-modal').classList.add('active');
-    }
-
-    function closeWelcomeModal() {
-      document.getElementById('welcome-modal').classList.remove('active');
-      if (document.getElementById('dont-show-again').checked) {
-        localStorage.setItem(WELCOME_DISMISSED_KEY, 'true');
-      }
-    }
-
     function openHelpModal() {
-      document.getElementById('welcome-modal').classList.add('active');
+      // Show the tutorial overlay when help is clicked
+      const overlay = document.getElementById('tutorialOverlay');
+      if (overlay) {
+        overlay.classList.add('active');
+      }
     }
 
     function updateSelectionDisplay() {
@@ -5693,15 +5706,6 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
         }
       });
 
-      // Welcome modal
-      const welcomeModal = document.getElementById('welcome-modal');
-      if (welcomeModal) {
-        const closeBtn = welcomeModal.querySelector('.modal-close');
-        if (closeBtn) closeBtn.addEventListener('click', closeWelcomeModal);
-      }
-      const btnWelcomeStart = document.getElementById('btn-welcome-start');
-      if (btnWelcomeStart) btnWelcomeStart.addEventListener('click', closeWelcomeModal);
-
       // Category search
       const categorySearch = document.getElementById('category-search');
       if (categorySearch) categorySearch.addEventListener('input', renderCategories);
@@ -5952,12 +5956,13 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
       // Keyboard
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          if (document.getElementById('confirm-modal').classList.contains('active')) {
+          const tutorialOverlay = document.getElementById('tutorialOverlay');
+          if (tutorialOverlay && tutorialOverlay.classList.contains('active')) {
+            closeTutorial();
+          } else if (document.getElementById('confirm-modal').classList.contains('active')) {
             closeConfirm();
           } else if (document.getElementById('card-modal').classList.contains('active')) {
             closeCardModal();
-          } else if (document.getElementById('welcome-modal').classList.contains('active')) {
-            closeWelcomeModal();
           } else if (document.getElementById('table-editor-panel').classList.contains('active')) {
             if (!document.getElementById('inline-entry-editor').classList.contains('hidden')) {
               hideInlineEditor();
@@ -5971,16 +5976,45 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
       });
 
       // Click outside modal to close
-      [document.getElementById('card-modal'), document.getElementById('settings-modal'), document.getElementById('confirm-modal'), document.getElementById('welcome-modal')].forEach(modal => {
+      [document.getElementById('card-modal'), document.getElementById('settings-modal'), document.getElementById('confirm-modal')].forEach(modal => {
+        if (!modal) return;
         modal.addEventListener('click', (e) => {
           if (e.target === modal) {
             if (modal.id === 'card-modal') closeCardModal();
             else if (modal.id === 'settings-modal') closeSettings();
             else if (modal.id === 'confirm-modal') closeConfirm();
-            else if (modal.id === 'welcome-modal') closeWelcomeModal();
           }
         });
       });
+    }
+
+    // ============================================
+    // TUTORIAL
+    // ============================================
+    function closeTutorial() {
+      const overlay = document.getElementById('tutorialOverlay');
+      if (overlay) {
+        overlay.classList.remove('active');
+      }
+    }
+
+    function closeTutorialDontShow() {
+      closeTutorial();
+      try {
+        localStorage.setItem('rollTablesTutorialSeen', 'true');
+      } catch(e) {}
+    }
+
+    function checkShowTutorial() {
+      try {
+        const seen = localStorage.getItem('rollTablesTutorialSeen');
+        if (!seen) {
+          const overlay = document.getElementById('tutorialOverlay');
+          if (overlay) {
+            overlay.classList.add('active');
+          }
+        }
+      } catch(e) {}
     }
 
     // ============================================
@@ -5993,7 +6027,7 @@ Dragon's Hoard | Piles of gold and gems glitter"></textarea>
       renderAll();
       updateSelectionDisplay();
       updateImagesFolderStatus();
-      showWelcomeModal();
+      checkShowTutorial();
     }
 
     // Start the app
