@@ -167,7 +167,116 @@
             overflow-y: auto;
             overflow-x: hidden;
         }
-        
+
+        /* Quick Add Section */
+        .quick-add-section {
+            background: rgba(40, 55, 45, 0.9);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(100, 130, 100, 0.3);
+        }
+
+        .quick-add-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .quick-input {
+            flex: 1;
+            padding: 8px 10px;
+            background: rgba(30, 40, 35, 0.8);
+            border: 1px solid rgba(100, 130, 100, 0.4);
+            border-radius: 4px;
+            color: #e4ebe4;
+            font-size: 0.9rem;
+        }
+
+        .quick-input-small {
+            width: 60px;
+            padding: 8px 10px;
+            background: rgba(30, 40, 35, 0.8);
+            border: 1px solid rgba(100, 130, 100, 0.4);
+            border-radius: 4px;
+            color: #e4ebe4;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .quick-input:focus, .quick-input-small:focus {
+            outline: none;
+            border-color: rgba(120, 170, 120, 0.7);
+        }
+
+        .quick-add-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(74, 124, 89, 0.9), rgba(54, 104, 69, 0.9));
+            border: 1px solid rgba(100, 150, 100, 0.6);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-add-btn:hover {
+            background: linear-gradient(135deg, rgba(84, 134, 99, 0.9), rgba(64, 114, 79, 0.9));
+            transform: scale(1.05);
+        }
+
+        .quick-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .preset-label {
+            font-size: 0.8rem;
+            color: #a8b88f;
+            margin-right: 2px;
+        }
+
+        .quick-presets button {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: rgba(60, 80, 65, 0.8);
+            border: 1px solid rgba(100, 130, 100, 0.4);
+            border-radius: 4px;
+            color: #c9d8a8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-presets button:hover {
+            background: rgba(80, 100, 85, 0.9);
+            border-color: rgba(120, 150, 120, 0.6);
+        }
+
+        .full-add-section {
+            margin-top: 8px;
+        }
+
+        .full-add-section summary {
+            cursor: pointer;
+            color: #a8b88f;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: rgba(40, 55, 45, 0.6);
+            border-radius: 4px;
+            border: 1px solid rgba(100, 130, 100, 0.2);
+            margin-bottom: 12px;
+        }
+
+        .full-add-section summary:hover {
+            background: rgba(50, 65, 55, 0.8);
+        }
+
+        .full-add-section[open] summary {
+            margin-bottom: 12px;
+        }
+
         .sidebar-tab {
             position: absolute;
             top: 78%;
@@ -3935,7 +4044,27 @@
             <div class="sidebar" id="addDrawer">
                 <button class="sidebar-pin" id="drawerPin" onclick="toggleDrawerPin()" title="Pin drawer open">📌</button>
                 <h3>Add Combatant</h3>
-            
+
+            <!-- Quick Add Section -->
+            <div class="quick-add-section">
+                <div class="quick-add-row">
+                    <input type="text" id="quickAddName" placeholder="Name" class="quick-input">
+                    <input type="number" id="quickAddInit" placeholder="Init" class="quick-input-small">
+                    <button class="quick-add-btn" onclick="quickAddCombatant()">+</button>
+                </div>
+                <div class="quick-presets">
+                    <span class="preset-label">Presets:</span>
+                    <button onclick="addPresetMonster('goblin')">Goblin</button>
+                    <button onclick="addPresetMonster('bandit')">Bandit</button>
+                    <button onclick="addPresetMonster('skeleton')">Skeleton</button>
+                    <button onclick="addPresetMonster('zombie')">Zombie</button>
+                    <button onclick="addPresetMonster('wolf')">Wolf</button>
+                </div>
+            </div>
+
+            <details class="full-add-section">
+                <summary>Full Add Form</summary>
+
             <label>Name</label>
             <input type="text" id="inputName" placeholder="Enter name...">
             
@@ -3984,9 +4113,10 @@
             <label>Stat Block Image (optional)</label>
             <input type="file" id="inputStatBlock" accept="image/*">
             
-            <button class="add-btn" onclick="addCombatant()">✚ Quick Add</button>
+            <button class="add-btn" onclick="addCombatant()">✚ Add Combatant</button>
             <button class="add-btn" onclick="showCharacterSheetModal(-1)" style="background: linear-gradient(135deg, rgba(100, 80, 130, 0.8), rgba(80, 60, 110, 0.8)); border-color: #8878a8;">📋 Full Character Sheet</button>
             <button class="add-btn" onclick="showMonsterTemplates()" style="background: linear-gradient(135deg, rgba(130, 80, 80, 0.8), rgba(110, 60, 60, 0.8)); border-color: #a87878;">🐉 Monster Templates</button>
+            </details>
         </div>
         </div>
 
@@ -6871,7 +7001,111 @@
             var types = str.split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(function(s) { return s; });
             return types.length > 0 ? types : null;
         }
-        
+
+        // ============================================
+        // QUICK ADD FUNCTIONS
+        // ============================================
+        var QUICK_PRESETS = {
+            goblin: { name: 'Goblin', ac: 15, hp: 7, init: 2, type: 'monster' },
+            bandit: { name: 'Bandit', ac: 12, hp: 11, init: 1, type: 'monster' },
+            skeleton: { name: 'Skeleton', ac: 13, hp: 13, init: 2, type: 'monster' },
+            zombie: { name: 'Zombie', ac: 8, hp: 22, init: -2, type: 'monster' },
+            wolf: { name: 'Wolf', ac: 13, hp: 11, init: 2, type: 'monster' },
+            orc: { name: 'Orc', ac: 13, hp: 15, init: 1, type: 'monster' },
+            kobold: { name: 'Kobold', ac: 12, hp: 5, init: 2, type: 'monster' },
+            guard: { name: 'Guard', ac: 16, hp: 11, init: 1, type: 'npc' }
+        };
+
+        function quickAddCombatant() {
+            var nameEl = document.getElementById('quickAddName');
+            var initEl = document.getElementById('quickAddInit');
+
+            var name = nameEl.value.trim();
+            if (!name) {
+                showAlert('Please enter a name');
+                nameEl.focus();
+                return;
+            }
+
+            var init = parseInt(initEl.value);
+            if (isNaN(init)) {
+                // Random initiative if not specified
+                init = Math.floor(Math.random() * 20) + 1;
+            }
+
+            var newCombatant = {
+                id: genId(),
+                name: name,
+                initiative: init,
+                type: 'monster',
+                conditions: []
+            };
+
+            combatants.push(newCombatant);
+            ensureCombatantIds();
+            clearUndo();
+            save();
+            render();
+
+            // Clear inputs
+            nameEl.value = '';
+            initEl.value = '';
+            nameEl.focus();
+
+            showToast(name + ' added (Init: ' + init + ')', 'success');
+        }
+
+        function addPresetMonster(presetKey) {
+            var preset = QUICK_PRESETS[presetKey];
+            if (!preset) return;
+
+            // Check for existing with same name to auto-number
+            var baseName = preset.name;
+            var existingCount = combatants.filter(function(c) {
+                return c.name === baseName || (c.name && c.name.match(new RegExp('^' + baseName + ' \\d+$')));
+            }).length;
+
+            var name = existingCount > 0 ? baseName + ' ' + (existingCount + 1) : baseName;
+
+            // Roll initiative with modifier
+            var initRoll = Math.floor(Math.random() * 20) + 1 + preset.init;
+
+            var newCombatant = {
+                id: genId(),
+                name: name,
+                initiative: initRoll,
+                type: preset.type,
+                ac: preset.ac,
+                maxHp: preset.hp,
+                currentHp: preset.hp,
+                conditions: []
+            };
+
+            combatants.push(newCombatant);
+            ensureCombatantIds();
+            clearUndo();
+            save();
+            render();
+
+            showToast(name + ' added (Init: ' + initRoll + ', HP: ' + preset.hp + ')', 'success');
+        }
+
+        // Add Enter key support for quick add inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            var quickNameEl = document.getElementById('quickAddName');
+            var quickInitEl = document.getElementById('quickAddInit');
+            if (quickNameEl) {
+                quickNameEl.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') quickAddCombatant();
+                });
+            }
+            if (quickInitEl) {
+                quickInitEl.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') quickAddCombatant();
+                });
+            }
+        });
+
         // Add combatant
         function addCombatant() {
             var nameEl = document.getElementById('inputName');
@@ -14356,6 +14590,196 @@ function hydrateSettingsControlsFromCurrent() {
                 showAlert('Added "' + data.name + '" from Roll Tables!');
             }
         });
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        var keyboardShortcutsEnabled = true;
+
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Skip if shortcuts disabled or typing in an input
+                if (!keyboardShortcutsEnabled) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+                    // Only allow Escape in inputs
+                    if (e.key !== 'Escape') return;
+                }
+
+                // Check if any modal is open
+                var modals = document.querySelectorAll('.modal');
+                var anyModalOpen = false;
+                modals.forEach(function(m) {
+                    if (m.style.display === 'block') anyModalOpen = true;
+                });
+
+                if (anyModalOpen && e.key !== 'Escape') return;
+
+                handleCombatShortcut(e);
+            });
+        }
+
+        function handleCombatShortcut(e) {
+            var key = e.key.toLowerCase();
+
+            // Escape - Cancel targeting / close modals
+            if (e.key === 'Escape') {
+                if (typeof isTargetingMode !== 'undefined' && isTargetingMode) {
+                    if (typeof clearTargets === 'function') clearTargets();
+                    e.preventDefault();
+                    return;
+                }
+                // Close any open modal
+                var modals = document.querySelectorAll('.modal');
+                modals.forEach(function(m) {
+                    if (m.style.display === 'block') {
+                        m.style.display = 'none';
+                        e.preventDefault();
+                    }
+                });
+                return;
+            }
+
+            // Skip other shortcuts if no combatants
+            if (combatants.length === 0) return;
+
+            // Space or N - Next turn
+            if (key === ' ' || key === 'n') {
+                e.preventDefault();
+                if (typeof nextTurn === 'function') nextTurn();
+                showShortcutFeedback('Next Turn');
+                return;
+            }
+
+            // P - Previous turn
+            if (key === 'p') {
+                e.preventDefault();
+                if (typeof prevTurn === 'function') prevTurn();
+                showShortcutFeedback('Previous Turn');
+                return;
+            }
+
+            // 1-9 - Select combatant by position
+            if (/^[1-9]$/.test(key)) {
+                var index = parseInt(key) - 1;
+                if (index < combatants.length) {
+                    if (typeof isTargetingMode !== 'undefined' && isTargetingMode) {
+                        // Toggle target selection
+                        if (typeof toggleTarget === 'function') toggleTarget(index);
+                        showShortcutFeedback('Target: ' + combatants[index].name);
+                    } else {
+                        // Select as active
+                        activeIndex = index;
+                        save();
+                        render();
+                        showShortcutFeedback('Selected: ' + combatants[index].name);
+                    }
+                    e.preventDefault();
+                }
+                return;
+            }
+
+            // A - Start attack/targeting mode
+            if (key === 'a') {
+                e.preventDefault();
+                if (typeof isTargetingMode !== 'undefined' && !isTargetingMode) {
+                    if (typeof startTargeting === 'function') startTargeting();
+                    showShortcutFeedback('Targeting Mode');
+                } else if (typeof selectedTargets !== 'undefined' && selectedTargets.length > 0) {
+                    // If already targeting with targets selected, execute attack
+                    if (typeof executeAttack === 'function') executeAttack();
+                    showShortcutFeedback('Attack!');
+                }
+                return;
+            }
+
+            // D - Open damage input for active combatant
+            if (key === 'd') {
+                e.preventDefault();
+                if (combatants[activeIndex] && combatants[activeIndex].maxHp) {
+                    if (typeof showHPModal === 'function') showHPModal(activeIndex);
+                    showShortcutFeedback('Damage: ' + combatants[activeIndex].name);
+                }
+                return;
+            }
+
+            // H - Open heal input for active combatant
+            if (key === 'h') {
+                e.preventDefault();
+                if (combatants[activeIndex] && combatants[activeIndex].maxHp) {
+                    if (typeof showHPModal === 'function') showHPModal(activeIndex);
+                    showShortcutFeedback('Heal: ' + combatants[activeIndex].name);
+                }
+                return;
+            }
+
+            // T - Quick target the active combatant
+            if (key === 't') {
+                e.preventDefault();
+                if (typeof isTargetingMode !== 'undefined' && !isTargetingMode) {
+                    if (typeof startTargeting === 'function') startTargeting();
+                }
+                if (typeof toggleTarget === 'function') toggleTarget(activeIndex);
+                showShortcutFeedback('Self-target: ' + combatants[activeIndex].name);
+                return;
+            }
+
+            // C - Clear targets
+            if (key === 'c') {
+                if ((typeof selectedTargets !== 'undefined' && selectedTargets.length > 0) ||
+                    (typeof isTargetingMode !== 'undefined' && isTargetingMode)) {
+                    e.preventDefault();
+                    if (typeof clearTargets === 'function') clearTargets();
+                    showShortcutFeedback('Targets Cleared');
+                }
+                return;
+            }
+        }
+
+        // Visual feedback for shortcuts
+        function showShortcutFeedback(message) {
+            var existing = document.getElementById('shortcut-feedback');
+            if (existing) existing.remove();
+
+            var feedback = document.createElement('div');
+            feedback.id = 'shortcut-feedback';
+            feedback.textContent = message;
+            feedback.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background: rgba(74, 124, 89, 0.95); color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 1.2rem; font-weight: 600; z-index: 10000; pointer-events: none; opacity: 0; transition: all 0.2s ease-out; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); text-align: center;';
+            document.body.appendChild(feedback);
+
+            // Animate in
+            requestAnimationFrame(function() {
+                feedback.style.opacity = '1';
+                feedback.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+
+            // Remove after delay
+            setTimeout(function() {
+                feedback.style.opacity = '0';
+                feedback.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                setTimeout(function() {
+                    feedback.remove();
+                }, 200);
+            }, 800);
+        }
+
+        // Keyboard shortcut help
+        function showKeyboardHelp() {
+            var helpText = 'Keyboard Shortcuts:\n\n' +
+                'Space / N - Next Turn\n' +
+                'P - Previous Turn\n' +
+                '1-9 - Select Combatant\n' +
+                'A - Attack Mode (or Execute)\n' +
+                'D - Damage Active\n' +
+                'H - Heal Active\n' +
+                'T - Target Self\n' +
+                'C - Clear Targets\n' +
+                'Escape - Cancel/Close';
+
+            showAlert(helpText);
+        }
+
+        // Initialize keyboard shortcuts
+        initKeyboardShortcuts();
 
 </script>
 </body>

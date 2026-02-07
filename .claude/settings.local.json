@@ -5,7 +5,9 @@
       "Bash(npm run build:installer:*)",
       "Bash(npm install:*)",
       "Bash(node:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix 16 bugs: null checks, error handling, and CSS variable\n\n- Add missing --border-light CSS variable\n- Add null checks for querySelector/getElementById chains\n- Add null checks for modal initializers and dynamic elements\n- Add file validation for drag-drop handlers\n- Add try-catch for Electron API calls\n- Add mainWindow null checks in IPC dialog handlers\n- Add error handling for loadFile in main process\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
