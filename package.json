@@ -1,7 +1,7 @@
 {
   "name": "oakhart-dm-tools",
-  "version": "1.0.0",
-  "description": "Oakhart DM Tools - Roll Tables, Combat Tracker, and Rules Reference for D&D",
+  "version": "1.1.0",
+  "description": "Oakhart DM Tools - Roll Tables, Combat Tracker, Rules Reference, and Battle Map for D&D",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -28,6 +28,7 @@
       "oakhart-rolltables.html",
       "oakhart-rules-reference.html",
       "DND Combat Tracker -final.html",
+      "oakhart-battlemap.html",
       "images/**/*"
     ],
     "win": {

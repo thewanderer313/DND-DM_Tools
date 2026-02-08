@@ -6770,6 +6770,60 @@
         </div>
     </div>
 
+    <!-- Token Settings Modal -->
+    <div class="modal-bg" id="tokenSettingsModal" onclick="closeTokenSettingsModal(event)" style="display: none;">
+        <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 450px;">
+            <h3>🎨 Token Settings</h3>
+            <p style="color: #a8b88f; font-size: 0.85rem; margin-bottom: 15px;">Customize how this combatant appears on the Battle Map</p>
+
+            <!-- Token Preview -->
+            <div style="text-align: center; margin-bottom: 18px; padding: 15px; background: #0f1510; border-radius: 8px; border: 1px solid #3a4a32;">
+                <canvas id="tokenPreviewCanvas" width="100" height="100" style="border-radius: 50%;"></canvas>
+                <div style="margin-top: 8px; font-size: 0.8rem; color: #7a8a6a;">Preview</div>
+            </div>
+
+            <!-- Custom Color -->
+            <label>Token Color</label>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                <input type="color" id="tokenColorPicker" value="#5a9a5a" style="width: 60px; height: 36px; padding: 2px; cursor: pointer; border: 1px solid #6a7b5f; border-radius: 4px;">
+                <button onclick="resetTokenColor()" style="padding: 6px 12px; font-size: 0.85rem;">Use Default</button>
+                <span id="tokenColorDefault" style="color: #7a8a6a; font-size: 0.8rem;"></span>
+            </div>
+
+            <!-- Size Selection -->
+            <label>Token Size</label>
+            <select id="tokenSizeSelect" class="styled-select" style="margin-bottom: 5px;">
+                <option value="medium">Medium (1×1 grid cell)</option>
+                <option value="large">Large (2×2 grid cells)</option>
+                <option value="huge">Huge (3×3 grid cells)</option>
+                <option value="gargantuan">Gargantuan (4×4 grid cells)</option>
+            </select>
+            <div class="modal-hint" style="margin-bottom: 15px;">Standard D&D creature sizes. Affects token display on Battle Map.</div>
+
+            <!-- Custom Image -->
+            <label>Token Image</label>
+            <input type="file" id="tokenImageInput" accept="image/*" class="styled-input" style="padding: 6px; margin-bottom: 8px;">
+            <div id="tokenImagePreview" style="margin-bottom: 15px; display: none;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img id="tokenImageImg" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #6a7b5f; object-fit: cover;">
+                    <button onclick="clearTokenImage()" style="padding: 4px 10px; background: rgba(180, 60, 60, 0.5); border: 1px solid #b43c3c; color: #f0a8a8; cursor: pointer; border-radius: 3px;">Remove Image</button>
+                </div>
+            </div>
+            <div class="modal-hint" style="margin-bottom: 15px;">Upload a circular avatar image for this combatant's token.</div>
+
+            <!-- Label Visibility -->
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 15px;">
+                <input type="checkbox" id="tokenShowLabel" checked style="width: auto; cursor: pointer;">
+                <span>Show name label on map</span>
+            </label>
+
+            <div class="modal-btns">
+                <button class="cancel" onclick="hideTokenSettingsModal()">Cancel</button>
+                <button class="confirm" onclick="saveTokenSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
 <script>
         // State
         var combatants = [];
@@ -6933,7 +6987,22 @@
                 cover: null,
                 spellEffects: [],
                 notes: '',
-                statBlock: null
+                statBlock: null,
+
+                // Battle Map position
+                mapPosition: {
+                    x: null,      // Map X coordinate (null = not placed)
+                    y: null,      // Map Y coordinate
+                    visible: true // For fog of war
+                },
+
+                // Token appearance customization
+                tokenAppearance: {
+                    color: null,        // Hex color (null = use type default)
+                    size: 'medium',     // 'medium' | 'large' | 'huge' | 'gargantuan'
+                    image: null,        // Base64 data URL for custom token image
+                    showLabel: true     // Show/hide name on map
+                }
             };
         }
 
@@ -7073,6 +7142,12 @@
             if (c.equipment) migrated.equipment = Object.assign({}, migrated.equipment, c.equipment);
             if (c.speed) migrated.speed = Object.assign({}, migrated.speed, c.speed);
             if (c.hitDice) migrated.hitDice = c.hitDice;
+
+            // Copy mapPosition if exists
+            if (c.mapPosition) migrated.mapPosition = Object.assign({}, migrated.mapPosition, c.mapPosition);
+
+            // Copy tokenAppearance if exists
+            if (c.tokenAppearance) migrated.tokenAppearance = Object.assign({}, migrated.tokenAppearance, c.tokenAppearance);
 
             migrated.schemaVersion = SCHEMA_VERSION;
             return migrated;
@@ -7881,6 +7956,193 @@
                 render();
                 hideEditCombatantModal();
             }
+        }
+
+        // ============ TOKEN SETTINGS MODAL ============
+        var tokenSettingsIndex = -1;
+        var tokenSettingsImageData = null;
+
+        // Default colors for each combatant type
+        var TOKEN_DEFAULT_COLORS = {
+            player: '#5a9a5a',
+            monster: '#d47844',
+            npc: '#6a89b0',
+            companion: '#8a6ab0'
+        };
+
+        function showTokenSettingsModal(index) {
+            tokenSettingsIndex = index;
+            var c = combatants[index];
+            if (!c) return;
+
+            // Ensure tokenAppearance exists
+            if (!c.tokenAppearance) {
+                c.tokenAppearance = {
+                    color: null,
+                    size: 'medium',
+                    image: null,
+                    showLabel: true
+                };
+            }
+
+            var appearance = c.tokenAppearance;
+            var defaultColor = TOKEN_DEFAULT_COLORS[c.type] || TOKEN_DEFAULT_COLORS.monster;
+
+            // Set color picker
+            document.getElementById('tokenColorPicker').value = appearance.color || defaultColor;
+            document.getElementById('tokenColorDefault').textContent = appearance.color ? '' : '(using default)';
+
+            // Set size
+            document.getElementById('tokenSizeSelect').value = appearance.size || 'medium';
+
+            // Set image
+            tokenSettingsImageData = appearance.image || null;
+            if (tokenSettingsImageData) {
+                document.getElementById('tokenImagePreview').style.display = 'block';
+                document.getElementById('tokenImageImg').src = tokenSettingsImageData;
+            } else {
+                document.getElementById('tokenImagePreview').style.display = 'none';
+            }
+
+            // Set label visibility
+            document.getElementById('tokenShowLabel').checked = appearance.showLabel !== false;
+
+            // Update preview
+            updateTokenPreview();
+
+            // Show modal
+            document.getElementById('tokenSettingsModal').style.display = 'block';
+
+            // Wire up image input
+            document.getElementById('tokenImageInput').onchange = handleTokenImageUpload;
+            document.getElementById('tokenColorPicker').oninput = updateTokenPreview;
+            document.getElementById('tokenSizeSelect').onchange = updateTokenPreview;
+        }
+
+        function hideTokenSettingsModal() {
+            document.getElementById('tokenSettingsModal').style.display = 'none';
+            document.getElementById('tokenImageInput').value = '';
+            tokenSettingsIndex = -1;
+            tokenSettingsImageData = null;
+        }
+
+        function closeTokenSettingsModal(e) {
+            if (e.target.id === 'tokenSettingsModal') hideTokenSettingsModal();
+        }
+
+        function handleTokenImageUpload(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                tokenSettingsImageData = event.target.result;
+                document.getElementById('tokenImagePreview').style.display = 'block';
+                document.getElementById('tokenImageImg').src = tokenSettingsImageData;
+                updateTokenPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearTokenImage() {
+            tokenSettingsImageData = null;
+            document.getElementById('tokenImagePreview').style.display = 'none';
+            document.getElementById('tokenImageInput').value = '';
+            updateTokenPreview();
+        }
+
+        function resetTokenColor() {
+            if (tokenSettingsIndex < 0) return;
+            var c = combatants[tokenSettingsIndex];
+            var defaultColor = TOKEN_DEFAULT_COLORS[c.type] || TOKEN_DEFAULT_COLORS.monster;
+            document.getElementById('tokenColorPicker').value = defaultColor;
+            document.getElementById('tokenColorDefault').textContent = '(using default)';
+            updateTokenPreview();
+        }
+
+        function updateTokenPreview() {
+            var canvas = document.getElementById('tokenPreviewCanvas');
+            var ctx = canvas.getContext('2d');
+            var size = canvas.width;
+            var half = size / 2;
+
+            ctx.clearRect(0, 0, size, size);
+
+            var color = document.getElementById('tokenColorPicker').value;
+
+            if (tokenSettingsImageData) {
+                // Draw image
+                var img = new Image();
+                img.onload = function() {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(half, half, half - 4, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(img, 4, 4, size - 8, size - 8);
+                    ctx.restore();
+
+                    // Border
+                    ctx.beginPath();
+                    ctx.arc(half, half, half - 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#6a7b5f';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                };
+                img.src = tokenSettingsImageData;
+            } else {
+                // Draw colored circle
+                ctx.beginPath();
+                ctx.arc(half, half, half - 4, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // Border
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Initials
+                if (tokenSettingsIndex >= 0 && combatants[tokenSettingsIndex]) {
+                    var name = combatants[tokenSettingsIndex].name || '';
+                    var initials = name.substring(0, 2).toUpperCase();
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 28px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(initials, half, half);
+                }
+            }
+        }
+
+        function saveTokenSettings() {
+            if (tokenSettingsIndex < 0) return;
+
+            pushUndoState();
+
+            var c = combatants[tokenSettingsIndex];
+            var defaultColor = TOKEN_DEFAULT_COLORS[c.type] || TOKEN_DEFAULT_COLORS.monster;
+            var selectedColor = document.getElementById('tokenColorPicker').value;
+
+            // Ensure tokenAppearance exists
+            if (!c.tokenAppearance) {
+                c.tokenAppearance = {};
+            }
+
+            // Save color (null if using default)
+            c.tokenAppearance.color = (selectedColor.toLowerCase() === defaultColor.toLowerCase()) ? null : selectedColor;
+
+            // Save size
+            c.tokenAppearance.size = document.getElementById('tokenSizeSelect').value;
+
+            // Save image
+            c.tokenAppearance.image = tokenSettingsImageData;
+
+            // Save label visibility
+            c.tokenAppearance.showLabel = document.getElementById('tokenShowLabel').checked;
+
+            save();
+            render();
+            hideTokenSettingsModal();
         }
 
         // ============ CHARACTER SHEET MODAL ============
@@ -14005,6 +14267,7 @@
                     html += '<button onclick="toggleCover(' + i + ')">' + (c.cover ? '🛡️ ' + c.cover + ' Cover' : '🛡️ Add Cover') + '</button>';
                     html += '<button onclick="showCharacterSheetModal(' + i + ')">📋 Character Sheet</button>';
                     html += '<button onclick="showEditCombatantModal(' + i + ')">✏️ Quick Edit</button>';
+                    html += '<button onclick="showTokenSettingsModal(' + i + ')">🎨 Token Settings</button>';
                     html += '<button onclick="duplicateCombatant(' + i + ')">⧉ Duplicate</button>';
                     html += '<button onclick="removeCombatant(' + i + ')" style="color: #f08080;">✕ Remove</button>';
                     html += '</div>';
@@ -14015,15 +14278,28 @@
                     html += '</div>'; // end combatant
                 }
                 listEl.innerHTML = html;
-                
+
                 // Add drag and drop event listeners
                 setupDragAndDrop();
-                
+
                 // Update area effect target grid
                 updateAreaTargetGrid();
             }
+
+            // Broadcast combatants to Battle Map
+            broadcastCombatants();
         }
-        
+
+        // Broadcast combatants to parent for Battle Map sync
+        function broadcastCombatants() {
+            window.parent.postMessage({
+                type: 'combatantsUpdate',
+                combatants: combatants,
+                activeIndex: activeIndex,
+                round: round
+            }, '*');
+        }
+
         // ============ DRAG AND DROP FUNCTIONS ============
         var draggedIndex = null;
         
@@ -14991,6 +15267,28 @@ function hydrateSettingsControlsFromCurrent() {
                 save();
                 render();
                 showAlert('Added "' + data.name + '" from Roll Tables!');
+            }
+
+            // Handle token position updates from Battle Map
+            if (event.data && event.data.type === 'tokenPositionUpdate') {
+                var id = event.data.combatantId;
+                var pos = event.data.position;
+                for (var i = 0; i < combatants.length; i++) {
+                    if (combatants[i].id === id) {
+                        if (!combatants[i].mapPosition) {
+                            combatants[i].mapPosition = { x: null, y: null, visible: true };
+                        }
+                        combatants[i].mapPosition.x = pos.x;
+                        combatants[i].mapPosition.y = pos.y;
+                        save();
+                        break;
+                    }
+                }
+            }
+
+            // Handle request for combatants data from Battle Map
+            if (event.data && event.data.type === 'requestCombatants') {
+                broadcastCombatants();
             }
         });
 

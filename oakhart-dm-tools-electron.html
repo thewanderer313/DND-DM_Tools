@@ -178,6 +178,9 @@
             <button class="tab" data-tab="rules">
                 <span class="tab-icon">📖</span>Rules Reference
             </button>
+            <button class="tab" data-tab="battlemap">
+                <span class="tab-icon">🗺️</span>Battle Map
+            </button>
             <div class="title-area">
                 <span>Oakhart DM Tools</span>
                 <span class="version" id="app-version"></span>
@@ -205,6 +208,13 @@
                     <div class="loading-text">Loading Rules Reference...</div>
                 </div>
                 <iframe src="oakhart-rules-reference.html" id="iframe-rules"></iframe>
+            </div>
+            <div class="tab-content" id="content-battlemap">
+                <div class="loading-overlay" id="loading-battlemap">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Loading Battle Map...</div>
+                </div>
+                <iframe src="oakhart-battlemap.html" id="iframe-battlemap"></iframe>
             </div>
         </div>
     </div>
@@ -256,7 +266,17 @@
             document.getElementById('loading-rules').classList.add('hidden');
         });
 
-        // Keyboard shortcuts (Alt+1/2/3 to switch tabs)
+        document.getElementById('iframe-battlemap').addEventListener('load', () => {
+            document.getElementById('loading-battlemap').classList.add('hidden');
+
+            const iframe = document.getElementById('iframe-battlemap');
+            if (window.electronAPI && iframe && iframe.contentWindow) {
+                iframe.contentWindow.electronAPI = window.electronAPI;
+                iframe.contentWindow.dispatchEvent(new Event('electron-ready'));
+            }
+        });
+
+        // Keyboard shortcuts (Alt+1/2/3/4 to switch tabs)
         document.addEventListener('keydown', (e) => {
             if (e.altKey && e.key === '1') {
                 e.preventDefault();
@@ -267,6 +287,9 @@
             } else if (e.altKey && e.key === '3') {
                 e.preventDefault();
                 tabs[2].click();
+            } else if (e.altKey && e.key === '4') {
+                e.preventDefault();
+                tabs[3].click();
             }
         });
 
@@ -277,16 +300,42 @@
             });
         }
 
-        // Cross-iframe communication: Relay messages between Roll Tables and Combat Tracker
+        // Cross-iframe communication: Relay messages between sections
         window.addEventListener('message', (event) => {
-            // Handle "addToCombat" from Roll Tables - relay to Combat Tracker
-            if (event.data && event.data.type === 'addToCombat') {
-                const combatIframe = document.getElementById('iframe-combat');
-                if (combatIframe && combatIframe.contentWindow) {
-                    combatIframe.contentWindow.postMessage(event.data, '*');
-                    // Switch to Combat Tracker tab
-                    tabs[1].click();
-                }
+            if (!event.data || !event.data.type) return;
+
+            const combatIframe = document.getElementById('iframe-combat');
+            const battlemapIframe = document.getElementById('iframe-battlemap');
+
+            switch (event.data.type) {
+                // Roll Tables -> Combat Tracker: Add creature to combat
+                case 'addToCombat':
+                    if (combatIframe && combatIframe.contentWindow) {
+                        combatIframe.contentWindow.postMessage(event.data, '*');
+                        tabs[1].click();
+                    }
+                    break;
+
+                // Combat Tracker -> Battle Map: Sync combatants
+                case 'combatantsUpdate':
+                    if (battlemapIframe && battlemapIframe.contentWindow) {
+                        battlemapIframe.contentWindow.postMessage(event.data, '*');
+                    }
+                    break;
+
+                // Battle Map -> Combat Tracker: Token position changed
+                case 'tokenPositionUpdate':
+                    if (combatIframe && combatIframe.contentWindow) {
+                        combatIframe.contentWindow.postMessage(event.data, '*');
+                    }
+                    break;
+
+                // Battle Map -> Combat Tracker: Request combatants data
+                case 'requestCombatants':
+                    if (combatIframe && combatIframe.contentWindow) {
+                        combatIframe.contentWindow.postMessage(event.data, '*');
+                    }
+                    break;
             }
         });
     </script>
